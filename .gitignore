@@ -1,0 +1,32 @@
+*~
+\#*
+.\#*
+*.swp
+.DS_Store
+
+# VS Directories #
+bin/
+obj/
+TestResults/
+GeneratedFiles/
+Debug/
+Release/
+ipch/
+
+# Compiled stuff #
+*.com
+*.class
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.cache
+*.ilk
+
+# Visual Studio Project stuff #
+*.suo
+*.sdf
+*.opensdf
+*.user
+*.filters
+*.aps
