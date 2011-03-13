@@ -1,0 +1,35 @@
+﻿Build started 3/13/2011 2:30:02 PM.
+     1>Project "D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\Comm Audio.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\Comm Audio.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Debug\Comm Audio.unsuccessfulbuild" because "AlwaysCreate" was specified.
+     1>RCC : warning : No resources in 'D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\mainwindow.qrc'.
+         
+         Moc'ing mainwindow.h...
+         Uic'ing mainwindow.ui...
+         Rcc'ing mainwindow.qrc...
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /IC:\Qt\4.7.2\include /I.\GeneratedFiles\Debug /IC:\Qt\4.7.2\include\qtmain /IC:\Qt\4.7.2\include\QtCore /IC:\Qt\4.7.2\include\QtGui /IC:\Qt\4.7.2\include\QtNetwork /I.\ /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_LARGEFILE_SUPPORT /D QT_CORE_LIB /D QT_GUI_LIB /D QT_NETWORK_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\Debug\moc_mainwindow.cpp main.cpp mainwindow.cpp
+         moc_mainwindow.cpp
+         main.cpp
+         mainwindow.cpp
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /IC:\Qt\4.7.2\include /I.\GeneratedFiles\Debug /IC:\Qt\4.7.2\include\qtmain /IC:\Qt\4.7.2\include\QtCore /IC:\Qt\4.7.2\include\QtGui /IC:\Qt\4.7.2\include\QtNetwork /I.\ /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_LARGEFILE_SUPPORT /D QT_CORE_LIB /D QT_GUI_LIB /D QT_NETWORK_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\qrc_mainwindow.cpp
+         qrc_mainwindow.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\\Comm Audio.exe" /NOLOGO /LIBPATH:C:\Qt\4.7.2\lib qtmaind.lib QtCored4.lib QtGuid4.lib QtNetworkd4.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Comm Audio.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\Comm Audio.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\Comm Audio.lib" /MACHINE:X86 Debug\moc_mainwindow.obj
+         Debug\qrc_mainwindow.obj
+         Debug\main.obj
+         Debug\mainwindow.obj
+         Comm Audio.vcxproj -> D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\Comm Audio.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\\Comm Audio.exe;#1" /manifest "Debug\Comm Audio.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Debug\Comm Audio.unsuccessfulbuild".
+         Touching "Debug\Comm Audio.lastbuildstate".
+     1>Done Building Project "D:\Assignments\CSTLevel4\Comp 4985\CommAudio\CommAudio\Comm Audio.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.16
