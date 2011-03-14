@@ -3,7 +3,7 @@
 
 
 AudioManager* AudioManager::instance_ = NULL;
-bool AudioManager::pause_ = false;
+bool AudioManager::pause_ = true;
 QMutex AudioManager::mutex_;
 
 AudioManager::AudioManager()
@@ -162,7 +162,7 @@ void AudioManager::streamOgg(QString filename)
         }
 
         while(pause_ == true) { 
-			alSleep(1);
+			alSleep(0.25f);
 		}
 
         /* result == 0 when file is completely read */
