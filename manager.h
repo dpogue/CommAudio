@@ -31,6 +31,9 @@ private:
 
     static QMutex mutex_;
 
+    static bool pause_;
+    static bool stop_;	
+
     /**
      * The volume/gain of the background music.
      */
@@ -89,6 +92,12 @@ public:
 
         return instance_;
     }
+
+	static void pause() {
+		mutex_.lock();
+		pause_ = !pause_;
+		mutex_.unlock();
+	}
 
     /**
      * Destroy the OpenAL context and try to clean up any resources.
