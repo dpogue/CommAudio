@@ -48,8 +48,6 @@ void CommAudio::onPlayClicked() {
 }
 
 void CommAudio::onConnectClicked() {
-
-
     unsigned long ip = 0;
     unsigned int port = 0;
     bool validPort = false;
@@ -71,20 +69,20 @@ void CommAudio::onConnectClicked() {
 
     ui.connectErrorLabel->clear();
 
-    testing = new CommSocket(this->ui.ipLineEdit->text(), port, UDP);
-    connect(testing, SIGNAL(socketRead()), this, SLOT(onCtlRead()));
-	connect(testing, SIGNAL(socketWrite()), this, SLOT(onCtlWrite()));
+    ctlSock = new CommSocket(this->ui.ipLineEdit->text(), port, 0);
+    connect(ctlSock, SIGNAL(socketRead()), this, SLOT(onCtlReadReady()));
+	connect(ctlSock, SIGNAL(socketWrite()), this, SLOT(onCtlWrite()));
 
-    bool b = testing->connectToServ();
-    if (b) {
-        qDebug("Connected");
+    if (!ctlSock->connectToServ()) {
+        qDebug("Something went wrong trying to connect...");
     }
-
 }
 
 void CommAudio::onStartServerClicked() {
     qDebug("onStartServer()");
     // startlisteningforconnections(multicastServer)
+
+
 }
 
 void CommAudio::onChatPressed() {
@@ -97,7 +95,7 @@ void CommAudio::onMulticastStateChanged(int state) {
     multicastServer = ui.multicastCheckBox->isChecked();
 }
 
-void CommAudio::onCtlRead() {
+void CommAudio::onCtlReadReady() {
     qDebug("Got something to read");
 	
 	qDebug(testing->getReadBuffer().toAscii().data());

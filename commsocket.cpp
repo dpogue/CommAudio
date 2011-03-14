@@ -7,7 +7,7 @@ CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
 	prot = protocol;
 	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port);
-	
+    writeBuffer = QString("");
 }
 
 bool CommSocket::listenForConn()
