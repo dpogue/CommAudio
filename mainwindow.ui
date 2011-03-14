@@ -43,7 +43,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="localTab">
      <attribute name="title">
@@ -93,7 +93,7 @@
       <x>90</x>
       <y>160</y>
       <width>261</width>
-      <height>121</height>
+      <height>131</height>
      </rect>
     </property>
     <property name="title">
@@ -122,13 +122,13 @@
       </rect>
      </property>
      <property name="text">
-      <string>9511</string>
+      <string>9500</string>
      </property>
     </widget>
     <widget class="QLabel" name="ipLabel">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>10</x>
        <y>20</y>
        <width>46</width>
        <height>13</height>
@@ -137,11 +137,14 @@
      <property name="text">
       <string>IP</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="portLabel">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>50</y>
        <width>46</width>
        <height>13</height>
@@ -149,6 +152,9 @@
      </property>
      <property name="text">
       <string>Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QCheckBox" name="multicastCheckBox">
@@ -168,13 +174,32 @@
      <property name="geometry">
       <rect>
        <x>90</x>
-       <y>80</y>
+       <y>100</y>
        <width>75</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
       <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="connectErrorLabel">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>80</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

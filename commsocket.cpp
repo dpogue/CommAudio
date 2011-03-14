@@ -3,11 +3,11 @@
 #include "defines.h"
 #include <QNetworkInterface>
 
-
 CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
 	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port,protocol);
 }
+
 bool CommSocket::listenForConn()
 {
 	if(listen(sock,5) == SOCKET_ERROR)
@@ -18,6 +18,7 @@ bool CommSocket::listenForConn()
 	}
 	return true;
 }
+
 bool CommSocket::connectToServ()
 {
 	
@@ -37,20 +38,23 @@ bool CommSocket::winEvent(MSG* message, long* result)
 	switch(message->message) 
 	{
     case WM_SOCKET:
-		case FD_WRITE:
-			emit socketWrite();
-			break;
-		case FD_CONNECT:
-            qDebug("Socket got connected");
-			break;
-		case FD_ACCEPT:
-			break;
-		case FD_READ:
-			emit socketRead();
-			break;
-		case FD_CLOSE:
-			emit socketClose();
-			break;
+        switch(WSAGETSELECTEVENT(message->lParam)) {
+    		case FD_WRITE:
+    			emit socketWrite();
+    			break;
+    		case FD_CONNECT:
+    			emit socketConnected();
+    			break;
+    		case FD_ACCEPT:
+    			emit socketAccepted();
+    			break;
+    		case FD_READ:
+    			emit socketRead();
+    			break;
+    		case FD_CLOSE:
+    			emit socketClose();
+    			break;
+        }
         // emit signals in response to events
         return true;
     }
@@ -64,7 +68,6 @@ SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port,int pro
 	struct sockaddr_in sin;
 	long events;
 	int type;
-	
 	
 	type = (protocol == UDP ? SOCK_DGRAM : SOCK_STREAM);
 	events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
