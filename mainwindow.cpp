@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 #include <WinSock2.h>
 #include <qdir.h>
+#include "manager.h"
 #include "defines.h"
 #include "stylesheet.h"
-#include "defines.h"
+
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
@@ -33,14 +34,16 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     userSongs.addFolder("music/");
 }
 
-CommAudio::~CommAudio() { }
+CommAudio::~CommAudio() { 
+    AudioManager::instance()->shutdown();
+}
 
 void CommAudio::onPlayClicked() {
     if (!playing) {
         playing = true;
         ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-        //QString fileName = "hard code file name here for now"
-        //terrysPlayFunction(fileName);
+        QString fileName = "music/3.ogg";
+        AudioManager::instance()->playMusic(fileName);
   } else {
         playing = false;
         ui.playPushButton->setIcon(QIcon(ICON_PLAY));

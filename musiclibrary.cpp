@@ -18,8 +18,10 @@ void MusicLibrary::addFolder(QString path) {
 
 void MusicLibrary::addSongs(QDir* directory) {
     QStringList newSongs = directory->entryList();
+    
     newSongs.sort();
-    //while (!newSongs.isEmpty()) {
-        //songs.insert(newSongs.takeFirst(), newSongs.takeFirst());
-    //}
+    while (!newSongs.isEmpty()) {
+        QString fileName = newSongs.takeFirst();
+        songs.insert(fileName, fileName);
+    }
 }
