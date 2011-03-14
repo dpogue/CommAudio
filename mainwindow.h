@@ -17,6 +17,8 @@ private:
 	Ui::CommAudioClass ui;
 	CommSocket* testing;
 
+    bool playing;
+
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
 
@@ -32,6 +34,10 @@ public slots:
      * @author Dean Morin
      */
     void onPlayClicked();
+    
+    /**
+     * Stops
+    void onStopClicked();
 
     /**
      * Attempts to connect to the server specified in the server group box. 

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <WinSock2.h>
+#include <qdir.h>
 #include "stylesheet.h"
 #include "defines.h"
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
@@ -24,14 +25,26 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     multicastServer = ui.multicastCheckBox->isChecked();
 
     //TODO: move to settings
-    
+    QDir music("music");
+    if (!music.exists()) {
+        music.mkdir("music");
+    }
+    userSongs.addFolder("music/");
 }
 
 CommAudio::~CommAudio() { }
 
 void CommAudio::onPlayClicked() {
-    //QString fileName = "hard code file name here for now"
-    //terrysPlayFunction(fileName);
+    if (playing) {
+        playing = false;
+        ui.playPushButton->setIcon(QIcon("img/play.png"));
+        //terrysGainFunction(0);
+    } else {
+        playing = true;
+        ui.playPushButton->setIcon(QIcon("img/pause.png"));
+        //QString fileName = "hard code file name here for now"
+        //terrysPlayFunction(fileName);
+    }
 }
 
 void CommAudio::onConnectClicked() {
