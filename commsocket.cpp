@@ -41,6 +41,7 @@ bool CommSocket::winEvent(MSG* message, long* result)
 			emit socketWrite();
 			break;
 		case FD_CONNECT:
+            qDebug("Socket got connected");
 			break;
 		case FD_ACCEPT:
 			break;
@@ -89,7 +90,7 @@ SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port,int pro
 		memcpy(&server,&sin,sizeof(sockaddr_in));
 		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
 	}
-	WSAAsyncSelect(s, hwnd, WM_SOCKET, events);
+	int i = WSAAsyncSelect(s, hwnd, WM_SOCKET, events);
 	return s;
 }
 

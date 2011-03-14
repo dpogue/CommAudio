@@ -46,6 +46,8 @@ public slots:
      * @author Dean Morin
      */
     void onChatReleased();
+
+    void onCtlRead();
 };
 
 #endif // MAINWINDOW_H

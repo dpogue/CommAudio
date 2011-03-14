@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "commsocket.h"
+#include <QLayout>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -23,6 +25,17 @@ void CommAudio::onPlayClicked() {
 
 void CommAudio::onConnectClicked() {
     qDebug("connect to server");
+
+    QString host = this->ui.ipLineEdit->text();
+    int port = this->ui.portLineEdit->text().toInt();
+
+    CommSocket* s = new CommSocket(host, port, 0);
+    connect(s, SIGNAL(socketRead()), this, SLOT(onCtlRead()));
+
+    bool b = s->connectToServ();
+    if (b) {
+        qDebug("Connected");
+    }
 }
 
 void CommAudio::onChatPressed() {
@@ -31,5 +44,9 @@ void CommAudio::onChatPressed() {
 
 void CommAudio::onChatReleased() {
     qDebug("chat released");
+}
+
+void CommAudio::onCtlRead() {
+    qDebug("Got something to read");
 }
 
