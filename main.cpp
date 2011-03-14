@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "commsocket.h"
 #include "defines.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
