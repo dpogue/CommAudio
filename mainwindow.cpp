@@ -2,6 +2,7 @@
 #include "commsocket.h"
 #include <WinSock2.h>
 #include <qdir.h>
+#include "defines.h"
 #include "stylesheet.h"
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
@@ -26,9 +27,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     multicastServer = ui.multicastCheckBox->isChecked();
 
     //TODO: move to settings
-    QDir music("music");
-    if (!music.exists()) {
-        music.mkdir("music");
+    if(!QDir("music").exists()) {
+        QDir().mkdir("music");
     }
     userSongs.addFolder("music/");
 }
@@ -36,21 +36,19 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 CommAudio::~CommAudio() { }
 
 void CommAudio::onPlayClicked() {
-    if (playing) {
-        playing = false;
-        ui.playPushButton->setIcon(QIcon("img/play.png"));
-        //terrysGainFunction(0);
-    } else {
+    if (!playing) {
         playing = true;
-        ui.playPushButton->setIcon(QIcon("img/pause.png"));
+        ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
         //QString fileName = "hard code file name here for now"
         //terrysPlayFunction(fileName);
+  } else {
+        playing = false;
+        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+        //terrysGainFunction(0);
     }
 }
 
 void CommAudio::onConnectClicked() {
-
-
     unsigned long ip = 0;
     unsigned int port = 0;
     bool validPort = false;
@@ -79,12 +77,12 @@ void CommAudio::onConnectClicked() {
     if (b) {
         qDebug("Connected");
     }
-
 }
 
 void CommAudio::onStartServerClicked() {
     qDebug("onStartServer()");
     // startlisteningforconnections(multicastServer)
+    // TODO: disable gui components
 }
 
 void CommAudio::onChatPressed() {

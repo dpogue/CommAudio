@@ -1,16 +1,16 @@
 #ifndef MUSICLIBRARY_H
 #define MUSICLIBRARY_H
 
-#include <list>
-#include <map>
+#include <qlist.h>
+#include <qmap.h>
 #include <qstring.h>
 #include <qdir.h>
 
 class MusicLibrary {
 
 private:
-    std::list<QDir*> directories;
-    std::map<QString, QString> songs;
+    QList<QDir*> directories;
+    QMap<QString, QString> songs;
 
 public:
     MusicLibrary();
