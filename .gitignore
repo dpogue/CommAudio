@@ -30,3 +30,6 @@ ipch/
 *.user
 *.filters
 *.aps
+
+# Music Files #
+*.wav
