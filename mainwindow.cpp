@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include <WinSock2.h>
+#include "stylesheet.h"
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
 	ui.setupUi(this);
+    this->setStyleSheet(StyleSheet::commAudio());
 
     connect(ui.playPushButton, SIGNAL(clicked()), 
             this, SLOT(onPlayClicked()));
@@ -19,6 +21,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 CommAudio::~CommAudio() { }
 
 void CommAudio::onPlayClicked() {
+    //QString fileName = "hard code file name here for now"
+    //terrysPlayFunction(fileName);
 }
 
 void CommAudio::onConnectClicked() {
