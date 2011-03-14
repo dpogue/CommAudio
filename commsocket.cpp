@@ -41,8 +41,10 @@ bool CommSocket::winEvent(MSG* message, long* result)
 			emit socketWrite();
 			break;
 		case FD_CONNECT:
+			emit socketConnected();
 			break;
 		case FD_ACCEPT:
+			emit socketAccepted();
 			break;
 		case FD_READ:
 			emit socketRead();

@@ -22,7 +22,7 @@ protected:
     virtual bool winEvent(MSG* message, long* result);
 
 signals:
-    void connected();
+    void socketConnected();
     void socketAccepted();
     void socketRead();
     void socketWrite();
