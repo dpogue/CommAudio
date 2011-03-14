@@ -173,7 +173,7 @@
     <widget class="QPushButton" name="connectPushButton">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>50</x>
        <y>100</y>
        <width>75</width>
        <height>23</height>
@@ -186,10 +186,10 @@
     <widget class="QLabel" name="connectErrorLabel">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>5</x>
        <y>80</y>
-       <width>46</width>
-       <height>13</height>
+       <width>251</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="cursor">
@@ -200,6 +200,19 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="startServerPushButton">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>100</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Server</string>
      </property>
     </widget>
    </widget>

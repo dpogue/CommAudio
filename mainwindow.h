@@ -15,6 +15,9 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 
+    /** True if the program should multicast on clicking "Start Server". */
+    bool multicastServer;
+
 public slots:
     /**
      * Plays the song appropriate to the state of the program (selected song if
@@ -33,6 +36,13 @@ public slots:
     void onConnectClicked();
 
     /**
+     * Starts listening for clients. 
+     *
+     * @author Dean Morin.
+     */
+    void onStartServerClicked();
+
+    /**
      * Starts transmitting voice data, or toggles the transmission on/off if
      * "sticky" mode is enabledd.
      *
@@ -46,6 +56,14 @@ public slots:
      * @author Dean Morin
      */
     void onChatReleased();
+
+    /**
+     * This server will multicast if this is selected.
+     *
+     * @author Dean Morin
+     * @param state The state of multicastCheckBox.
+     */
+    void onMulticastStateChanged(int state);
 
     void onCtlRead();
 };
