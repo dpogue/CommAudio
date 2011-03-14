@@ -4,18 +4,20 @@
 #include <list>
 #include <map>
 #include <qstring.h>
+#include <qdir.h>
 
 class MusicLibrary {
 
 private:
-    std::list<QString> directories;
+    std::list<QDir*> directories;
     std::map<QString, QString> songs;
 
 public:
     MusicLibrary();
-    ~MusicLibrary() { }
+    ~MusicLibrary();
 
     void addFolder(QString path);
+    void addSongs(QDir* directory);
 };
 
 #endif // MUSICLIBRARY_H

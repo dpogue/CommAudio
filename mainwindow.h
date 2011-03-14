@@ -4,7 +4,7 @@
 #include <QtGui/QMainWindow>
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
-
+#include "commsocket.h"
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
@@ -15,6 +15,9 @@ public:
 private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
+	CommSocket* testing;
+
+    bool playing;
 
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
@@ -31,6 +34,10 @@ public slots:
      * @author Dean Morin
      */
     void onPlayClicked();
+    
+    /**
+     * Stops
+    void onStopClicked();
 
     /**
      * Attempts to connect to the server specified in the server group box. 
@@ -70,6 +77,7 @@ public slots:
     void onMulticastStateChanged(int state);
 
     void onCtlRead();
+	void onCtlWrite();
 };
 
 #endif // MAINWINDOW_H
