@@ -98,10 +98,10 @@ void CommAudio::onMulticastStateChanged(int state) {
 void CommAudio::onCtlReadReady() {
     qDebug("Got something to read");
 	
-	qDebug(testing->getReadBuffer().toAscii().data());
+	qDebug(ctlSock->getReadBuffer().toAscii().data());
 }
 
 void CommAudio::onCtlWrite(){
 	qDebug("Got something to write");
-	testing->setWriteBuffer("udp");
+	ctlSock->setWriteBuffer("udp");
 }
