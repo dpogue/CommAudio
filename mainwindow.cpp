@@ -13,10 +13,19 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onPlayClicked()));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
+    connect(ui.startServerPushButton, SIGNAL(clicked()),
+            this, SLOT(onStartServerClicked()));
     connect(ui.chatPushButton, SIGNAL(pressed()),
             this, SLOT(onChatPressed()));
     connect(ui.chatPushButton, SIGNAL(released()),
             this, SLOT(onChatReleased()));
+    connect(ui.multicastCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(onMulticastStateChanged(int)));
+
+    multicastServer = ui.multicastCheckBox->isChecked();
+
+    //TODO: move to settings
+    
 }
 
 CommAudio::~CommAudio() { }
@@ -60,13 +69,21 @@ void CommAudio::onConnectClicked() {
 
 }
 
+void CommAudio::onStartServerClicked() {
+    qDebug("onStartServer()");
+    // startlisteningforconnections(multicastServer)
+}
+
 void CommAudio::onChatPressed() {
 }
 
 void CommAudio::onChatReleased() {
 }
 
+void CommAudio::onMulticastStateChanged(int state) {
+    multicastServer = ui.multicastCheckBox->isChecked();
+}
+
 void CommAudio::onCtlRead() {
     qDebug("Got something to read");
 }
-
