@@ -173,14 +173,11 @@ bool CommSocket::write()
 }
 bool CommSocket::setWriteBuffer(QByteArray data)
 {
-	if(data == NULL)
-		return true;
 	if(writeBuffer.isEmpty()){
 		writeBuffer = data;
 		write();
 		return true;
-	}
-	else{
+	} else {
 		return false;
 	}
 }
