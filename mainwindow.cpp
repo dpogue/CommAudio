@@ -24,6 +24,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
+    playing = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
