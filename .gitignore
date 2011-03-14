@@ -33,3 +33,8 @@ ipch/
 
 # Music Files #
 *.wav
+*.ogg
+*.mp3
+*.flac
+*.aif
+*.aiff
