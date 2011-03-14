@@ -24,6 +24,10 @@ ipch/
 *.dll.config
 *.cache
 *.ilk
+!libvorbis.dll
+!libvorbisfile.dll
+!libogg.dll
+
 
 # Visual Studio Project stuff #
 *.suo
