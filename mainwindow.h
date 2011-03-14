@@ -25,6 +25,12 @@ private:
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary userSongs;
 
+    /** The open TCP socket either for the control channel. */
+    CommSocket* ctlSock;
+
+    /** The open UDP socket for streaming data. */
+    CommSocket* strSock;
+
 public slots:
     /**
      * Plays the song appropriate to the state of the program (selected song if
@@ -76,8 +82,14 @@ public slots:
      */
     void onMulticastStateChanged(int state);
 
-    void onCtlRead();
 	void onCtlWrite();
+
+    /**
+     * Provides a notice that there is data available to be read on the control channel socket.
+     *
+     * @author Darryl Pogue
+     */
+    void onCtlReadReady();
 };
 
 #endif // MAINWINDOW_H
