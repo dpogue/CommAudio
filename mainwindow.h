@@ -3,6 +3,7 @@
 
 #include <QtGui/QMainWindow>
 #include "ui_mainwindow.h"
+#include "musiclibrary.h"
 
 class CommAudio : public QMainWindow {
 	Q_OBJECT
@@ -17,6 +18,9 @@ private:
 
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
+
+    /** Contains the songs that are on the user's local drive. */
+    MusicLibrary userSongs;
 
 public slots:
     /**
