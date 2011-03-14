@@ -1,0 +1,25 @@
+﻿Build started 3/14/2011 1:28:31 PM.
+     1>Project "C:\libogg\win32\VS2010\libogg_dynamic.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Win32\Debug\libogg.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\..\include /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D LIBOGG_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\src\bitwise.c ..\..\src\framing.c
+         framing.c
+         bitwise.c
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\libogg\win32\VS2010\Win32\Debug\libogg.dll" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"..\ogg.def" /MANIFEST /ManifestFile:"Win32\Debug\libogg.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\libogg\win32\VS2010\Win32\Debug\libogg.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\libogg\win32\VS2010\Win32\Debug\libogg.lib" /MACHINE:X86 /DLL Win32\Debug\bitwise.obj
+         Win32\Debug\framing.obj
+     1>bitwise.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
+            Creating library C:\libogg\win32\VS2010\Win32\Debug\libogg.lib and object C:\libogg\win32\VS2010\Win32\Debug\libogg.exp
+         libogg_dynamic.vcxproj -> C:\libogg\win32\VS2010\Win32\Debug\libogg.dll
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\libogg\win32\VS2010\Win32\Debug\libogg.dll;#2" /manifest Win32\Debug\libogg.dll.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Win32\Debug\libogg.unsuccessfulbuild".
+         Touching "Win32\Debug\libogg.lastbuildstate".
+     1>Done Building Project "C:\libogg\win32\VS2010\libogg_dynamic.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.03

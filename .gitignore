@@ -12,6 +12,8 @@ GeneratedFiles/
 Debug/
 Release/
 ipch/
+!3rdParty/Debug
+!3rdParty/Release
 
 # Compiled stuff #
 *.com

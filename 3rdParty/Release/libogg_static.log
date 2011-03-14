@@ -1,0 +1,20 @@
+﻿Build started 1/17/2011 1:12:59 PM.
+     1>Project "C:\libogg\win32\VS2010\libogg_static.vcxproj" on node 2 (rebuild target(s)).
+     1>InitializeBuildStatus:
+         Creating "Win32\Release\libogg_static.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\..\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBOGG_EXPORTS /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\\" /Fd"Win32\Release\vc100.pdb" /Gd /TC /wd4244 /analyze- /errorReport:prompt ..\..\src\bitwise.c ..\..\src\framing.c
+         bitwise.c
+         framing.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\libogg\win32\VS2010\Win32\Release\libogg_static.lib" /NOLOGO /LTCG Win32\Release\bitwise.obj
+         Win32\Release\framing.obj
+         libogg_static.vcxproj -> C:\libogg\win32\VS2010\Win32\Release\libogg_static.lib
+       FinalizeBuildStatus:
+         Deleting file "Win32\Release\libogg_static.unsuccessfulbuild".
+         Touching "Win32\Release\libogg_static.lastbuildstate".
+     1>Done Building Project "C:\libogg\win32\VS2010\libogg_static.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.31
