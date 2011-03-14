@@ -174,6 +174,8 @@ bool CommSocket::write()
 }
 bool CommSocket::setWriteBuffer(QString data)
 {
+	if(data == NULL)
+		return true;
 	if(writeBuffer.isEmpty()){
 		writeBuffer = data;
 		write();
