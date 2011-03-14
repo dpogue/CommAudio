@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>86</x>
-      <y>270</y>
+      <y>330</y>
       <width>271</width>
       <height>111</height>
      </rect>
@@ -43,7 +43,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="localTab">
      <attribute name="title">
@@ -61,7 +61,7 @@
      </attribute>
     </widget>
    </widget>
-   <widget class="QPushButton" name="playButton">
+   <widget class="QPushButton" name="playPushButton">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -74,24 +74,11 @@
      <string>Play</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="chatButton">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>430</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Chat</string>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="downloadProgressBar">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>390</y>
+      <y>450</y>
       <width>118</width>
       <height>23</height>
      </rect>
@@ -106,11 +93,11 @@
       <x>90</x>
       <y>160</y>
       <width>261</width>
-      <height>91</height>
+      <height>121</height>
      </rect>
     </property>
     <property name="title">
-     <string>Connenction</string>
+     <string>Connection</string>
     </property>
     <widget class="QLineEdit" name="ipLineEdit">
      <property name="geometry">
@@ -177,6 +164,32 @@
       <string>Multicast</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="connectPushButton">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>80</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="chatPushButton">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>500</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Chat</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
