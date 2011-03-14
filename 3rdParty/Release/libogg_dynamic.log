@@ -1,0 +1,27 @@
+﻿Build started 1/17/2011 1:15:57 PM.
+     1>Project "C:\libogg\win32\VS2010\libogg_dynamic.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Win32\Release\libogg.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Win32\Release\libogg.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\..\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBOGG_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\\" /Fd"Win32\Release\vc100.pdb" /Gd /TC /wd4244 /analyze- /errorReport:prompt ..\..\src\bitwise.c ..\..\src\framing.c
+         bitwise.c
+         framing.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\libogg\win32\VS2010\Win32\Release\libogg.dll" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"..\ogg.def" /MANIFEST /ManifestFile:"Win32\Release\libogg.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\libogg\win32\VS2010\Win32\Release\libogg.pdb" /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\libogg\win32\VS2010\Win32\Release\libogg.lib" /MACHINE:X86 /DLL Win32\Release\bitwise.obj
+         Win32\Release\framing.obj
+            Creating library C:\libogg\win32\VS2010\Win32\Release\libogg.lib and object C:\libogg\win32\VS2010\Win32\Release\libogg.exp
+         Generating code
+         Finished generating code
+         libogg_dynamic.vcxproj -> C:\libogg\win32\VS2010\Win32\Release\libogg.dll
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\libogg\win32\VS2010\Win32\Release\libogg.dll;#2" /manifest Win32\Release\libogg.dll.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Win32\Release\libogg.unsuccessfulbuild".
+         Touching "Win32\Release\libogg.lastbuildstate".
+     1>Done Building Project "C:\libogg\win32\VS2010\libogg_dynamic.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.73
