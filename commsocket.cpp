@@ -5,8 +5,9 @@
 
 CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
-	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port);
 	prot = protocol;
+	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port);
+	
 }
 
 bool CommSocket::listenForConn()
@@ -57,7 +58,6 @@ bool CommSocket::winEvent(MSG* message, long* result)
     		case FD_READ:
 				if(read())
 				{
-					qDebug(readBuffer.toAscii().data());
     				emit socketRead();
 				}
     			break;
@@ -88,7 +88,7 @@ SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port)
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	setsockopt(s,SOL_SOCKET,SO_REUSEADDR,"1",1);
-	
+
 	if(mode == SERVER)
 	{
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -141,16 +141,6 @@ bool CommSocket::read()
 	readBuffer = readBuffer.fromAscii(buffer);
 	return true;
 }
-bool CommSocket::setWriteBuffer(QString data)
-{
-	if(writeBuffer.isEmpty()){
-		writeBuffer = data;
-		return true;
-	}
-	else{
-		return false;
-	}
-}
 bool CommSocket::write()
 {
 	QString buffer;
@@ -177,20 +167,34 @@ bool CommSocket::write()
 			return true;
 		}
 		writeBuffer = writeBuffer.right(writeBuffer.size()-buffer.size());
+		qStrCpy(buffer,writeBuffer,BUFSIZE);
 	}
+	emit socketWrite();
 	return true;
 }
-bool CommSocket::qStrCpy(QString dest,QString src,int size)
+bool CommSocket::setWriteBuffer(QString data)
 {
-	if(dest == NULL || src == NULL){
+	if(writeBuffer.isEmpty()){
+		writeBuffer = data;
+		write();
+		return true;
+	}
+	else{
 		return false;
 	}
-	if(dest.isNull() || src.isNull()){
+}
+bool CommSocket::qStrCpy(QString& dest,QString& src,int size)
+{
+	if(src.isNull()){
 		return false;
 	}
-	for(int i = 0; i < size || src.size(); i++)
+	for(int i = 0; i < size && i < src.size(); i++)
 	{
 		dest[i] = src[i];
 	}
 	return true;
+}
+QString CommSocket::getReadBuffer()
+{
+	return readBuffer;
 }

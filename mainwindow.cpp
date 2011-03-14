@@ -1,8 +1,7 @@
 #include "mainwindow.h"
-#include "commsocket.h"
 #include <WinSock2.h>
 #include "stylesheet.h"
-
+#include "defines.h"
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
@@ -59,10 +58,11 @@ void CommAudio::onConnectClicked() {
 
     ui.connectErrorLabel->clear();
 
-    CommSocket* s = new CommSocket(this->ui.ipLineEdit->text(), port, 0);
-    connect(s, SIGNAL(socketRead()), this, SLOT(onCtlRead()));
+    testing = new CommSocket(this->ui.ipLineEdit->text(), port, UDP);
+    connect(testing, SIGNAL(socketRead()), this, SLOT(onCtlRead()));
+	connect(testing, SIGNAL(socketWrite()), this, SLOT(onCtlWrite()));
 
-    bool b = s->connectToServ();
+    bool b = testing->connectToServ();
     if (b) {
         qDebug("Connected");
     }
@@ -86,4 +86,11 @@ void CommAudio::onMulticastStateChanged(int state) {
 
 void CommAudio::onCtlRead() {
     qDebug("Got something to read");
+	
+	qDebug(testing->getReadBuffer().toAscii().data());
+}
+
+void CommAudio::onCtlWrite(){
+	qDebug("Got something to write");
+	testing->setWriteBuffer("udp");
 }

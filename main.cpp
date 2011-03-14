@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	WSADATA ws;
 	WSAStartup(0x0202,&ws);
 	CommAudio w;
-	CommSocket cs("",7000,TCP);
+	
 	w.show();
 	return a.exec();
 }
