@@ -3,6 +3,7 @@
 #include <qdir.h>
 #include "stylesheet.h"
 #include "defines.h"
+
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
@@ -98,10 +99,12 @@ void CommAudio::onMulticastStateChanged(int state) {
 void CommAudio::onCtlReadReady() {
     qDebug("Got something to read");
 	
-	qDebug(ctlSock->getReadBuffer().toAscii().data());
+    QByteArray data = ctlSock->getReadBuffer();
+
+    qDebug(data.data());
 }
 
 void CommAudio::onCtlWrite(){
 	qDebug("Got something to write");
-	ctlSock->setWriteBuffer("udp");
+	//ctlSock->setWriteBuffer("udp");
 }
