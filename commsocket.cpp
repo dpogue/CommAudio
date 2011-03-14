@@ -3,11 +3,11 @@
 #include "defines.h"
 #include <QNetworkInterface>
 
-
 CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
 	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port,protocol);
 }
+
 bool CommSocket::listenForConn()
 {
 	if(listen(sock,5) == SOCKET_ERROR)
@@ -18,6 +18,7 @@ bool CommSocket::listenForConn()
 	}
 	return true;
 }
+
 bool CommSocket::connectToServ()
 {
 	
@@ -65,7 +66,6 @@ SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port,int pro
 	struct sockaddr_in sin;
 	long events;
 	int type;
-	
 	
 	type = (protocol == UDP ? SOCK_DGRAM : SOCK_STREAM);
 	events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
