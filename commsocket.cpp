@@ -6,7 +6,30 @@
 
 CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
-	sock = createSocket(winId(),(host.isEmpty() ? SERVER : CLIENT),port,protocol);
+	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port,protocol);
+}
+bool CommSocket::listenForConn()
+{
+	if(listen(sock,5) == SOCKET_ERROR)
+	{
+		int s;
+		s = WSAGetLastError();
+		return false;
+	}
+	return true;
+}
+bool CommSocket::connectToServ()
+{
+	
+	if(WSAConnect(sock,(sockaddr*)&server,sizeof(server),NULL,NULL,NULL,NULL) == SOCKET_ERROR)
+	{
+		int s;
+		if((s = WSAGetLastError()) != WSAEWOULDBLOCK)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 bool CommSocket::winEvent(MSG* message, long* result)
@@ -33,7 +56,8 @@ bool CommSocket::winEvent(MSG* message, long* result)
     return false;
 }
 
-SOCKET CommSocket::createSocket(HWND hwnd,int mode,int port,int protocol)
+
+SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port,int protocol)
 {
 	SOCKET s;
 	struct sockaddr_in sin;
@@ -59,6 +83,11 @@ SOCKET CommSocket::createSocket(HWND hwnd,int mode,int port,int protocol)
 			int s = WSAGetLastError();
 			exit(1);
 		}
+	}
+	else
+	{
+		memcpy(&server,&sin,sizeof(sockaddr_in));
+		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
 	}
 	WSAAsyncSelect(s, hwnd, WM_SOCKET, events);
 	return s;
