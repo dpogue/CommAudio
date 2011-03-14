@@ -15,8 +15,6 @@
 #include <unistd.h>
 #endif
 
-namespace td
-{
 /**
  * Sleep the current thread for a duration of seconds.
  *
@@ -52,6 +50,6 @@ ALboolean alInit();
  * @return true on success, false otherwise.
  */
 ALboolean alExit();
-}
+
 
 #endif 

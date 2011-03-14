@@ -18,8 +18,7 @@
 
 
 class AudioManager : public QObject {
-    Q_OBJECT
-
+    Q_OBJECT;
 
 private:
     /**
@@ -29,6 +28,8 @@ private:
      * will initialize it the first time that it is retrieved.
      */
     static AudioManager* instance_;
+
+    static QMutex mutex_;
 
     /**
      * The volume/gain of the background music.

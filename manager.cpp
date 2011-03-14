@@ -54,7 +54,7 @@ bool AudioManager::checkError()
     return false;
 }
 
-void AudioManager::streamOgg(QString filename, float gain)
+void AudioManager::streamOgg(QString filename)
 {
     FILE* file;
     char array[BUFFERSIZE];
@@ -78,7 +78,7 @@ void AudioManager::streamOgg(QString filename, float gain)
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
     /*set the Gain for Music or Sfx*/
-    alSourcef(source, AL_GAIN, gain);
+    alSourcef(source, AL_GAIN, .9);
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamOgg(): Cannot open " << filename << " for reading...";
@@ -137,7 +137,7 @@ void AudioManager::streamOgg(QString filename, float gain)
                 size += result;
 
                 if (result < 0) {
-                    qCritical() << "AudioManager::streamOgg(): Ogg Read Failed " << endl;
+                    qCritical() << "AudioManager::streamOgg(): Ogg Read Failed ";
                     break;
                 }
             }
@@ -184,6 +184,5 @@ void AudioManager::streamOgg(QString filename, float gain)
     alDeleteSources(1, &source);
     alDeleteBuffers(QUEUESIZE, buffer);
     mutex_.unlock();
-}
 
-} /* End namespace td */
+}

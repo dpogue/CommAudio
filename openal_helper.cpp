@@ -1,6 +1,6 @@
 #include "openal_helper.h"
 
-namespace td {
+
 /**
  * Enum for the possible states of the openal context
  */
@@ -148,4 +148,3 @@ ALboolean alExit()
     return AL_TRUE;
 }
 
-}
