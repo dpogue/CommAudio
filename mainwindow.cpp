@@ -4,6 +4,7 @@
 #include "manager.h"
 #include "defines.h"
 #include "stylesheet.h"
+#include <qlayout.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), ctlSock(NULL)
@@ -32,7 +33,12 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     if(!QDir("music").exists()) {
         QDir().mkdir("music");
     }
-    userSongs.addFolder("music/");
+
+    QBoxLayout* hl = new QBoxLayout(QBoxLayout::TopToBottom, ui.localTab);
+    hl->setMargin(0);
+    userSongs = new MusicLibrary();
+    userSongs->addFolder("music/");
+    hl->addWidget(userSongs);
 }
 
 CommAudio::~CommAudio() { 

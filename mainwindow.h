@@ -27,7 +27,7 @@ private:
     bool multicastServer;
 
     /** Contains the songs that are on the user's local drive. */
-    MusicLibrary userSongs;
+    MusicLibrary* userSongs;
 
     /** True if the chat button should toggle chat. */
     bool stickyChat;

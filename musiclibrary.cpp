@@ -1,6 +1,6 @@
 #include "musiclibrary.h"
 
-MusicLibrary::MusicLibrary() {
+MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
 }
 
 MusicLibrary::~MusicLibrary() {
@@ -17,11 +17,13 @@ void MusicLibrary::addFolder(QString path) {
 }
 
 void MusicLibrary::addSongs(QDir* directory) {
-    QStringList newSongs = directory->entryList();
+    QStringList filters;
+    filters << "*.wav" << "*.ogg";
+    QStringList newSongs = directory->entryList(filters, QDir::Readable | QDir::Files, QDir::Name);
     
-    newSongs.sort();
     while (!newSongs.isEmpty()) {
         QString fileName = newSongs.takeFirst();
         songs.insert(fileName, fileName);
+        addItem(fileName);
     }
 }
