@@ -83,11 +83,11 @@ void AudioManager::streamFile(QString filename)
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
-    ALenum format;
-    ALsizei freq = 44100;
+    ALenum format = AL_FORMAT_STEREO16;
+    ALuint freq = 44100;
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
-
+	fileType fType;
 
     /* Created the source and Buffers */
     alGenBuffers(QUEUESIZE, buffer);
@@ -95,18 +95,18 @@ void AudioManager::streamFile(QString filename)
     /*set the Gain for Music or Sfx*/
     
 	stop_=false;
-	fileType fType = WAV;
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamFile(): Cannot open " << filename << " for reading...";
-		qDebug("File is Wave");
-        return;
+		return;
     }
 
 	if(filename.contains(".ogg")) {	
-        qDebug("File is Ogg");		
 		openOgg(file, &oggFile, &format);
 		fType = OGG;
+	} else {
+		openWav(&file,&format,&freq);
+		fType = WAV;
 	}
 
 
@@ -136,11 +136,10 @@ void AudioManager::streamFile(QString filename)
             while (size < BUFFERSIZE) {
 
                 if(fType == OGG) {
-					qDebug("File is laoding Ogg");
 					result = ov_read(&oggFile, array + size,
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
 				} else {
-					qDebug("File is loading wav");
+					
 					result = fread(array + size, 1, BUFFERSIZE - size, file);
 				}
 
@@ -224,5 +223,59 @@ void AudioManager::openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format)
     else {
         *format = AL_FORMAT_STEREO16;
     }
+
+}
+
+void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
+{
+      char* buf = (char *)malloc(sizeof(BUFFERSIZE));
+	  int channels, bits;
+	  fread(buf,1,12,*file);
+ 
+	  fread(buf,1,8,*file);
+	  if(buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ') {
+		  qCritical("No FMT header");
+		  return;
+	  }
+
+	  fread(buf, 1, 2, *file);
+	  if(buf[1] != 0 || buf[0] != 1) {
+		  qCritical("Not PCM");
+		  return;
+	  }
+
+	  fread(buf, 1, 2, *file);
+	  channels  = buf[1]<<8;
+	  channels |= buf[0];
+
+	  fread(buf, 1, 4, *file);
+	  *frequency = *((unsigned int *)buf);
+
+	  fread(buf, 1, 6, *file);
+
+	  fread(buf, 1, 2, *file);
+	  bits  = buf[1]<<8;
+	  bits |= buf[0];
+
+	  if(bits == 8)
+	  {
+		  if(channels == 1)
+			  *format = AL_FORMAT_MONO8;
+		  else if(channels == 2)
+			  *format = AL_FORMAT_STEREO8;
+	  }
+	  else if(bits == 16)
+	  {
+		  if(channels == 1)
+			  *format = AL_FORMAT_MONO16;
+		  else if(channels == 2)
+			  *format = AL_FORMAT_STEREO16;
+	  }
+
+	  fread(buf, 1, 8, *file);
+	  if(buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a') {
+		  qCritical("Not 'data'");
+		  return;
+	  }
 
 }

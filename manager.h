@@ -79,6 +79,7 @@ private:
     void streamFile(QString filename);
 
 	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
+	void openWav(FILE **file, ALenum *format, ALuint *frequency);
 
 	static void toggleStop() {
 		mutex_.lock();
