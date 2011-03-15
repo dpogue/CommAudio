@@ -3,7 +3,8 @@
 
 
 AudioManager* AudioManager::instance_ = NULL;
-bool AudioManager::pause_ = true;
+bool AudioManager::pause_ = false;
+bool AudioManager::stop_ = false;
 QMutex AudioManager::mutex_;
 
 AudioManager::AudioManager()
@@ -33,6 +34,9 @@ void AudioManager::startup()
 
 void AudioManager::playMusic(QString filename)
 {
+	pause_ = false;
+    stop_ = true;
+    alSleep(0.1f);
     QFuture<void> future =
         QtConcurrent::run(this, &AudioManager::streamOgg, filename);
     return;
@@ -79,7 +83,8 @@ void AudioManager::streamOgg(QString filename)
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
     /*set the Gain for Music or Sfx*/
-    alSourcef(source, AL_GAIN, .9);
+    alSourcef(source, AL_GAIN, musicGain_);
+	stop_ = false;
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamOgg(): Cannot open " << filename << " for reading...";
@@ -124,6 +129,14 @@ void AudioManager::streamOgg(QString filename)
             }
         }
 
+		if(stop_ == true) {
+			break;				
+		}
+
+		while(pause_ == true && !checkError()) {
+			alSleep(0.2f);				
+		}
+
         if (buffersAvailable > 0) {
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
@@ -157,13 +170,10 @@ void AudioManager::streamOgg(QString filename)
                 alSourcePlay(source);
                 play = AL_FALSE;
             }
+		
         } else {
             alSleep(0.1f);
         }
-
-        while(pause_ == true) { 
-			alSleep(0.25f);
-		}
 
         /* result == 0 when file is completely read */
     } while (result > 0 && !checkError());
