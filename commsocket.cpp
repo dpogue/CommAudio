@@ -7,7 +7,6 @@ CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
 {
 	prot = protocol;
 	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port);
-    writeBuffer = QString("");
 }
 
 bool CommSocket::listenForConn()
@@ -128,7 +127,7 @@ bool CommSocket::read()
 			int s = WSAGetLastError();
 			if(s == WSAEWOULDBLOCK)
 			{
-				readBuffer = readBuffer.fromAscii(buffer);
+                readBuffer.append(buffer);
 				return true;
 			}
 			else
@@ -138,22 +137,22 @@ bool CommSocket::read()
 		}
 		bytesToRead -= bytesRead;
 	}
-	readBuffer = readBuffer.fromAscii(buffer);
+    readBuffer.append(buffer);
 	return true;
 }
 bool CommSocket::write()
 {
-	QString buffer;
+	QByteArray buffer;
 	int bytesSent = 0;
-	qStrCpy(buffer,writeBuffer,BUFSIZE);
+	qBinCpy(buffer,writeBuffer,BUFSIZE);
 	
 	while(!writeBuffer.isEmpty())
 	{
 		if(prot == TCP){
-			bytesSent = send(sock,buffer.toAscii().data(),buffer.size(),0);
+			bytesSent = send(sock,buffer.data(),buffer.size(),0);
 		}
 		else{
-			bytesSent = sendto(sock,buffer.toAscii().data(),buffer.size(),0,(SOCKADDR *)&server,
+			bytesSent = sendto(sock,buffer.data(),buffer.size(),0,(SOCKADDR *)&server,
 				sizeof(server));
 		}
 
@@ -167,25 +166,22 @@ bool CommSocket::write()
 			return true;
 		}
 		writeBuffer = writeBuffer.right(writeBuffer.size()-buffer.size());
-		qStrCpy(buffer,writeBuffer,BUFSIZE);
+		qBinCpy(buffer,writeBuffer,BUFSIZE);
 	}
 	emit socketWrite();
 	return true;
 }
-bool CommSocket::setWriteBuffer(QString data)
+bool CommSocket::setWriteBuffer(QByteArray data)
 {
-	if(data == NULL)
-		return true;
 	if(writeBuffer.isEmpty()){
 		writeBuffer = data;
 		write();
 		return true;
-	}
-	else{
+	} else {
 		return false;
 	}
 }
-bool CommSocket::qStrCpy(QString& dest,QString& src,int size)
+bool CommSocket::qBinCpy(QByteArray& dest,QByteArray& src,int size)
 {
 	if(src.isNull()){
 		return false;
@@ -196,7 +192,13 @@ bool CommSocket::qStrCpy(QString& dest,QString& src,int size)
 	}
 	return true;
 }
-QString CommSocket::getReadBuffer()
+
+QByteArray CommSocket::getReadBuffer()
 {
 	return readBuffer;
+}
+
+void CommSocket::closeSocket()
+{
+    closesocket(sock);
 }

@@ -16,10 +16,13 @@ public:
 private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
+
 	CommSocket* testing;
     
     /** The state of the current song (stopped, playing, or paused). */
     int playingState;
+
+    bool playing;
 
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
@@ -92,6 +95,7 @@ public slots:
     void onMulticastStateChanged(int state);
 
 	void onCtlWrite();
+    void onCtlAccept();
 
     /**
      * Provides a notice that there is data available to be read on the control channel socket.

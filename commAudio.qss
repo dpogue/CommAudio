@@ -1,8 +1,9 @@
 QLabel#connectErrorLabel { 
-	color: red
+	color: red;
 }
 
-QFrame {
-	border-width: 1px
-	border-style: solid
+QFrame#nowPlayingFrame {
+	border-width: 1px;
+	border-style: solid;
+	border-color: black;
 }

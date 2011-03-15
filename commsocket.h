@@ -12,11 +12,11 @@ private:
 	SOCKET createSocket(HWND hwnd,QString host,int mode,int port);
 	bool read();
 	bool write();
-	bool qStrCpy(QString& dest,QString& src,int size);
+	bool qBinCpy(QByteArray& dest,QByteArray& src,int size);
     SOCKET sock;
 	sockaddr_in server;
-	QString readBuffer;
-	QString writeBuffer;
+	QByteArray readBuffer;
+	QByteArray writeBuffer;
 	int prot;
 	
     
@@ -24,8 +24,10 @@ public:
     CommSocket(QString host, int port,int protocol);
 	bool connectToServ();
 	bool listenForConn();
-	bool setWriteBuffer(QString data);
-    QString getReadBuffer();
+	bool setWriteBuffer(QByteArray data);
+    QByteArray getReadBuffer();
+    void closeSocket();
+
 protected:
     virtual bool winEvent(MSG* message, long* result);
 
