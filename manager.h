@@ -43,7 +43,7 @@ private:
     /**
      * The volume/gain of the background music.
      */
-    static int musicGain_;
+    static float musicGain_;
 
     /**
      * Whether the AudioManager has been initialized.
@@ -114,7 +114,7 @@ public:
 		mutex_.unlock();
 	}
 
-	static void setGain(double vol) {
+	static void setGain(float vol) {
 		mutex_.lock();
 		musicGain_ = vol;
 		mutex_.unlock();

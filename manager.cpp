@@ -5,7 +5,7 @@
 AudioManager* AudioManager::instance_ = NULL;
 bool AudioManager::pause_ = false;
 bool AudioManager::stop_ = false;
-int AudioManager::musicGain_ = 0.9;
+float AudioManager::musicGain_ = 0.9;
 QMutex AudioManager::mutex_;
 
 AudioManager::AudioManager()
@@ -174,7 +174,7 @@ void AudioManager::streamFile(QString filename)
             alSleep(0.05f);
         }
 
-		alSourcef(source, AL_GAIN, 0.9);
+		alSourcef(source, AL_GAIN, musicGain_);
 
 		/* result == 0 when file is completely read */
     } while (result > 0 && !checkCondition() && !stop_);
@@ -235,12 +235,14 @@ void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 	  fread(buf,1,8,*file);
 	  if(buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ') {
 		  qCritical("No FMT header");
+		  alExit();
 		  return;
 	  }
 
 	  fread(buf, 1, 2, *file);
 	  if(buf[1] != 0 || buf[0] != 1) {
 		  qCritical("Not PCM");
+		  alExit();
 		  return;
 	  }
 
@@ -275,7 +277,7 @@ void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 	  fread(buf, 1, 8, *file);
 	  if(buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a') {
 		  qCritical("Not 'data'");
-		  return;
+		  alExit();
 	  }
 
 }
