@@ -4,7 +4,7 @@ MusicLibrary::MusicLibrary() {
 }
 
 MusicLibrary::~MusicLibrary() {
-    // delete list
+    // delete list contents
 }
 
 void MusicLibrary::addFolder(QString path) {
@@ -17,5 +17,11 @@ void MusicLibrary::addFolder(QString path) {
 }
 
 void MusicLibrary::addSongs(QDir* directory) {
-    //
+    QStringList newSongs = directory->entryList();
+    
+    newSongs.sort();
+    while (!newSongs.isEmpty()) {
+        QString fileName = newSongs.takeFirst();
+        songs.insert(fileName, fileName);
+    }
 }

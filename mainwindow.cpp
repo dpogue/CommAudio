@@ -1,16 +1,20 @@
 #include "mainwindow.h"
 #include <WinSock2.h>
 #include <qdir.h>
-#include "stylesheet.h"
+#include "manager.h"
 #include "defines.h"
+#include "stylesheet.h"
+
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags)
+	: QMainWindow(parent, flags), ctlSock(NULL)
 {
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
     connect(ui.playPushButton, SIGNAL(clicked()), 
             this, SLOT(onPlayClicked()));
+    connect(ui.stopPushButton, SIGNAL(clicked()), 
+            this, SLOT(onStopClicked()));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -23,28 +27,52 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
+    playingState = STOPPED;
 
     //TODO: move to settings
-    QDir music("music");
-    if (!music.exists()) {
-        music.mkdir("music");
+    if(!QDir("music").exists()) {
+        QDir().mkdir("music");
     }
     userSongs.addFolder("music/");
 }
 
-CommAudio::~CommAudio() { }
+CommAudio::~CommAudio() { 
+    AudioManager::instance()->shutdown();
+}
 
 void CommAudio::onPlayClicked() {
-    if (playing) {
-        playing = false;
-        ui.playPushButton->setIcon(QIcon("img/play.png"));
-        //terrysGainFunction(0);
-    } else {
-        playing = true;
-        ui.playPushButton->setIcon(QIcon("img/pause.png"));
-        //QString fileName = "hard code file name here for now"
-        //terrysPlayFunction(fileName);
+
+    QString fileName = "music/3.ogg";
+    
+    switch (playingState) {
+
+        case STOPPED:
+            AudioManager::instance()->playMusic(fileName);
+            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
+            playingState = PLAYING;
+            break;
+
+        case PLAYING:
+            AudioManager::instance()->togglePause();
+            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+            playingState = PAUSED;
+            break;
+
+        case PAUSED:
+            AudioManager::instance()->togglePause();
+            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
+            playingState = PLAYING;
+            break;
     }
+}
+
+void CommAudio::onStopClicked() {
+    
+    if (playingState == PLAYING) {
+        AudioManager::instance()->togglePause();
+        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+    }
+    playingState = STOPPED;
 }
 
 void CommAudio::onConnectClicked() {
@@ -79,10 +107,35 @@ void CommAudio::onConnectClicked() {
 }
 
 void CommAudio::onStartServerClicked() {
-    qDebug("onStartServer()");
-    // startlisteningforconnections(multicastServer)
+    unsigned int port = 0;
+    bool validPort = false;
 
+    // TODO: disable gui components
 
+    port = ui.portLineEdit->text().toUInt(&validPort);
+    if (!validPort || port < 1024 || port > 65535) {
+        ui.connectErrorLabel->
+                setText("The port number must be between 1024 and 65535");
+        ui.portLineEdit->selectAll();
+        return;
+    }
+
+    disconnect(ui.startServerPushButton, SIGNAL(clicked()),
+                this, SLOT(onStartServerClicked()));
+
+    ui.connectPushButton->setDisabled(true);
+    ui.startServerPushButton->setText("Stop Server");
+
+    if (ctlSock != NULL) {
+        ctlSock->closeSocket();
+        delete ctlSock;
+    }
+
+    ctlSock = new CommSocket("", port, TCP);
+    connect(ctlSock, SIGNAL(socketAccepted()), this, SLOT(onCtlAccept()));
+    if (!ctlSock->listenForConn()) {
+        qDebug("Something went wrong trying to listen...");
+    }
 }
 
 void CommAudio::onChatPressed() {
@@ -98,10 +151,16 @@ void CommAudio::onMulticastStateChanged(int state) {
 void CommAudio::onCtlReadReady() {
     qDebug("Got something to read");
 	
-	qDebug(ctlSock->getReadBuffer().toAscii().data());
+    QByteArray data = ctlSock->getReadBuffer();
+
+    qDebug(data.data());
 }
 
 void CommAudio::onCtlWrite(){
 	qDebug("Got something to write");
-	ctlSock->setWriteBuffer("udp");
+	//ctlSock->setWriteBuffer("udp");
+}
+
+void CommAudio::onCtlAccept() {
+    qDebug("Accepted a socket");
 }

@@ -14,7 +14,7 @@
 #include <sys/types.h>
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*32)
+#define BUFFERSIZE (1024*16)
 
 
 class AudioManager : public QObject {
@@ -30,6 +30,9 @@ private:
     static AudioManager* instance_;
 
     static QMutex mutex_;
+
+    static bool pause_;
+    static bool stop_;	
 
     /**
      * The volume/gain of the background music.
@@ -69,6 +72,12 @@ private:
      */
     void streamOgg(QString filename);
 
+	static void toggleStop() {
+		mutex_.lock();
+		stop_ = !stop_;
+		mutex_.unlock();
+	}
+
 public:
 
     /**
@@ -89,6 +98,12 @@ public:
 
         return instance_;
     }
+
+	static void togglePause() {
+		mutex_.lock();
+		pause_ = !pause_;
+		mutex_.unlock();
+	}	
 
     /**
      * Destroy the OpenAL context and try to clean up any resources.
