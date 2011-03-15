@@ -29,6 +29,12 @@ private:
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary userSongs;
 
+    /** True if the chat button should toggle chat. */
+    bool stickyChat;
+
+    /** True if currently chatting. */
+    bool chatting;
+
     /** The open TCP socket either for the control channel. */
     CommSocket* ctlSock;
 

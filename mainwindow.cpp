@@ -25,6 +25,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
+    chatting = false;
+    stickyChat = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -101,10 +103,23 @@ void CommAudio::onStartServerClicked() {
 }
 
 void CommAudio::onChatPressed() {
+    if (!stickyChat) {
+        chatting = true;
+        ui.chatPushButton->setIcon(QIcon(ICON_CHATTING));
+        return;
+    }
+
+    chatting = !chatting;
+    QString icon = (chatting) ? ICON_CHATTING : ICON_CHAT;
+    ui.chatPushButton->setIcon(QIcon(icon));
 }
 
 void CommAudio::onChatReleased() {
-}
+    if (!stickyChat) {
+        chatting = false;
+        ui.chatPushButton->setIcon(QIcon(ICON_CHAT));
+    }
+ }
 
 void CommAudio::onMulticastStateChanged(int state) {
     multicastServer = ui.multicastCheckBox->isChecked();
