@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>607</height>
+    <width>417</width>
+    <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QFrame" name="nowPlayingFrame">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>60</x>
       <y>10</y>
-      <width>211</width>
-      <height>101</height>
+      <width>301</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>86</x>
-      <y>360</y>
+      <y>380</y>
       <width>271</width>
       <height>111</height>
      </rect>
@@ -49,6 +49,19 @@
      <attribute name="title">
       <string>Your Songs</string>
      </attribute>
+     <widget class="QProgressBar" name="downloadProgressBar">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>50</y>
+        <width>118</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="value">
+       <number>24</number>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="peerTab">
      <attribute name="title">
@@ -65,7 +78,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>120</y>
+      <y>100</y>
       <width>141</width>
       <height>71</height>
      </rect>
@@ -87,24 +100,11 @@
      </size>
     </property>
    </widget>
-   <widget class="QProgressBar" name="downloadProgressBar">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>480</y>
-      <width>118</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>190</y>
+      <y>220</y>
       <width>261</width>
       <height>151</height>
      </rect>
@@ -232,27 +232,116 @@
    <widget class="QPushButton" name="chatPushButton">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>530</y>
-      <width>75</width>
-      <height>23</height>
+      <x>150</x>
+      <y>500</y>
+      <width>111</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="text">
-     <string>Chat</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>img/chat.png</normaloff>img/chat.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>48</width>
+      <height>48</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="stopPushButton">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>140</y>
-      <width>75</width>
-      <height>23</height>
+      <x>190</x>
+      <y>180</y>
+      <width>51</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Stop</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>img/stop.png</normaloff>img/stop.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="settingsPushButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>img/settings.png</normaloff>img/settings.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="previousPushButton">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>120</y>
+      <width>75</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>img/previous.png</normaloff>img/previous.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nextPushButton">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>120</y>
+      <width>75</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>img/next.png</normaloff>img/next.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
    </widget>
   </widget>
@@ -270,7 +359,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>412</width>
+     <width>417</width>
      <height>20</height>
     </rect>
    </property>

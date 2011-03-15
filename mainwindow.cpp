@@ -4,17 +4,17 @@
 #include "manager.h"
 #include "defines.h"
 #include "stylesheet.h"
+#include <qlayout.h>
 CommSocket* test;
+
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), ctlSock(NULL) {
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
-    connect(ui.playPushButton, SIGNAL(clicked()), 
-            this, SLOT(onPlayClicked()));
-    connect(ui.stopPushButton, SIGNAL(clicked()), 
-            this, SLOT(onStopClicked()));
+    transport = new Transport(&ui);
+
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -27,52 +27,23 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
-    playingState = STOPPED;
+    chatting = false;
+    stickyChat = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
         QDir().mkdir("music");
     }
-    userSongs.addFolder("music/");
+
+    QBoxLayout* hl = new QBoxLayout(QBoxLayout::TopToBottom, ui.localTab);
+    hl->setMargin(0);
+    userSongs = new MusicLibrary();
+    userSongs->addFolder("music/");
+    hl->addWidget(userSongs);
 }
 
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
-}
-
-void CommAudio::onPlayClicked() {
-
-    QString fileName = "music/3.ogg";
-    
-    switch (playingState) {
-
-        case STOPPED:
-            AudioManager::instance()->playMusic(fileName);
-            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-            playingState = PLAYING;
-            break;
-
-        case PLAYING:
-            AudioManager::instance()->togglePause();
-            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
-            playingState = PAUSED;
-            break;
-
-        case PAUSED:
-            AudioManager::instance()->togglePause();
-            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-            playingState = PLAYING;
-            break;
-    }
-}
-
-void CommAudio::onStopClicked() {
-    
-    if (playingState == PLAYING) {
-        AudioManager::instance()->togglePause();
-        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
-    }
-    playingState = STOPPED;
 }
 
 void CommAudio::onConnectClicked() {
@@ -139,10 +110,23 @@ void CommAudio::onStartServerClicked() {
 }
 
 void CommAudio::onChatPressed() {
+    if (!stickyChat) {
+        chatting = true;
+        ui.chatPushButton->setIcon(QIcon(ICON_CHATTING));
+        return;
+    }
+
+    chatting = !chatting;
+    QString icon = (chatting) ? ICON_CHATTING : ICON_CHAT;
+    ui.chatPushButton->setIcon(QIcon(icon));
 }
 
 void CommAudio::onChatReleased() {
-}
+    if (!stickyChat) {
+        chatting = false;
+        ui.chatPushButton->setIcon(QIcon(ICON_CHAT));
+    }
+ }
 
 void CommAudio::onMulticastStateChanged(int state) {
     multicastServer = ui.multicastCheckBox->isChecked();

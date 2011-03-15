@@ -5,6 +5,7 @@
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
 #include "commsocket.h"
+#include "transport.h"
 
 class CommAudio : public QMainWindow {
 	Q_OBJECT
@@ -17,18 +18,22 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 
+    /** Transport controls such as play, pause, and stop. */
+    Transport* transport;
+
 	CommSocket* testing;
     
-    /** The state of the current song (stopped, playing, or paused). */
-    int playingState;
-
-    bool playing;
-
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
 
     /** Contains the songs that are on the user's local drive. */
-    MusicLibrary userSongs;
+    MusicLibrary* userSongs;
+
+    /** True if the chat button should toggle chat. */
+    bool stickyChat;
+
+    /** True if currently chatting. */
+    bool chatting;
 
     /** The open TCP socket either for the control channel. */
     CommSocket* ctlSock;
@@ -37,26 +42,6 @@ private:
     CommSocket* strSock;
 
 public slots:
-    /**
-     * Plays the song appropriate to the state of the program (selected song if
-     * in regular mode, whatever's being transmitted from the peer is a
-     * multicast server).
-     *
-     * @author Dean Morin
-     */
-    void onPlayClicked();
-
-    /**
-     * Stops the currently playing song. 
-     *
-     * @author Dean Morin
-     */
-    void onStopClicked();
-    
-    /**
-     * Stops
-    void onStopClicked();
-
     /**
      * Attempts to connect to the server specified in the server group box. 
      *
