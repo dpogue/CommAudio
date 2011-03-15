@@ -101,7 +101,7 @@ void AudioManager::streamFile(QString filename)
 		return;
     }
 
-	if(filename.contains(".ogg")) {	
+	if(filename.contains(".ogg") || filename.contains(".oga")) {	
 		openOgg(file, &oggFile, &format);
 		fType = OGG;
 	} else {
