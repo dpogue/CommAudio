@@ -89,7 +89,6 @@ void AudioManager::streamFile(QString filename)
     vorbis_info* vorbisInfo;
 	fileType fType;
 
-
     /* Created the source and Buffers */
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
@@ -108,10 +107,8 @@ void AudioManager::streamFile(QString filename)
 		openOgg(file, &oggFile, &format);
 		fType = OGG;
 	} else {
-		qDebug("%p",file);
 		openWav(&file,&format,&freq);
 		fType = WAV;
-		qDebug("%p",file);
 	}
 
 
@@ -256,13 +253,8 @@ void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 	  channels |= buf[0];
 
 	  fread(buf, 1, 4, *file);
-	  *frequency  = buf[3]<<24;
-	  *frequency |= buf[2]<16;
-	  *frequency |= buf[1]<8;
-	  *frequency |= buf[0];
+	  *frequency = *((unsigned int *)buf);
 
-	  qDebug("freq %08x",*frequency);
-	  
 	  fread(buf, 1, 6, *file);
 
 	  fread(buf, 1, 2, *file);
