@@ -16,8 +16,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     transport = new Transport(&ui, this);
 
-    connect(ui.volumeSlider, SIGNAL(sliderMoved()),
-            this, SLOT(onVolumeMoved()));
+    connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
+            this, SLOT(onVolumeMoved(int)));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -32,6 +32,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     multicastServer = ui.multicastCheckBox->isChecked();
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
+    ui.volumeSlider->setValue(50);
+    onVolumeMoved(50);
     chatting = false;
     stickyChat = true;
 
@@ -77,9 +79,9 @@ void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
 }
 
 void CommAudio::onVolumeMoved(int volume) {
-    //AudioManager::setGain(volume/100);
+    AudioManager::setGain(volume / 100.0);
     qDebug("H");
-    qDebug("gain: %f", volume/100); 
+    qDebug("gain: %f", volume / 100.0); 
 }
 
 void CommAudio::onConnectClicked() {

@@ -26,7 +26,6 @@ QFrame#nowPlayingFrame {
 	background: white;
 }
 
-
 </string>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -211,6 +210,8 @@ QFrame#nowPlayingFrame {
     <zorder>connectErrorLabel</zorder>
     <zorder>startServerPushButton</zorder>
     <zorder>playPushButton</zorder>
+    <zorder>gridLayoutWidget</zorder>
+    <zorder>stopPushButton</zorder>
    </widget>
    <widget class="QPushButton" name="chatPushButton">
     <property name="geometry">
@@ -263,7 +264,7 @@ QFrame#nowPlayingFrame {
      <rect>
       <x>-1</x>
       <y>-1</y>
-      <width>441</width>
+      <width>482</width>
       <height>271</height>
      </rect>
     </property>
@@ -294,6 +295,7 @@ QFrame#nowPlayingFrame {
           <enum>QFrame::Raised</enum>
          </property>
          <zorder>gridLayoutWidget</zorder>
+         <zorder>gridLayoutWidget</zorder>
         </widget>
        </item>
        <item>
@@ -316,22 +318,35 @@ QFrame#nowPlayingFrame {
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="previousPushButton">
-         <property name="text">
-          <string/>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>img/previous.png</normaloff>img/previous.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="stopPushButton">
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>img/stop.png</normaloff>img/stop.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="playPushButton">
@@ -376,40 +391,33 @@ QFrame#nowPlayingFrame {
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="bottomMargin">
-          <number>0</number>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="previousPushButton">
+         <property name="text">
+          <string/>
          </property>
-         <item>
-          <widget class="QPushButton" name="stopPushButton">
-           <property name="maximumSize">
-            <size>
-             <width>80</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>img/stop.png</normaloff>img/stop.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/previous.png</normaloff>img/previous.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
     </layout>
    </widget>
+   <zorder>fileTabWidget</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>chatPushButton</zorder>
+   <zorder>settingsPushButton</zorder>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>stopPushButton</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
