@@ -15,7 +15,6 @@ public:
 private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
-	CommSocket* testing;
 
     bool playing;
 
@@ -83,6 +82,7 @@ public slots:
     void onMulticastStateChanged(int state);
 
 	void onCtlWrite();
+    void onCtlAccept();
 
     /**
      * Provides a notice that there is data available to be read on the control channel socket.

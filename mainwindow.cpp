@@ -5,7 +5,7 @@
 #include "defines.h"
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags)
+	: QMainWindow(parent, flags), ctlSock(NULL)
 {
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
@@ -80,10 +80,35 @@ void CommAudio::onConnectClicked() {
 }
 
 void CommAudio::onStartServerClicked() {
+    unsigned int port = 0;
+    bool validPort = false;
+
     qDebug("onStartServer()");
-    // startlisteningforconnections(multicastServer)
 
+    port = ui.portLineEdit->text().toUInt(&validPort);
+    if (!validPort || port < 1024 || port > 65535) {
+        ui.connectErrorLabel->
+                setText("The port number must be between 1024 and 65535");
+        ui.portLineEdit->selectAll();
+        return;
+    }
 
+    disconnect(ui.startServerPushButton, SIGNAL(clicked()),
+                this, SLOT(onStartServerClicked()));
+
+    ui.connectPushButton->setDisabled(true);
+    ui.startServerPushButton->setText("Stop Server");
+
+    if (ctlSock != NULL) {
+        ctlSock->closeSocket();
+        delete ctlSock;
+    }
+
+    ctlSock = new CommSocket("", port, TCP);
+    connect(ctlSock, SIGNAL(socketAccepted()), this, SLOT(onCtlAccept()));
+    if (!ctlSock->listenForConn()) {
+        qDebug("Something went wrong trying to listen...");
+    }
 }
 
 void CommAudio::onChatPressed() {
@@ -107,4 +132,8 @@ void CommAudio::onCtlReadReady() {
 void CommAudio::onCtlWrite(){
 	qDebug("Got something to write");
 	//ctlSock->setWriteBuffer("udp");
+}
+
+void CommAudio::onCtlAccept() {
+    qDebug("Accepted a socket");
 }

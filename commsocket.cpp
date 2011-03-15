@@ -197,3 +197,8 @@ QByteArray CommSocket::getReadBuffer()
 {
 	return readBuffer;
 }
+
+void CommSocket::closeSocket()
+{
+    closesocket(sock);
+}

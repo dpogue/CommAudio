@@ -26,6 +26,8 @@ public:
 	bool listenForConn();
 	bool setWriteBuffer(QByteArray data);
     QByteArray getReadBuffer();
+    void closeSocket();
+
 protected:
     virtual bool winEvent(MSG* message, long* result);
 
