@@ -5,12 +5,12 @@
 AudioManager* AudioManager::instance_ = NULL;
 bool AudioManager::pause_ = false;
 bool AudioManager::stop_ = false;
+int AudioManager::musicGain_ = 0.9;
 QMutex AudioManager::mutex_;
 
 AudioManager::AudioManager()
 {
     AudioManager::startup();
-    musicGain_ = .9;
 }
 
 AudioManager::~AudioManager()
@@ -38,14 +38,22 @@ void AudioManager::playMusic(QString filename)
 	pause_ = false;
     alSleep(0.25f); //HACK!!
     QFuture<void> future =
-        QtConcurrent::run(this, &AudioManager::streamOgg, filename);
+        QtConcurrent::run(this, &AudioManager::streamFile, filename);
     return;
 }
 
-bool AudioManager::checkError()
+bool AudioManager::checkCondition()
 {
     ALuint error = alGetError();
     const ALchar* err = alGetString(error);
+
+	while(pause_ == true) {
+		alSleep(0.1f);			
+	}
+
+	if(stop_ == true) {
+		return true;				
+	}
 
     if (inited_ == false) {
         return true;
@@ -59,7 +67,7 @@ bool AudioManager::checkError()
     return false;
 }
 
-void AudioManager::streamOgg(QString filename)
+void AudioManager::streamFile(QString filename)
 {
     FILE* file;
     char array[BUFFERSIZE];
@@ -79,35 +87,28 @@ void AudioManager::streamOgg(QString filename)
     ALsizei freq = 44100;
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
+
+
     /* Created the source and Buffers */
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
     /*set the Gain for Music or Sfx*/
-    alSourcef(source, AL_GAIN, 0.9);
+    
+	stop_=false;
+	fileType fType = WAV;
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
-        qCritical() << "AudioManager::streamOgg(): Cannot open " << filename << " for reading...";
+        qCritical() << "AudioManager::streamFile(): Cannot open " << filename << " for reading...";
+		qDebug("File is Wave");
         return;
     }
 
-    /* Try opening the given ogg file */
-    mutex_.lock();
-    stop_=false;
-    if (ov_open(file, &oggFile, NULL, 0) != 0) {
-        qCritical() << "AudioManager::streamOgg(): Error opening " << filename << " for decoding...";
-        return;
-    }
-    
-    mutex_.unlock();
+	if(filename.contains(".ogg")) {	
+        qDebug("File is Ogg");		
+		openOgg(file, &oggFile, &format);
+		fType = OGG;
+	}
 
-    vorbisInfo = ov_info(&oggFile, -1);
- 
-    if(vorbisInfo->channels == 1) {
-        format = AL_FORMAT_MONO16;
-    }
-    else {
-        format = AL_FORMAT_STEREO16;
-    }
 
     do {
         alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
@@ -128,21 +129,20 @@ void AudioManager::streamOgg(QString filename)
                 play = AL_TRUE;
             }
         }
-
-        while(pause_ == true && !checkError()) {
-			alSleep(0.2f);				
-		}
-
-		if(stop_ == true) {
-			break;				
-		}
          
         if (buffersAvailable > 0) {
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
             while (size < BUFFERSIZE) {
-                result = ov_read(&oggFile, array + size,
-                                 BUFFERSIZE - size, 0, 2, 1, &bitStream);
+
+                if(fType == OGG) {
+					qDebug("File is laoding Ogg");
+					result = ov_read(&oggFile, array + size,
+						BUFFERSIZE - size, 0, 2, 1, &bitStream);
+				} else {
+					qDebug("File is loading wav");
+					result = fread(array + size, 1, BUFFERSIZE - size, file);
+				}
 
                 if (result == 0) {
                     break;
@@ -151,7 +151,7 @@ void AudioManager::streamOgg(QString filename)
                 size += result;
 
                 if (result < 0) {
-                    qCritical() << "AudioManager::streamOgg(): Ogg Read Failed ";
+                    qCritical() << "AudioManager::streamFile(): Ogg Read Failed ";
                     break;
                 }
             }
@@ -172,13 +172,17 @@ void AudioManager::streamOgg(QString filename)
             }
 		
         } else {
-            alSleep(0.1f);
+            alSleep(0.05f);
         }
 
-        /* result == 0 when file is completely read */
-    } while (result > 0 && !checkError() && !stop_);
+		alSourcef(source, AL_GAIN, 0.9);
 
-    ov_clear(&oggFile);
+		/* result == 0 when file is completely read */
+    } while (result > 0 && !checkCondition() && !stop_);
+
+    if(fType == OGG) {	
+		ov_clear(&oggFile);
+	}
 
     /** Wait until sound stops playing before
      *  clearing the buffers and source
@@ -186,7 +190,7 @@ void AudioManager::streamOgg(QString filename)
     do {
         alGetSourcei(source, AL_SOURCE_STATE, &playing);
         alSleep(0.1f);
-    } while (playing != AL_STOPPED && !checkError());
+    } while (playing != AL_STOPPED && !checkCondition());
 
     alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
 
@@ -199,5 +203,26 @@ void AudioManager::streamOgg(QString filename)
     alDeleteSources(1, &source);
     alDeleteBuffers(QUEUESIZE, buffer);
     mutex_.unlock();
+
+}
+
+void AudioManager::openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format) 
+{
+
+	vorbis_info* vorbisInfo;
+	qDebug("Before opening file");
+    if (ov_open(file, oggFile, NULL, 0) != 0) {
+        qCritical() << "AudioManager::openOgg(): Error opening file for decoding...";
+        return;
+    }
+    qDebug("after opening file");
+    vorbisInfo = ov_info(oggFile, -1);
+	qDebug("file info");
+    if(vorbisInfo->channels == 1) {
+        *format = AL_FORMAT_MONO16;
+    }
+    else {
+        *format = AL_FORMAT_STEREO16;
+    }
 
 }
