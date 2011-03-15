@@ -6,14 +6,16 @@
 
 class Transport : public QObject {
     Q_OBJECT
-private:    /** The program's gui. */
+
+private:
+    /** The program's gui. */
 	Ui::CommAudioClass* ui;
 
     /** The state of the current song (stopped, playing, or paused). */
     int playingState;
 
 public:
-    Transport(Ui::CommAudioClass* gui);
+    Transport(Ui::CommAudioClass* gui, QWidget* parent = 0);
     ~Transport() { }
    
 public slots:

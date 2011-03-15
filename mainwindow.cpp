@@ -14,7 +14,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
-    transport = new Transport(&ui);
+    transport = new Transport(&ui, this);
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved()),
             this, SLOT(onVolumeMoved()));
@@ -49,6 +49,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
+
+    delete ctlSock;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
@@ -102,6 +104,9 @@ void CommAudio::onConnectClicked() {
 
     ui.connectErrorLabel->clear();
 
+    ui.connectPushButton->setDisabled(true);
+    ui.startServerPushButton->setDisabled(true);
+
     ctlSock = new CommSocket(this->ui.ipLineEdit->text(), port, 0);
     connect(ctlSock, SIGNAL(socketRead()), this, SLOT(onCtlReadReady()));
 	connect(ctlSock, SIGNAL(socketWrite()), this, SLOT(onCtlWrite()));
@@ -109,6 +114,9 @@ void CommAudio::onConnectClicked() {
     if (!ctlSock->connectToServ()) {
         qDebug("Something went wrong trying to connect...");
     }
+
+    ui.connectPushButton->setDisabled(false);
+    ui.connectPushButton->setText("Disconnect");
 }
 
 void CommAudio::onStartServerClicked() {
@@ -130,6 +138,8 @@ void CommAudio::onStartServerClicked() {
 
     ui.connectPushButton->setDisabled(true);
     ui.startServerPushButton->setText("Stop Server");
+    connect(ui.startServerPushButton, SIGNAL(clicked()),
+            this, SLOT(onStopServerClicked()));
 
     if (ctlSock != NULL) {
         ctlSock->closeSocket();
@@ -141,6 +151,24 @@ void CommAudio::onStartServerClicked() {
     if (!ctlSock->listenForConn(5)) {
         qDebug("Something went wrong trying to listen...");
     }
+}
+
+void CommAudio::onStopServerClicked() {
+    disconnect(ui.startServerPushButton, SIGNAL(clicked()),
+                this, SLOT(onStopServerClicked()));
+
+    ui.connectPushButton->setDisabled(false);
+    ui.startServerPushButton->setText("Start Server");
+    connect(ui.startServerPushButton, SIGNAL(clicked()),
+            this, SLOT(onStartServerClicked()));
+
+    if (ctlSock == NULL) {
+        return;
+    }
+
+    ctlSock->closeSocket();
+    delete ctlSock;
+    ctlSock = NULL;
 }
 
 void CommAudio::onChatPressed() {

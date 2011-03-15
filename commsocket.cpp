@@ -15,6 +15,12 @@ CommSocket::CommSocket(SOCKET socket) {
 	WSAAsyncSelect(sock, winId(), WM_SOCKET, events);
 }
 
+CommSocket::~CommSocket() {
+    if (sock != 0) {
+        closesocket(sock);
+    }
+}
+
 bool CommSocket::listenForConn(int backlog) {
 	
 	if(listen(sock,backlog) == SOCKET_ERROR) {
@@ -198,6 +204,7 @@ QByteArray CommSocket::getReadBuffer() {
 void CommSocket::closeSocket() {
     
 	closesocket(sock);
+    sock = 0;
 }
 
 bool CommSocket::acceptConn() {

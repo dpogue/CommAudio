@@ -12,9 +12,15 @@
 #include <vorbis/vorbisfile.h>
 #include <errno.h>
 #include <sys/types.h>
+#include "openal_helper.h"
 
 #define QUEUESIZE 8
 #define BUFFERSIZE (1024*16)
+
+enum fileType{ 
+OGG,
+WAV,
+};
 
 
 class AudioManager : public QObject {
@@ -37,7 +43,7 @@ private:
     /**
      * The volume/gain of the background music.
      */
-    int musicGain_;
+    static int musicGain_;
 
     /**
      * Whether the AudioManager has been initialized.
@@ -59,10 +65,10 @@ private:
      * @author Terence Stenvold
      * @return bool if True and error occured
      */
-    bool checkError();
+    bool checkCondition();
 
     /**
-     * Streams and plays an Ogg File.
+     * Streams and plays an audio File.
      *
      * This is meant to be called in it's own thread.
      *
@@ -70,7 +76,9 @@ private:
      * @param filename the path to file.
      * @param gain is a float with a default param of 1.0
      */
-    void streamOgg(QString filename);
+    void streamFile(QString filename);
+
+	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
 
 	static void toggleStop() {
 		mutex_.lock();
@@ -103,7 +111,13 @@ public:
 		mutex_.lock();
 		pause_ = !pause_;
 		mutex_.unlock();
-	}	
+	}
+
+	static void setGain(double vol) {
+		mutex_.lock();
+		musicGain_ = vol;
+		mutex_.unlock();
+	}
 
     /**
      * Destroy the OpenAL context and try to clean up any resources.

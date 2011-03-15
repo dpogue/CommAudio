@@ -24,6 +24,8 @@ private:
 public:
     CommSocket(QString host, int port,int protocol);
 	CommSocket(SOCKET socket);
+    virtual ~CommSocket();
+
 	CommSocket* getLastAcceptedSocket();
 	bool setWriteBuffer(QByteArray data);
     QByteArray getReadBuffer();

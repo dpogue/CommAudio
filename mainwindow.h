@@ -58,6 +58,37 @@ protected:
      */
     virtual void keyReleaseEvent(QKeyEvent* keyEvent);
 
+public:
+    /**
+     * Returns the currently selected song filename.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the selected song.
+     */
+    QString getSelectedSong() {
+        return userSongs->getSelectedSong();
+    }
+
+    /**
+     * Returns the next song's filename, or an empty string if there is no next song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the next song.
+     */
+    QString getNextSong() {
+        return userSongs->getNextSong();
+    }
+
+    /**
+     * Returns the previous song's filename, or an empty string if there is no previous song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the previous song.
+     */
+    QString getPrevSong() {
+        return userSongs->getPrevSong();
+    }
+
 public slots:
     /**
      * Adjusts the volume based on the volume slider.
@@ -80,6 +111,13 @@ public slots:
      * @author Dean Morin.
      */
     void onStartServerClicked();
+
+    /**
+     * Stops the server socket from listening for incoming connections.
+     *
+     * @author Darryl Pogue
+     */
+    void onStopServerClicked();
 
     /**
      * Starts transmitting voice data, or toggles the transmission on/off if
