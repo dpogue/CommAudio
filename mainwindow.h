@@ -27,7 +27,7 @@ private:
     bool multicastServer;
 
     /** Contains the songs that are on the user's local drive. */
-    MusicLibrary userSongs;
+    MusicLibrary* userSongs;
 
     /** The open TCP socket either for the control channel. */
     CommSocket* ctlSock;

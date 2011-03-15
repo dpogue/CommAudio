@@ -24,9 +24,12 @@ ipch/
 *.dll.config
 *.cache
 *.ilk
-!libvorbis.dll
-!libvorbisfile.dll
-!libogg.dll
+*.idb
+*.lib
+*.exp
+!3rdParty/*/libvorbis.*
+!3rdParty/*/libvorbisfile.*
+!3rdParty/*/libogg.*
 
 
 # Visual Studio Project stuff #

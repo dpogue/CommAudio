@@ -5,15 +5,17 @@
 #include <qmap.h>
 #include <qstring.h>
 #include <qdir.h>
+#include <qlistwidget.h>
 
-class MusicLibrary {
+class MusicLibrary : public QListWidget {
+    Q_OBJECT
 
 private:
     QList<QDir*> directories;
     QMap<QString, QString> songs;
 
 public:
-    MusicLibrary();
+    MusicLibrary(QWidget* parent = 0);
     ~MusicLibrary();
 
     void addFolder(QString path);
