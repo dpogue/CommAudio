@@ -66,6 +66,13 @@ public slots:
     void onStartServerClicked();
 
     /**
+     * Stops the server socket from listening for incoming connections.
+     *
+     * @author Darryl Pogue
+     */
+    void onStopServerClicked();
+
+    /**
      * Starts transmitting voice data, or toggles the transmission on/off if
      * "sticky" mode is enabledd.
      *
