@@ -41,6 +41,15 @@ private:
     /** The open UDP socket for streaming data. */
     CommSocket* strSock;
 
+public:
+    /**
+     * Returns the currently selected song filename.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the selected song.
+     */
+    QString getSelectedSong();
+
 public slots:
     /**
      * Attempts to connect to the server specified in the server group box. 

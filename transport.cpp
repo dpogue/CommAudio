@@ -1,9 +1,11 @@
 #include "transport.h"
 #include "defines.h"
 #include "manager.h"
+#include "mainwindow.h"
+#include <qmessagebox.h>
 
-Transport::Transport(Ui::CommAudioClass* gui)
-    : ui(gui)
+Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
+    : QObject(parent), ui(gui)
 {   
     connect(ui->playPushButton, SIGNAL(clicked()), 
             this, SLOT(onPlayClicked()));
@@ -19,7 +21,11 @@ Transport::Transport(Ui::CommAudioClass* gui)
 
 void Transport::onPlayClicked() {
 
-    QString fileName = "music/3.ogg";
+    QString fileName = ((CommAudio*)parent())->getSelectedSong();
+    if (fileName.isEmpty()) {
+        QMessageBox(QMessageBox::Warning, "No Music Files",
+            "There were no music files found. Try adding a folder which contains audio files.").exec();
+    }
     
     switch (playingState) {
 
