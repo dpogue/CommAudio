@@ -47,6 +47,7 @@ ipch/
 *.flac
 *.aif
 *.aiff
+*.oga
 
 # Temp Image Files #
 *.png
