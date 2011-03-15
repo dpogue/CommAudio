@@ -98,12 +98,10 @@ void AudioManager::streamFile(QString filename)
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamFile(): Cannot open " << filename << " for reading...";
-		qDebug("File is Wave");
-        return;
+		return;
     }
 
 	if(filename.contains(".ogg")) {	
-        qDebug("File is Ogg");		
 		openOgg(file, &oggFile, &format);
 		fType = OGG;
 	} else {
@@ -138,12 +136,10 @@ void AudioManager::streamFile(QString filename)
             while (size < BUFFERSIZE) {
 
                 if(fType == OGG) {
-					qDebug("File is laoding Ogg");
 					result = ov_read(&oggFile, array + size,
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
 				} else {
 					
-					qDebug("File is loading wav");
 					result = fread(array + size, 1, BUFFERSIZE - size, file);
 				}
 
