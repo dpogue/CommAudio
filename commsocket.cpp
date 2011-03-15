@@ -31,20 +31,6 @@ bool CommSocket::listenForConn(int backlog) {
 	return true;
 }
 
-bool CommSocket::connectToServ()
-{
-	
-	if(WSAConnect(sock,(sockaddr*)&server,sizeof(server),NULL,NULL,NULL,NULL) == SOCKET_ERROR)
-	{
-		int s;
-		if((s = WSAGetLastError()) != WSAEWOULDBLOCK)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
 bool CommSocket::winEvent(MSG* message, long* result) {
 	switch(message->message) {
     
@@ -71,6 +57,7 @@ bool CommSocket::winEvent(MSG* message, long* result) {
 				}
     			break;
     		case FD_CLOSE:
+				closesocket(sock);
     			emit socketClose();
     			break;
         }
@@ -207,9 +194,31 @@ void CommSocket::closeSocket() {
     sock = 0;
 }
 
+bool CommSocket::connectToServ(LPWSABUF dataToSend,LPWSABUF lpCalleeData) {
+	
+	if(WSAConnect(sock,(sockaddr*)&server,sizeof(server),NULL,NULL,NULL,NULL) == SOCKET_ERROR)
+	{
+		int s;
+		if((s = WSAGetLastError()) != WSAEWOULDBLOCK) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int CALLBACK CommSocket::acceptCondition(LPWSABUF lpCallerId,LPWSABUF lpCallerData,LPQOS lpSQOS,LPQOS lpGQOS,
+		LPWSABUF lpCalleeId,LPWSABUF lpCalleeData,GROUP *g,DWORD* dwCallbackData) {
+			
+	if(lpCalleeData->buf[0] != 1) {
+		return false;
+	}
+	return true;
+}
+
 bool CommSocket::acceptConn() {
+
 	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
-	lastAccepted = WSAAccept(sock,NULL,NULL,NULL,NULL);
+	lastAccepted = WSAAccept(sock,NULL,NULL,((LPCONDITIONPROC)&acceptCondition),NULL);
 	
 	if(lastAccepted == INVALID_SOCKET) {
 		return false;

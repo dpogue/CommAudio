@@ -4,7 +4,6 @@
 #include <WinSock2.h>
 #include <Windows.h>
 
-
 class CommSocket : public QWidget {
 	
 	Q_OBJECT
@@ -13,9 +12,12 @@ private:
 	bool read();
 	bool write();
 	bool qBinCpy(QByteArray& dest,QByteArray& src,int size);
+	bool acceptConn();
     SOCKET sock;
 	SOCKET lastAccepted;
-	bool acceptConn();
+	//Don't ask me, talk to microsoft
+	static int CALLBACK acceptCondition(LPWSABUF lpCallerId,LPWSABUF lpCallerData,LPQOS lpSQOS,LPQOS lpGQOS,
+		LPWSABUF lpCalleeId,LPWSABUF lpCalleeData,GROUP *g,DWORD* dwCallbackData);
 	sockaddr_in server;
 	QByteArray readBuffer;
 	QByteArray writeBuffer;
@@ -25,11 +27,10 @@ public:
     CommSocket(QString host, int port,int protocol);
 	CommSocket(SOCKET socket);
     virtual ~CommSocket();
-
 	CommSocket* getLastAcceptedSocket();
 	bool setWriteBuffer(QByteArray data);
     QByteArray getReadBuffer();
-	bool connectToServ();
+	bool connectToServ(LPWSABUF dataToSend,LPWSABUF dataFromServ);
 	bool listenForConn(int backlog);
     void closeSocket();
 

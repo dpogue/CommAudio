@@ -35,12 +35,6 @@ private:
     /** True if currently chatting. */
     bool chatting;
 
-    /** The open TCP socket either for the control channel. */
-    CommSocket* ctlSock;
-
-    /** The open UDP socket for streaming data. */
-    CommSocket* strSock;
-
 public:
     /**
      * Returns the currently selected song filename.
@@ -94,16 +88,6 @@ public slots:
      * @param state The state of multicastCheckBox.
      */
     void onMulticastStateChanged(int state);
-
-	void onCtlWrite();
-    void onCtlAccept();
-
-    /**
-     * Provides a notice that there is data available to be read on the control channel socket.
-     *
-     * @author Darryl Pogue
-     */
-    void onCtlReadReady();
 };
 
 #endif // MAINWINDOW_H

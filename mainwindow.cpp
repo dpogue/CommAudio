@@ -5,10 +5,11 @@
 #include "defines.h"
 #include "stylesheet.h"
 #include <qlayout.h>
+#include "connection.h"
 CommSocket* test;
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags), ctlSock(NULL) {
+	: QMainWindow(parent, flags) {
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
@@ -43,9 +44,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 }
 
 CommAudio::~CommAudio() { 
-    AudioManager::instance()->shutdown();
 
-    delete ctlSock;
+    AudioManager::instance()->shutdown();    
 }
 
 QString CommAudio::getSelectedSong() {
@@ -77,16 +77,9 @@ void CommAudio::onConnectClicked() {
     ui.connectPushButton->setDisabled(true);
     ui.startServerPushButton->setDisabled(true);
 
-    ctlSock = new CommSocket(this->ui.ipLineEdit->text(), port, 0);
-    connect(ctlSock, SIGNAL(socketRead()), this, SLOT(onCtlReadReady()));
-	connect(ctlSock, SIGNAL(socketWrite()), this, SLOT(onCtlWrite()));
-
-    if (!ctlSock->connectToServ()) {
-        qDebug("Something went wrong trying to connect...");
-    }
-
     ui.connectPushButton->setDisabled(false);
     ui.connectPushButton->setText("Disconnect");
+	Connection conn(QString::number(ip),TCP,port);
 }
 
 void CommAudio::onStartServerClicked() {
@@ -110,17 +103,7 @@ void CommAudio::onStartServerClicked() {
     ui.startServerPushButton->setText("Stop Server");
     connect(ui.startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStopServerClicked()));
-
-    if (ctlSock != NULL) {
-        ctlSock->closeSocket();
-        delete ctlSock;
-    }
-
-    ctlSock = new CommSocket("", port, TCP);
-    connect(ctlSock, SIGNAL(socketAccepted()), this, SLOT(onCtlAccept()));
-    if (!ctlSock->listenForConn(5)) {
-        qDebug("Something went wrong trying to listen...");
-    }
+	Connection conn(TCP,port);
 }
 
 void CommAudio::onStopServerClicked() {
@@ -131,14 +114,6 @@ void CommAudio::onStopServerClicked() {
     ui.startServerPushButton->setText("Start Server");
     connect(ui.startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
-
-    if (ctlSock == NULL) {
-        return;
-    }
-
-    ctlSock->closeSocket();
-    delete ctlSock;
-    ctlSock = NULL;
 }
 
 void CommAudio::onChatPressed() {
@@ -162,19 +137,4 @@ void CommAudio::onChatReleased() {
 
 void CommAudio::onMulticastStateChanged(int state) {
     multicastServer = ui.multicastCheckBox->isChecked();
-}
-
-void CommAudio::onCtlReadReady() {
-
-    qDebug("Got something to read");
-    QByteArray data = ctlSock->getReadBuffer();
-    qDebug(data.data());
-}
-
-void CommAudio::onCtlWrite() {
-	qDebug("Got something to write");
-}
-
-void CommAudio::onCtlAccept() {
-    qDebug("Accepted a socket");
 }

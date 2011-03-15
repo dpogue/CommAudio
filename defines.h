@@ -7,6 +7,7 @@
 #define CLIENT 2
 #define SERVER 3
 #define BUFSIZE 1024
+#define BACKLOG 5
 
 // images
 #define ICON_PLAY       "img/play.png"
