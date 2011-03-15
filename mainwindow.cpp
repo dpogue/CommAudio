@@ -1,5 +1,6 @@
 #include <WinSock2.h>
 #include <qdir.h>
+#include <QKeyEvent>
 #include "mainwindow.h"
 #include "manager.h"
 #include "defines.h"
@@ -28,7 +29,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     multicastServer = ui.multicastCheckBox->isChecked();
     chatting = false;
-    stickyChat = false;
+    stickyChat = true;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -44,6 +45,29 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
+}
+
+void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_Space:
+            transport->onPlayClicked();
+            return;
+        case Qt::Key_C:
+            onChatPressed();
+            return;
+        default:
+            QMainWindow::keyPressEvent(keyEvent);
+    }
+}
+
+void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_C:
+            onChatReleased();
+            return;
+        default:
+            QMainWindow::keyReleaseEvent(keyEvent);
+    }
 }
 
 void CommAudio::onConnectClicked() {

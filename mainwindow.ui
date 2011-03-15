@@ -43,17 +43,22 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="localTab">
      <attribute name="title">
-      <string>Your Songs</string>
+      <string>My Songs</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="peerTab">
+     <attribute name="title">
+      <string>Peer's Songs</string>
      </attribute>
      <widget class="QProgressBar" name="downloadProgressBar">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>50</y>
+        <x>80</x>
+        <y>60</y>
         <width>118</width>
         <height>23</height>
        </rect>
@@ -62,11 +67,6 @@
        <number>24</number>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="peerTab">
-     <attribute name="title">
-      <string>Peer's Songs</string>
-     </attribute>
     </widget>
     <widget class="QWidget" name="playlistTab">
      <attribute name="title">
