@@ -47,7 +47,7 @@ bool AudioManager::checkCondition()
     ALuint error = alGetError();
     const ALchar* err = alGetString(error);
 
-	while(pause_ == true) {
+	while(pause_ == true && inited_ == true) {
 		alSleep(0.1f);			
 	}
 
@@ -165,7 +165,7 @@ void AudioManager::streamFile(QString filename)
             */
             alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
 
-            if (queued > 0 && play) {
+            if (queued > 2 && play) {
                 alSourcePlay(source);
                 play = AL_FALSE;
             }
