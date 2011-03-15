@@ -71,7 +71,6 @@ bool CommSocket::winEvent(MSG* message, long* result)
     return false;
 }
 
-
 SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port)
 {
 	SOCKET s;
