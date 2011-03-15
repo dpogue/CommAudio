@@ -72,6 +72,12 @@ private:
      */
     void streamOgg(QString filename);
 
+	static void toggleStop() {
+		mutex_.lock();
+		stop_ = !stop_;
+		mutex_.unlock();
+	}
+
 public:
 
     /**
@@ -93,11 +99,11 @@ public:
         return instance_;
     }
 
-	static void pause() {
+	static void togglePause() {
 		mutex_.lock();
 		pause_ = !pause_;
 		mutex_.unlock();
-	}
+	}	
 
     /**
      * Destroy the OpenAL context and try to clean up any resources.
