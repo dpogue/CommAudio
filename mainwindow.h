@@ -48,7 +48,29 @@ public:
      * @author Darryl Pogue
      * @return The filename of the selected song.
      */
-    QString getSelectedSong();
+    QString getSelectedSong() {
+        return userSongs->getSelectedSong();
+    }
+
+    /**
+     * Returns the next song's filename, or an empty string if there is no next song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the next song.
+     */
+    QString getNextSong() {
+        return userSongs->getNextSong();
+    }
+
+    /**
+     * Returns the previous song's filename, or an empty string if there is no previous song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the previous song.
+     */
+    QString getPrevSong() {
+        return userSongs->getPrevSong();
+    }
 
 public slots:
     /**
