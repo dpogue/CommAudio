@@ -13,6 +13,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     connect(ui.playPushButton, SIGNAL(clicked()), 
             this, SLOT(onPlayClicked()));
+    connect(ui.stopPushButton, SIGNAL(clicked()), 
+            this, SLOT(onStopClicked()));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -25,7 +27,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
-    playing = false;
+    playingState = STOPPED;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -40,17 +42,36 @@ CommAudio::~CommAudio() {
 
 void CommAudio::onPlayClicked() {
 
-    AudioManager::instance()->pause();
-    if (!playing) {
-        playing = true;
-        ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-        QString fileName = "music/3.ogg";
-        AudioManager::instance()->playMusic(fileName);
-  } else {
-        playing = false;
-        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
-        //terrysGainFunction(0);
+    switch (playingState) {
+
+        case STOPPED:
+            QString fileName = "music/3.ogg";
+            AudioManager::instance()->playMusic(fileName);
+            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+            playingState = PLAYING;
+            break;
+
+        case PLAYING:
+            AudioManager::instance()->pause();
+            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
+            playingState = PAUSED;
+            break;
+
+        case PAUSED:
+            AudioManager::instance()->pause();
+            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+            playingState = PLAYING;
+            break;
     }
+}
+
+void CommAudio::onStopClicked() {
+    
+    if (playingState == PLAYING) {
+        AudioManager::instance()->togglePause();
+        ui.PlayPushButton->setIcon(QIcon(ICON_PLAY));
+    }
+    playingState = STOPPED;
 }
 
 void CommAudio::onConnectClicked() {

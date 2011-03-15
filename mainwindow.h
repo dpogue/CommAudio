@@ -5,6 +5,7 @@
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
 #include "commsocket.h"
+
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
@@ -16,8 +17,9 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 	CommSocket* testing;
-
-    bool playing;
+    
+    /** The state of the current song (stopped, playing, or paused). */
+    int playingState;
 
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
@@ -40,6 +42,13 @@ public slots:
      * @author Dean Morin
      */
     void onPlayClicked();
+
+    /**
+     * Stops the currently playing song. 
+     *
+     * @author Dean Morin
+     */
+    void CommAudio::onStopClicked() {
     
     /**
      * Stops

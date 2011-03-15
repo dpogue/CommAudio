@@ -16,4 +16,9 @@
 #define ICON_CHAT       "img/chat.png"
 #define ICON_CHATTING   "img/chatting.png"
 
+// playing state
+#define STOPPED     0
+#define PLAYING     1
+#define PAUSED      2
+
 #endif
