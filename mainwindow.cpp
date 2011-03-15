@@ -42,24 +42,25 @@ CommAudio::~CommAudio() {
 
 void CommAudio::onPlayClicked() {
 
+    QString fileName = "music/3.ogg";
+    
     switch (playingState) {
 
         case STOPPED:
-            QString fileName = "music/3.ogg";
             AudioManager::instance()->playMusic(fileName);
-            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
             playingState = PLAYING;
             break;
 
         case PLAYING:
-            AudioManager::instance()->pause();
-            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
+            AudioManager::instance()->togglePause();
+            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
             playingState = PAUSED;
             break;
 
         case PAUSED:
-            AudioManager::instance()->pause();
-            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
+            AudioManager::instance()->togglePause();
+            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
             playingState = PLAYING;
             break;
     }
@@ -69,7 +70,7 @@ void CommAudio::onStopClicked() {
     
     if (playingState == PLAYING) {
         AudioManager::instance()->togglePause();
-        ui.PlayPushButton->setIcon(QIcon(ICON_PLAY));
+        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
     }
     playingState = STOPPED;
 }

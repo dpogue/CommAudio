@@ -34,9 +34,9 @@ void AudioManager::startup()
 
 void AudioManager::playMusic(QString filename)
 {
-	pause_ = false;
     stop_ = true;
-    alSleep(0.1f);
+	pause_ = false;
+    alSleep(0.25f); //HACK!!
     QFuture<void> future =
         QtConcurrent::run(this, &AudioManager::streamOgg, filename);
     return;
@@ -83,8 +83,7 @@ void AudioManager::streamOgg(QString filename)
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
     /*set the Gain for Music or Sfx*/
-    alSourcef(source, AL_GAIN, musicGain_);
-	stop_ = false;
+    alSourcef(source, AL_GAIN, 0.9);
 
     if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamOgg(): Cannot open " << filename << " for reading...";
@@ -93,6 +92,7 @@ void AudioManager::streamOgg(QString filename)
 
     /* Try opening the given ogg file */
     mutex_.lock();
+    stop_=false();
     if (ov_open(file, &oggFile, NULL, 0) != 0) {
         qCritical() << "AudioManager::streamOgg(): Error opening " << filename << " for decoding...";
         return;
@@ -129,14 +129,14 @@ void AudioManager::streamOgg(QString filename)
             }
         }
 
-		if(stop_ == true) {
-			break;				
-		}
-
-		while(pause_ == true && !checkError()) {
+        while(pause_ == true && !checkError()) {
 			alSleep(0.2f);				
 		}
 
+		if(stop_ == true) {
+			break;				
+		}
+         
         if (buffersAvailable > 0) {
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
@@ -176,7 +176,7 @@ void AudioManager::streamOgg(QString filename)
         }
 
         /* result == 0 when file is completely read */
-    } while (result > 0 && !checkError());
+    } while (result > 0 && !checkError() && !stop_);
 
     ov_clear(&oggFile);
 

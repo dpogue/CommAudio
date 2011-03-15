@@ -48,7 +48,7 @@ public slots:
      *
      * @author Dean Morin
      */
-    void CommAudio::onStopClicked() {
+    void onStopClicked();
     
     /**
      * Stops
