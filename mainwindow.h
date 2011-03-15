@@ -60,6 +60,14 @@ protected:
 
 public slots:
     /**
+     * Adjusts the volume based on the volume slider.
+     *
+     * @author Dean Morin
+     * @param volume The new value for volume.
+     */
+    void onVolumeMoved(int volume);
+
+    /**
      * Attempts to connect to the server specified in the server group box. 
      *
      * @author Dean Morin
