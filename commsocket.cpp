@@ -10,6 +10,7 @@ CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL) {
 
 CommSocket::CommSocket(SOCKET socket) {
 	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE;
+	prot = TCP;
 	sock = socket;
 	WSAAsyncSelect(sock, winId(), WM_SOCKET, events);
 }

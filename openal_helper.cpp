@@ -1,6 +1,5 @@
 #include "openal_helper.h"
 
-
 /**
  * Enum for the possible states of the openal context
  */

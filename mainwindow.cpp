@@ -1,10 +1,10 @@
-#include "mainwindow.h"
 #include <WinSock2.h>
 #include <qdir.h>
+#include "mainwindow.h"
 #include "manager.h"
 #include "defines.h"
 #include "stylesheet.h"
-CommSocket* test;
+
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), ctlSock(NULL) {
 	
@@ -149,10 +149,9 @@ void CommAudio::onMulticastStateChanged(int state) {
 }
 
 void CommAudio::onCtlReadReady() {
-    qDebug("Got something to read");
-	
-    QByteArray data = ctlSock->getReadBuffer();
 
+    qDebug("Got something to read");
+    QByteArray data = ctlSock->getReadBuffer();
     qDebug(data.data());
 }
 
@@ -162,6 +161,4 @@ void CommAudio::onCtlWrite() {
 
 void CommAudio::onCtlAccept() {
     qDebug("Accepted a socket");
-	test = ctlSock->getLastAcceptedSocket();
-	connect(test,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 }
