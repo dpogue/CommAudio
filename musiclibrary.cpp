@@ -20,6 +20,36 @@ QString MusicLibrary::getSelectedSong() {
     return songs[sel.at(0)->text()];
 }
 
+QString MusicLibrary::getNextSong() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        return getSelectedSong();
+    }
+
+    int row = this->row(sel.at(0));
+    if (++row >= count()) {
+        return "";
+    }
+
+    this->item(row)->setSelected(true);
+    return songs[this->item(row)->text()];
+}
+
+QString MusicLibrary::getPrevSong() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        return getSelectedSong();
+    }
+
+    int row = this->row(sel.at(0));
+    if (--row < 0) {
+        return "";
+    }
+
+    this->item(row)->setSelected(true);
+    return songs[this->item(row)->text()];
+}
+
 void MusicLibrary::addFolder(QString path) {
     QDir* directory = new QDir(path);
     if (!directory->makeAbsolute()) {

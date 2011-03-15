@@ -48,10 +48,6 @@ CommAudio::~CommAudio() {
     delete ctlSock;
 }
 
-QString CommAudio::getSelectedSong() {
-    return userSongs->getSelectedSong();
-}
-
 void CommAudio::onConnectClicked() {
     unsigned long ip = 0;
     unsigned int port = 0;
