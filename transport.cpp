@@ -1,7 +1,7 @@
 #include "transport.h"
 #include "defines.h"
-#include "manager.h"
 #include "mainwindow.h"
+#include "manager.h"
 #include <qmessagebox.h>
 
 Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
