@@ -18,6 +18,14 @@ public:
     MusicLibrary(QWidget* parent = 0);
     ~MusicLibrary();
 
+    /**
+     * Returns the currently selected song filename.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the selected song.
+     */
+    QString getSelectedSong();
+
     void addFolder(QString path);
     void addSongs(QDir* directory);
 };

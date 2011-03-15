@@ -12,7 +12,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
-    transport = new Transport(&ui);
+    transport = new Transport(&ui, this);
 
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
@@ -41,6 +41,10 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
+}
+
+QString CommAudio::getSelectedSong() {
+    return userSongs->getSelectedSong();
 }
 
 void CommAudio::onConnectClicked() {
