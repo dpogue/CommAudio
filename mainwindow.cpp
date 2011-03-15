@@ -11,10 +11,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
-    connect(ui.playPushButton, SIGNAL(clicked()), 
-            this, SLOT(onPlayClicked()));
-    connect(ui.stopPushButton, SIGNAL(clicked()), 
-            this, SLOT(onStopClicked()));
+    transport = new Transport(&ui);
+
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -27,7 +25,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
-    playingState = STOPPED;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -38,41 +35,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
-}
-
-void CommAudio::onPlayClicked() {
-
-    QString fileName = "music/3.ogg";
-    
-    switch (playingState) {
-
-        case STOPPED:
-            AudioManager::instance()->playMusic(fileName);
-            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-            playingState = PLAYING;
-            break;
-
-        case PLAYING:
-            AudioManager::instance()->togglePause();
-            ui.playPushButton->setIcon(QIcon(ICON_PLAY));
-            playingState = PAUSED;
-            break;
-
-        case PAUSED:
-            AudioManager::instance()->togglePause();
-            ui.playPushButton->setIcon(QIcon(ICON_PAUSE));
-            playingState = PLAYING;
-            break;
-    }
-}
-
-void CommAudio::onStopClicked() {
-    
-    if (playingState == PLAYING) {
-        AudioManager::instance()->togglePause();
-        ui.playPushButton->setIcon(QIcon(ICON_PLAY));
-    }
-    playingState = STOPPED;
 }
 
 void CommAudio::onConnectClicked() {
