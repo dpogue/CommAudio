@@ -5,27 +5,30 @@
 #include <Windows.h>
 
 
-class CommSocket : public QWidget
-{
+class CommSocket : public QWidget {
+	
 	Q_OBJECT
 private:
-	SOCKET createSocket(HWND hwnd,QString host,int mode,int port);
+	SOCKET createSocket(QString host,int mode,int port);
 	bool read();
 	bool write();
 	bool qBinCpy(QByteArray& dest,QByteArray& src,int size);
     SOCKET sock;
+	SOCKET lastAccepted;
+	bool acceptConn();
 	sockaddr_in server;
 	QByteArray readBuffer;
 	QByteArray writeBuffer;
 	int prot;
 	
-    
 public:
     CommSocket(QString host, int port,int protocol);
-	bool connectToServ();
-	bool listenForConn();
+	CommSocket(SOCKET socket);
+	CommSocket* getLastAcceptedSocket();
 	bool setWriteBuffer(QByteArray data);
     QByteArray getReadBuffer();
+	bool connectToServ();
+	bool listenForConn(int backlog);
     void closeSocket();
 
 protected:

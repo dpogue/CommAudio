@@ -4,10 +4,10 @@
 #include "manager.h"
 #include "defines.h"
 #include "stylesheet.h"
-
+CommSocket* test;
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags), ctlSock(NULL)
-{
+	: QMainWindow(parent, flags), ctlSock(NULL) {
+	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
 
@@ -133,7 +133,7 @@ void CommAudio::onStartServerClicked() {
 
     ctlSock = new CommSocket("", port, TCP);
     connect(ctlSock, SIGNAL(socketAccepted()), this, SLOT(onCtlAccept()));
-    if (!ctlSock->listenForConn()) {
+    if (!ctlSock->listenForConn(5)) {
         qDebug("Something went wrong trying to listen...");
     }
 }
@@ -156,11 +156,12 @@ void CommAudio::onCtlReadReady() {
     qDebug(data.data());
 }
 
-void CommAudio::onCtlWrite(){
+void CommAudio::onCtlWrite() {
 	qDebug("Got something to write");
-	//ctlSock->setWriteBuffer("udp");
 }
 
 void CommAudio::onCtlAccept() {
     qDebug("Accepted a socket");
+	test = ctlSock->getLastAcceptedSocket();
+	connect(test,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 }

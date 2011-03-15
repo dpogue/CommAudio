@@ -3,16 +3,20 @@
 #include "defines.h"
 #include <QNetworkInterface>
 
-CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL)
-{
+CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL) {
 	prot = protocol;
-	sock = createSocket(winId(),host,(host.isEmpty() ? SERVER : CLIENT),port);
+	sock = createSocket(host,(host.isEmpty() ? SERVER : CLIENT),port);
 }
 
-bool CommSocket::listenForConn()
-{
-	if(listen(sock,5) == SOCKET_ERROR)
-	{
+CommSocket::CommSocket(SOCKET socket) {
+	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE;
+	sock = socket;
+	WSAAsyncSelect(sock, winId(), WM_SOCKET, events);
+}
+
+bool CommSocket::listenForConn(int backlog) {
+	
+	if(listen(sock,backlog) == SOCKET_ERROR) {
 		int s;
 		s = WSAGetLastError();
 		return false;
@@ -34,17 +38,16 @@ bool CommSocket::connectToServ()
 	return true;
 }
 
-bool CommSocket::winEvent(MSG* message, long* result)
-{
-	switch(message->message) 
-	{
-    case WM_SOCKET:
+bool CommSocket::winEvent(MSG* message, long* result) {
+	switch(message->message) {
+    
+	case WM_SOCKET:
         switch(WSAGETSELECTEVENT(message->lParam)) {
     		case FD_WRITE:
-				if(writeBuffer.isEmpty()){
+				if(writeBuffer.isEmpty()) {
     				emit socketWrite();
 				}
-				else{
+				else {
 					write();
 				}
     			break;
@@ -52,11 +55,11 @@ bool CommSocket::winEvent(MSG* message, long* result)
     			emit socketConnected();
     			break;
     		case FD_ACCEPT:
+				acceptConn();
     			emit socketAccepted();
     			break;
     		case FD_READ:
-				if(read())
-				{
+				if(read()) {
     				emit socketRead();
 				}
     			break;
@@ -70,8 +73,8 @@ bool CommSocket::winEvent(MSG* message, long* result)
     return false;
 }
 
-SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port)
-{
+SOCKET CommSocket::createSocket(QString host,int mode,int port) {
+	
 	SOCKET s;
 	struct sockaddr_in sin;
 	long events;
@@ -80,57 +83,53 @@ SOCKET CommSocket::createSocket(HWND hwnd,QString host,int mode,int port)
 	type = (prot == UDP ? SOCK_DGRAM : SOCK_STREAM);
 	events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
 	
-	if ((s = socket(PF_INET, type, 0)) < 0)
+	if ((s = socket(PF_INET, type, 0)) < 0) {
 		exit(1);
-
+	}
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	setsockopt(s,SOL_SOCKET,SO_REUSEADDR,"1",1);
 
-	if(mode == SERVER)
-	{
+	if(mode == SERVER) {
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
-		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1)
-		{
+		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
 			int s = WSAGetLastError();
 			exit(1);
 		}
 	}
-	else
-	{
+	else {
 		memcpy(&server,&sin,sizeof(sockaddr_in));
 		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
 	}
-	int i = WSAAsyncSelect(s, hwnd, WM_SOCKET, events);
+
+	if(WSAAsyncSelect(s, winId(), WM_SOCKET, events)) {
+		int s = WSAGetLastError();
+		return false;
+	}
 	return s;
 }
 
-bool CommSocket::read()
-{
+bool CommSocket::read() {
 	int bytesRead = 0;
 	int bytesToRead = BUFSIZE;
 	char buffer[BUFSIZE];
 	ZeroMemory(buffer,BUFSIZE);
 	int senderAddrSize = sizeof(server);
-	while(bytesToRead > 0)
-	{
+	while(bytesToRead > 0) {
 		if(prot == TCP) {
 			bytesRead = recv(sock,buffer,bytesToRead,0);
 		}
-		else{
+		else {
 			bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
 				&senderAddrSize);
 		}
-		if(bytesRead == SOCKET_ERROR)
-		{
+		if(bytesRead == SOCKET_ERROR) {
 			int s = WSAGetLastError();
-			if(s == WSAEWOULDBLOCK)
-			{
+			if(s == WSAEWOULDBLOCK) {
                 readBuffer.append(buffer);
 				return true;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
@@ -139,29 +138,26 @@ bool CommSocket::read()
     readBuffer.append(buffer);
 	return true;
 }
-bool CommSocket::write()
-{
+
+bool CommSocket::write() {
 	QByteArray buffer;
 	int bytesSent = 0;
 	qBinCpy(buffer,writeBuffer,BUFSIZE);
 	
-	while(!writeBuffer.isEmpty())
-	{
-		if(prot == TCP){
+	while(!writeBuffer.isEmpty()) {
+		if(prot == TCP) {
 			bytesSent = send(sock,buffer.data(),buffer.size(),0);
 		}
-		else{
+		else {
 			bytesSent = sendto(sock,buffer.data(),buffer.size(),0,(SOCKADDR *)&server,
 				sizeof(server));
 		}
 
-		if(bytesSent == SOCKET_ERROR)
-		{
+		if(bytesSent == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s != WSAEWOULDBLOCK){
 				return false;
 			}
-
 			return true;
 		}
 		writeBuffer = writeBuffer.right(writeBuffer.size()-buffer.size());
@@ -170,6 +166,7 @@ bool CommSocket::write()
 	emit socketWrite();
 	return true;
 }
+
 bool CommSocket::setWriteBuffer(QByteArray data)
 {
 	if(writeBuffer.isEmpty()){
@@ -180,6 +177,7 @@ bool CommSocket::setWriteBuffer(QByteArray data)
 		return false;
 	}
 }
+
 bool CommSocket::qBinCpy(QByteArray& dest,QByteArray& src,int size)
 {
 	if(src.isNull()){
@@ -192,12 +190,26 @@ bool CommSocket::qBinCpy(QByteArray& dest,QByteArray& src,int size)
 	return true;
 }
 
-QByteArray CommSocket::getReadBuffer()
-{
+QByteArray CommSocket::getReadBuffer() {
 	return readBuffer;
 }
 
-void CommSocket::closeSocket()
-{
-    closesocket(sock);
+void CommSocket::closeSocket() {
+    
+	closesocket(sock);
+}
+
+bool CommSocket::acceptConn() {
+	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
+	lastAccepted = WSAAccept(sock,NULL,NULL,NULL,NULL);
+	
+	if(lastAccepted == INVALID_SOCKET) {
+		return false;
+	}
+	return true;
+}
+
+CommSocket* CommSocket::getLastAcceptedSocket() {
+	
+	return new CommSocket(lastAccepted);
 }

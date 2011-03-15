@@ -92,7 +92,7 @@ void AudioManager::streamOgg(QString filename)
 
     /* Try opening the given ogg file */
     mutex_.lock();
-    stop_=false();
+    stop_=false;
     if (ov_open(file, &oggFile, NULL, 0) != 0) {
         qCritical() << "AudioManager::streamOgg(): Error opening " << filename << " for decoding...";
         return;
