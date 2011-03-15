@@ -24,6 +24,7 @@ ipch/
 *.dll.config
 *.cache
 *.ilk
+*.idb
 *.lib
 *.exp
 !3rdParty/*/libvorbis.*
