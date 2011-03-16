@@ -20,6 +20,7 @@
 enum fileType{ 
 OGG,
 WAV,
+NETWORK
 };
 
 
@@ -44,6 +45,9 @@ private:
      * The volume/gain of the background music.
      */
     static float musicGain_;
+
+
+	static QQueue<QByteArray> streamQueue;
 
     /**
      * Whether the AudioManager has been initialized.
@@ -78,6 +82,9 @@ private:
      */
     void streamFile(QString filename);
 
+	void cleanUp(ALuint *source, ALint *playing, ALuint *buffer);
+	void clearProcessedBuffers
+		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
 	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
 	void openWav(FILE **file, ALenum *format, ALuint *frequency);
 
@@ -117,6 +124,12 @@ public:
 	static void setGain(float vol) {
 		mutex_.lock();
 		musicGain_ = vol;
+		mutex_.unlock();
+	}
+
+	static void addToQueue(QByteArray buffer) {
+		mutex_.lock();
+		streamQueue.enqueue(buffer);
 		mutex_.unlock();
 	}
 

@@ -47,15 +47,7 @@ bool AudioManager::checkCondition()
     ALuint error = alGetError();
     const ALchar* err = alGetString(error);
 
-	while(pause_ == true && inited_ == true) {
-		alSleep(0.1f);			
-	}
-
-	if(stop_ == true) {
-		return true;				
-	}
-
-    if (inited_ == false) {
+    if (inited_ == false || stop_ == true) {
         return true;
     } else if (error != AL_NO_ERROR) {
         qCritical("AudioManager::checkError(): %d:%s", error, err);
@@ -76,9 +68,7 @@ void AudioManager::streamFile(QString filename)
     long size = 0;
     long result = 0;
     ALuint buffer[QUEUESIZE];
-    ALuint tempBuffer;
     ALuint source;
-    ALint processed;
     ALint queued = 0;
     ALint queue = 0;
     ALint play = AL_TRUE;
@@ -96,7 +86,9 @@ void AudioManager::streamFile(QString filename)
     
 	stop_=false;
 
-    if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
+	if(filename.isEmpty()){
+		fType = NETWORK;
+	} else if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamFile(): Cannot open " << filename << " for reading...";
 		return;
     }
@@ -104,43 +96,50 @@ void AudioManager::streamFile(QString filename)
 	if(filename.contains(".ogg") || filename.contains(".oga")) {	
 		openOgg(file, &oggFile, &format);
 		fType = OGG;
-	} else {
+	} else if (filename.contains(".wav")) {
 		openWav(&file,&format,&freq);
 		fType = WAV;
 	}
 
 
     do {
-        alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
 
-        while (processed) {
-            alSourceUnqueueBuffers(source, 1, &tempBuffer);
-            processed--;
+		alSourcef(source, AL_GAIN, musicGain_);
+		bool paused = false;
 
-            /* ensures buffers don't get larger than QUEUESIZE */
-            if (buffersAvailable < QUEUESIZE - 1) {
-                buffersAvailable++;
-            }
+		if(pause_== true) {
+			alSourcePause(source);
+			paused = true;
+		} else {
+			clearProcessedBuffers(&source, buffersAvailable, &playing, &play);
+		}
 
-            /* Restarts playing if buffer emptied too quickly */
-            alGetSourcei(source, AL_SOURCE_STATE, &playing);
+		while(pause_ == true && inited_ == true) {
+			alSleep(0.1f);
+		}
 
-            if (playing == AL_STOPPED) {
-                play = AL_TRUE;
-            }
-        }
-         
+		if(paused == true) {
+			alSourcePlay(source);
+			play = AL_FALSE;
+		}
+
         if (buffersAvailable > 0) {
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
             while (size < BUFFERSIZE) {
 
                 if(fType == OGG) {
-					result = ov_read(&oggFile, array + size,
+					result = ov_read (&oggFile, array + size, 
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
-				} else {
-					
+				} else if (fType = WAV) {
 					result = fread(array + size, 1, BUFFERSIZE - size, file);
+				} else if (fType = NETWORK) {
+					if(streamQueue.count() == 0)
+						result = 0; break;
+					mutex_.lock();
+					strcpy(array,streamQueue.dequeue());
+					result = sizeof(array);
+					mutex_.unlock();
 				}
 
                 if (result == 0) {
@@ -150,11 +149,10 @@ void AudioManager::streamFile(QString filename)
                 size += result;
 
                 if (result < 0) {
-                    qCritical() << "AudioManager::streamFile(): Ogg Read Failed ";
+                    qCritical() << "AudioManager::streamFile(): Read Failed ";
                     break;
                 }
             }
-
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
@@ -166,43 +164,69 @@ void AudioManager::streamFile(QString filename)
             alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
 
             if (queued > 2 && play) {
-                alSourcePlay(source);
+				alSourcePlay(source);
                 play = AL_FALSE;
             }
-		
         } else {
-            alSleep(0.05f);
+            alSleep(0.05f);			
         }
 
-		alSourcef(source, AL_GAIN, musicGain_);
-
 		/* result == 0 when file is completely read */
-    } while (result > 0 && !checkCondition() && !stop_);
+    } while (result > 0 && !checkCondition());
 
     if(fType == OGG) {	
 		ov_clear(&oggFile);
 	}
 
-    /** Wait until sound stops playing before
-     *  clearing the buffers and source
-     */
-    do {
-        alGetSourcei(source, AL_SOURCE_STATE, &playing);
-        alSleep(0.1f);
-    } while (playing != AL_STOPPED && !checkCondition());
+    cleanUp(&source, &playing, buffer);
 
-    alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
+}
+
+void AudioManager::cleanUp(ALuint *source, ALint *playing, ALuint *buffer) 
+{
+	ALint processed;
+    ALuint tempBuffer;	
+
+	do {
+        alGetSourcei(*source, AL_SOURCE_STATE, playing);
+        alSleep(0.1f);
+    } while (*playing != AL_STOPPED && !checkCondition());
+
+    alGetSourcei(*source, AL_BUFFERS_PROCESSED, &processed);
 
     while (processed) {
-        alSourceUnqueueBuffers(source, 1, &tempBuffer);
+        alSourceUnqueueBuffers(*source, 1, &tempBuffer);
         processed--;
-    }
+	}
 
-    mutex_.lock();
-    alDeleteSources(1, &source);
+    alDeleteSources(1, source);
     alDeleteBuffers(QUEUESIZE, buffer);
-    mutex_.unlock();
+}
 
+void AudioManager::clearProcessedBuffers
+	(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play)
+{
+	ALint processed;
+    ALuint tempBuffer;	
+
+	alGetSourcei(*source, AL_BUFFERS_PROCESSED, &processed);
+
+	while (processed) {
+		alSourceUnqueueBuffers(*source, 1, &tempBuffer);
+		processed--;
+
+		/* ensures buffers don't get larger than QUEUESIZE */
+		if (buffersAvailable < QUEUESIZE - 1) {
+			buffersAvailable++;
+		}
+
+		/* Restarts playing if buffer emptied too quickly */
+		alGetSourcei(*source, AL_SOURCE_STATE, playing);
+
+		if (*playing == AL_STOPPED) {
+			*play = AL_TRUE;
+		}
+	}
 }
 
 void AudioManager::openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format) 
