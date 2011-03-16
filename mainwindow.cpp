@@ -1,5 +1,6 @@
 #include <WinSock2.h>
 #include <qdir.h>
+#include <QKeyEvent>
 #include "mainwindow.h"
 #include "manager.h"
 #include "defines.h"
@@ -15,6 +16,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     transport = new Transport(&ui, this);
 
+    connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
+            this, SLOT(onVolumeMoved(int)));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -27,8 +30,12 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
+    ui.volumeSlider->setMinimum(0);
+    ui.volumeSlider->setMaximum(100);
+    ui.volumeSlider->setValue(50);
+    onVolumeMoved(50);
     chatting = false;
-    stickyChat = false;
+    stickyChat = true;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -46,6 +53,35 @@ CommAudio::~CommAudio() {
     AudioManager::instance()->shutdown();
 
     delete ctlSock;
+}
+
+void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_Space:
+            transport->onPlayClicked();
+            return;
+        case Qt::Key_C:
+            onChatPressed();
+            return;
+        default:
+            QMainWindow::keyPressEvent(keyEvent);
+    }
+}
+
+void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_C:
+            onChatReleased();
+            return;
+        default:
+            QMainWindow::keyReleaseEvent(keyEvent);
+    }
+}
+
+void CommAudio::onVolumeMoved(int volume) {
+    AudioManager::setGain(volume / 100.0);
+    qDebug("H");
+    qDebug("gain: %f", volume / 100.0); 
 }
 
 void CommAudio::onConnectClicked() {

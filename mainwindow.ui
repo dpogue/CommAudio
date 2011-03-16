@@ -6,35 +6,34 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
+    <width>441</width>
     <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CommAudio</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel#connectErrorLabel { 
+	color: red;
+}
+
+QFrame#nowPlayingFrame {
+	border-width: 1px;
+	border-style: solid;
+	border-color: black;
+	border-radius: 10px;
+	background: white;
+}
+
+</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QFrame" name="nowPlayingFrame">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>10</y>
-      <width>301</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-   </widget>
    <widget class="QTabWidget" name="fileTabWidget">
     <property name="geometry">
      <rect>
       <x>86</x>
-      <y>380</y>
+      <y>450</y>
       <width>271</width>
       <height>111</height>
      </rect>
@@ -43,17 +42,22 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="localTab">
      <attribute name="title">
-      <string>Your Songs</string>
+      <string>My Songs</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="peerTab">
+     <attribute name="title">
+      <string>Peer's Songs</string>
      </attribute>
      <widget class="QProgressBar" name="downloadProgressBar">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>50</y>
+        <x>80</x>
+        <y>60</y>
         <width>118</width>
         <height>23</height>
        </rect>
@@ -63,48 +67,17 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="peerTab">
-     <attribute name="title">
-      <string>Peer's Songs</string>
-     </attribute>
-    </widget>
     <widget class="QWidget" name="playlistTab">
      <attribute name="title">
       <string>Playlist</string>
      </attribute>
     </widget>
    </widget>
-   <widget class="QPushButton" name="playPushButton">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>100</y>
-      <width>141</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>img/play.png</normaloff>img/play.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>64</width>
-      <height>64</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>220</y>
+      <y>290</y>
       <width>261</width>
       <height>151</height>
      </rect>
@@ -188,8 +161,8 @@
       <rect>
        <x>50</x>
        <y>120</y>
-       <width>75</width>
-       <height>23</height>
+       <width>62</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -220,22 +193,33 @@
       <rect>
        <x>180</x>
        <y>120</y>
-       <width>75</width>
-       <height>23</height>
+       <width>62</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Start Server</string>
      </property>
     </widget>
+    <zorder>ipLineEdit</zorder>
+    <zorder>portLineEdit</zorder>
+    <zorder>ipLabel</zorder>
+    <zorder>portLabel</zorder>
+    <zorder>multicastCheckBox</zorder>
+    <zorder>connectPushButton</zorder>
+    <zorder>connectErrorLabel</zorder>
+    <zorder>startServerPushButton</zorder>
+    <zorder>playPushButton</zorder>
+    <zorder>gridLayoutWidget</zorder>
+    <zorder>stopPushButton</zorder>
    </widget>
    <widget class="QPushButton" name="chatPushButton">
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>500</y>
-      <width>111</width>
-      <height>61</height>
+      <y>570</y>
+      <width>62</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -252,36 +236,13 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="stopPushButton">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>180</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>img/stop.png</normaloff>img/stop.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QPushButton" name="settingsPushButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>51</width>
-      <height>41</height>
+      <x>10</x>
+      <y>350</y>
+      <width>62</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -298,52 +259,165 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="previousPushButton">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>120</y>
-      <width>75</width>
-      <height>41</height>
+      <x>-1</x>
+      <y>-1</y>
+      <width>482</width>
+      <height>271</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>img/previous.png</normaloff>img/previous.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+     <property name="leftMargin">
+      <number>50</number>
+     </property>
+     <property name="topMargin">
+      <number>25</number>
+     </property>
+     <property name="rightMargin">
+      <number>50</number>
+     </property>
+     <property name="bottomMargin">
+      <number>25</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="nowPlayingFrame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <zorder>gridLayoutWidget</zorder>
+         <zorder>gridLayoutWidget</zorder>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="volumeSlider">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="stopPushButton">
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>img/stop.png</normaloff>img/stop.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="playPushButton">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/play.png</normaloff>img/play.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>64</width>
+           <height>64</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="nextPushButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/next.png</normaloff>img/next.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="previousPushButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/previous.png</normaloff>img/previous.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
-   <widget class="QPushButton" name="nextPushButton">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>120</y>
-      <width>75</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>img/next.png</normaloff>img/next.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
+   <zorder>fileTabWidget</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>chatPushButton</zorder>
+   <zorder>settingsPushButton</zorder>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>stopPushButton</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
@@ -359,7 +433,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>417</width>
+     <width>441</width>
      <height>20</height>
     </rect>
    </property>

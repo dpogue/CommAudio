@@ -41,6 +41,23 @@ private:
     /** The open UDP socket for streaming data. */
     CommSocket* strSock;
 
+protected:
+    /**
+     * Handles keyboard presses.
+     *
+     * @author Dean Morin
+     * @param keyEvent The triggering key event.
+     */
+    virtual void keyPressEvent(QKeyEvent* keyEvent);
+    
+    /**
+     * Handles keyboard releases.
+     *
+     * @author Dean Morin
+     * @param keyEvent The triggering key event.
+     */
+    virtual void keyReleaseEvent(QKeyEvent* keyEvent);
+
 public:
     /**
      * Returns the currently selected song filename.
@@ -73,6 +90,14 @@ public:
     }
 
 public slots:
+    /**
+     * Adjusts the volume based on the volume slider.
+     *
+     * @author Dean Morin
+     * @param volume The new value for volume.
+     */
+    void onVolumeMoved(int volume);
+
     /**
      * Attempts to connect to the server specified in the server group box. 
      *
