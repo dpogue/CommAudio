@@ -15,7 +15,7 @@
 #include "openal_helper.h"
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*16)
+#define BUFFERSIZE (1024*8)
 
 enum fileType{ 
 OGG,
@@ -82,17 +82,11 @@ private:
      */
     void streamFile(QString filename);
 
-	void cleanUp(ALuint *source, ALint *playing, ALuint *buffer);
+	void cleanUp(ALuint *source, ALuint *buffer);
 	void clearProcessedBuffers
 		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
 	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
 	void openWav(FILE **file, ALenum *format, ALuint *frequency);
-
-	static void toggleStop() {
-		mutex_.lock();
-		stop_ = !stop_;
-		mutex_.unlock();
-	}
 
 public:
 
@@ -121,6 +115,12 @@ public:
 		mutex_.unlock();
 	}
 
+	static void toggleStop() {
+		mutex_.lock();
+		stop_ = !stop_;
+		mutex_.unlock();
+	}
+
 	static void setGain(float vol) {
 		mutex_.lock();
 		musicGain_ = vol;
@@ -133,6 +133,7 @@ public:
 		mutex_.unlock();
 	}
 
+	void captureMic();
     /**
      * Destroy the OpenAL context and try to clean up any resources.
      * This must be called manually when the main application exits to ensure

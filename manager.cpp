@@ -7,6 +7,7 @@ bool AudioManager::pause_ = false;
 bool AudioManager::stop_ = false;
 float AudioManager::musicGain_ = 0.9;
 QMutex AudioManager::mutex_;
+QQueue<QByteArray> AudioManager::streamQueue;
 
 AudioManager::AudioManager()
 {
@@ -73,8 +74,8 @@ void AudioManager::streamFile(QString filename)
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
-    ALenum format = AL_FORMAT_STEREO16;
-    ALuint freq = 44100;
+    ALenum format = AL_FORMAT_MONO8;
+    ALuint freq = 22050;
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
 	fileType fType;
@@ -86,7 +87,7 @@ void AudioManager::streamFile(QString filename)
     
 	stop_=false;
 
-	if(filename.isEmpty()){
+	if(filename.compare("STREAM") == 0){
 		fType = NETWORK;
 	} else if ((file = fopen(filename.toAscii().constData(), "rb")) == NULL) {
         qCritical() << "AudioManager::streamFile(): Cannot open " << filename << " for reading...";
@@ -127,19 +128,19 @@ void AudioManager::streamFile(QString filename)
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
             while (size < BUFFERSIZE) {
-
                 if(fType == OGG) {
 					result = ov_read (&oggFile, array + size, 
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
-				} else if (fType = WAV) {
+				} else if (fType == WAV) {
 					result = fread(array + size, 1, BUFFERSIZE - size, file);
 				} else if (fType = NETWORK) {
-					if(streamQueue.count() == 0)
-						result = 0; break;
-					mutex_.lock();
+					while(streamQueue.count() < 1 && stop_ == false) {
+						alSleep(0.1f);
+					  					}
+					mutex_.lock();				
 					strcpy(array,streamQueue.dequeue());
-					result = sizeof(array);
 					mutex_.unlock();
+					result = sizeof(array);
 				}
 
                 if (result == 0) {
@@ -178,19 +179,53 @@ void AudioManager::streamFile(QString filename)
 		ov_clear(&oggFile);
 	}
 
-    cleanUp(&source, &playing, buffer);
+    cleanUp(&source, buffer);
 
 }
 
-void AudioManager::cleanUp(ALuint *source, ALint *playing, ALuint *buffer) 
+void AudioManager::captureMic()
+{
+    ALCdevice* captureDevice;
+    ALint samplesAvailable;
+    ALchar buffer[BUFFERSIZE];
+    ALuint unqueueCount, queueCount;
+    ALint format, frequency;
+
+	format = AL_FORMAT_MONO8;
+	frequency = 22050;
+
+    captureDevice = alcCaptureOpenDevice(NULL, frequency, format, frequency);
+
+    if (captureDevice) {
+        alcCaptureStart(captureDevice);
+
+        while(!checkCondition()) {
+            alGetError();
+			alcGetIntegerv(captureDevice, ALC_CAPTURE_SAMPLES, 1, &samplesAvailable);
+
+			if (samplesAvailable > (BUFFERSIZE)) {
+
+				alcCaptureSamples(captureDevice, buffer, (BUFFERSIZE));
+				//TODO: Send to the network here!
+				this->addToQueue(buffer);
+
+			}
+		}
+	}
+
+    alcCaptureCloseDevice(captureDevice);
+}
+
+void AudioManager::cleanUp(ALuint *source, ALuint *buffer) 
 {
 	ALint processed;
-    ALuint tempBuffer;	
+    ALuint tempBuffer;
+    ALint playing;	
 
 	do {
-        alGetSourcei(*source, AL_SOURCE_STATE, playing);
+        alGetSourcei(*source, AL_SOURCE_STATE, &playing);
         alSleep(0.1f);
-    } while (*playing != AL_STOPPED && !checkCondition());
+    } while (playing != AL_STOPPED && !checkCondition());
 
     alGetSourcei(*source, AL_BUFFERS_PROCESSED, &processed);
 
