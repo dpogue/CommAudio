@@ -5,6 +5,8 @@
 AudioManager* AudioManager::instance_ = NULL;
 bool AudioManager::pause_ = false;
 bool AudioManager::stop_ = false;
+bool AudioManager::capturePause_ = true;
+bool AudioManager::captureStop_ = false;
 float AudioManager::musicGain_ = 0.9;
 QMutex AudioManager::mutex_;
 QQueue<QByteArray> AudioManager::streamQueue;
@@ -23,6 +25,8 @@ void AudioManager::shutdown()
 {
     if (inited_) {
         inited_ = false;
+		stop_ = true;
+		captureStop_ = true;
         alExit();
     }
 }
@@ -35,12 +39,18 @@ void AudioManager::startup()
 
 void AudioManager::playMusic(QString filename)
 {
+	//TODO: THIS Shouldn't be done here
     stop_ = true;
 	pause_ = false;
     alSleep(0.25f); //HACK!!
     QFuture<void> future =
         QtConcurrent::run(this, &AudioManager::streamFile, filename);
-    return;
+}
+
+void AudioManager::startCapture()
+{
+    QFuture<void> future =
+        QtConcurrent::run(this, &AudioManager::captureMic);
 }
 
 bool AudioManager::checkCondition()
@@ -48,7 +58,7 @@ bool AudioManager::checkCondition()
     ALuint error = alGetError();
     const ALchar* err = alGetString(error);
 
-    if (inited_ == false || stop_ == true) {
+    if (inited_ == false || stop_ == true || captureStop_ == true) {
         return true;
     } else if (error != AL_NO_ERROR) {
         qCritical("AudioManager::checkError(): %d:%s", error, err);
@@ -83,9 +93,10 @@ void AudioManager::streamFile(QString filename)
     /* Created the source and Buffers */
     alGenBuffers(QUEUESIZE, buffer);
     alGenSources(1, &source);
-    /*set the Gain for Music or Sfx*/
-    
+
 	stop_=false;
+
+	qDebug("Thread");
 
 	if(filename.compare("STREAM") == 0){
 		fType = NETWORK;
@@ -102,24 +113,25 @@ void AudioManager::streamFile(QString filename)
 		fType = WAV;
 	}
 
-
     do {
 
 		alSourcef(source, AL_GAIN, musicGain_);
 		bool paused = false;
 
-		if(pause_== true) {
+		if(pause_== true && fType != NETWORK) {
 			alSourcePause(source);
 			paused = true;
 		} else {
 			clearProcessedBuffers(&source, buffersAvailable, &playing, &play);
 		}
 
-		while(pause_ == true && inited_ == true) {
+		while(pause_ == true && fType != NETWORK && stop_ == false) {
 			alSleep(0.1f);
 		}
 
-		if(paused == true) {
+		if(stop_ == true) {
+			break;
+		} else if(paused == true) {
 			alSourcePlay(source);
 			play = AL_FALSE;
 		}
@@ -127,7 +139,7 @@ void AudioManager::streamFile(QString filename)
         if (buffersAvailable > 0) {
             size = 0;
             /* Read file to we reached a BUFFERSIZE chunk */
-            while (size < BUFFERSIZE) {
+            while (size < BUFFERSIZE && !checkCondition()) {
                 if(fType == OGG) {
 					result = ov_read (&oggFile, array + size, 
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
@@ -136,7 +148,7 @@ void AudioManager::streamFile(QString filename)
 				} else if (fType = NETWORK) {
 					while(streamQueue.count() < 1 && stop_ == false) {
 						alSleep(0.1f);
-					  					}
+					}
 					mutex_.lock();				
 					strcpy(array,streamQueue.dequeue());
 					mutex_.unlock();
@@ -200,15 +212,20 @@ void AudioManager::captureMic()
         alcCaptureStart(captureDevice);
 
         while(!checkCondition()) {
-            alGetError();
+            //alGetError();
 			alcGetIntegerv(captureDevice, ALC_CAPTURE_SAMPLES, 1, &samplesAvailable);
+			
+			while(capturePause_ == true && captureStop_ == false) {
+				alSleep(0.1f);
+			}
 
-			if (samplesAvailable > (BUFFERSIZE)) {
+			if(captureStop_ == true) {
+				break;
+			} else if (samplesAvailable > (BUFFERSIZE)) {
 
 				alcCaptureSamples(captureDevice, buffer, (BUFFERSIZE));
 				//TODO: Send to the network here!
-				this->addToQueue(buffer);
-
+				this->addToQueue(buffer);				
 			}
 		}
 	}

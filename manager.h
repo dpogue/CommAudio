@@ -40,6 +40,8 @@ private:
 
     static bool pause_;
     static bool stop_;	
+	static bool capturePause_;
+	static bool captureStop_;
 
     /**
      * The volume/gain of the background music.
@@ -121,6 +123,18 @@ public:
 		mutex_.unlock();
 	}
 
+	static void toggleCapturePause() {
+		mutex_.lock();
+		capturePause_ = !capturePause_;
+		mutex_.unlock();
+	}
+
+	static void toggleCaptureStop() {
+		mutex_.lock();
+		captureStop_ = !captureStop_;
+		mutex_.unlock();
+	}
+
 	static void setGain(float vol) {
 		mutex_.lock();
 		musicGain_ = vol;
@@ -133,6 +147,7 @@ public:
 		mutex_.unlock();
 	}
 
+	void startCapture();
 	void captureMic();
     /**
      * Destroy the OpenAL context and try to clean up any resources.
