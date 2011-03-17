@@ -107,6 +107,7 @@ void AudioManager::streamFile(QString filename)
 
 	if(filename.contains(".ogg") || filename.contains(".oga")) {	
 		openOgg(file, &oggFile, &format);
+        freq = 44100;		
 		fType = OGG;
 	} else if (filename.contains(".wav")) {
 		openWav(&file,&format,&freq);
