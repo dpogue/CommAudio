@@ -15,11 +15,12 @@
 #include "openal_helper.h"
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*16)
+#define BUFFERSIZE (1024*8)
 
 enum fileType{ 
 OGG,
 WAV,
+NETWORK
 };
 
 
@@ -39,11 +40,16 @@ private:
 
     static bool pause_;
     static bool stop_;	
+	static bool capturePause_;
+	static bool captureStop_;
 
     /**
      * The volume/gain of the background music.
      */
     static float musicGain_;
+
+
+	static QQueue<QByteArray> streamQueue;
 
     /**
      * Whether the AudioManager has been initialized.
@@ -78,14 +84,11 @@ private:
      */
     void streamFile(QString filename);
 
+	void cleanUp(ALuint *source, ALuint *buffer);
+	void clearProcessedBuffers
+		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
 	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
 	void openWav(FILE **file, ALenum *format, ALuint *frequency);
-
-	static void toggleStop() {
-		mutex_.lock();
-		stop_ = !stop_;
-		mutex_.unlock();
-	}
 
 public:
 
@@ -114,12 +117,38 @@ public:
 		mutex_.unlock();
 	}
 
+	static void toggleStop() {
+		mutex_.lock();
+		stop_ = !stop_;
+		mutex_.unlock();
+	}
+
+	static void toggleCapturePause() {
+		mutex_.lock();
+		capturePause_ = !capturePause_;
+		mutex_.unlock();
+	}
+
+	static void toggleCaptureStop() {
+		mutex_.lock();
+		captureStop_ = !captureStop_;
+		mutex_.unlock();
+	}
+
 	static void setGain(float vol) {
 		mutex_.lock();
 		musicGain_ = vol;
 		mutex_.unlock();
 	}
 
+	static void addToQueue(QByteArray buffer) {
+		mutex_.lock();
+		streamQueue.enqueue(buffer);
+		mutex_.unlock();
+	}
+
+	void startCapture();
+	void captureMic();
     /**
      * Destroy the OpenAL context and try to clean up any resources.
      * This must be called manually when the main application exits to ensure
