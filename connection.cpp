@@ -3,7 +3,7 @@
 
 Connection::Connection(QString host,int protocol,int port) : mode(CLIENT) {
 	
-	ctlSock = new CommSocket("",protocol,port);
+	ctlSock = new CommSocket(host,port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
@@ -11,7 +11,7 @@ Connection::Connection(QString host,int protocol,int port) : mode(CLIENT) {
 
 Connection::Connection(int protocol,int port) : mode(SERVER) {
 
-	ctlSock = new CommSocket("",protocol,port);
+	ctlSock = new CommSocket("",port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));

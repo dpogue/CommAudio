@@ -36,8 +36,12 @@ bool CommSocket::winEvent(MSG* message, long* result) {
 	
 	switch(message->message) {
 	case WM_SOCKET:
-		
+
+		if(WSAGETSELECTERROR(message->lParam)) {
+				qDebug((QString::number(WSAGETSELECTERROR(message->lParam))).toAscii().data());
+		}
         switch(WSAGETSELECTEVENT(message->lParam)) {
+			
     		case FD_WRITE:
 				if(writeBuffer.isEmpty()) {
     				emit socketWrite();
