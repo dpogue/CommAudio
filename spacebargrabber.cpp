@@ -19,10 +19,13 @@ SpacebarGrabber::~SpacebarGrabber() {
 bool SpacebarGrabber::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        if (!keyEvent->isAutoRepeat()) {
-            playButton->animateClick();
+        
+        if (keyEvent->key() == Qt::Key_Space) {
+            if (!keyEvent->isAutoRepeat()) {
+                playButton->animateClick();
+            }
+            return true;
         }
-        return true;
     }
     return QObject::eventFilter(obj, event);
 }

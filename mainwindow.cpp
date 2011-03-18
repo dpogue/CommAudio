@@ -86,8 +86,6 @@ void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
 
 void CommAudio::onVolumeMoved(int volume) {
     AudioManager::setGain(volume / 100.0);
-    qDebug("H");
-    qDebug("gain: %f", volume / 100.0); 
 }
 
 void CommAudio::onConnectClicked() {
