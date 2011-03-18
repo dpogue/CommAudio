@@ -1,7 +1,7 @@
 #include "connection.h"
 #include "defines.h"
 
-Connection::Connection(QString host,int protocol,int port) : mode(CLIENT) {
+Connection::Connection(QString host,int prot,int port) : mode(CLIENT),protocol(prot) {
 	
 	ctlSock = new CommSocket(host,port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
@@ -9,7 +9,7 @@ Connection::Connection(QString host,int protocol,int port) : mode(CLIENT) {
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 }
 
-Connection::Connection(int protocol,int port) : mode(SERVER) {
+Connection::Connection(int prot,int port) : mode(SERVER),protocol(prot) {
 
 	ctlSock = new CommSocket("",port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));

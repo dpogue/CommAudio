@@ -19,6 +19,8 @@ private:
 	/** The open UDP socket for streaming data. */
     CommSocket* strSock;
 
+	int protocol;
+
 	int mode;
 
 protected:
