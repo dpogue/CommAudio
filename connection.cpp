@@ -44,14 +44,15 @@ bool Connection::handShake() {
 }
 void Connection::onCtlReadReady() {
     QByteArray buf = ctlSock->getReadBuffer();
-	qDebug("Buffer Size:%d",buf.size());
+
     if (buf[0] == (char)0x01) {
         qDebug("Received handshake");
         if (mode == SERVER) {
-            QByteArray buf;
-            buf.append(0x01);
-            ctlSock->setWriteBuffer(buf);
+            QByteArray buf2;
+            buf2.append(0x01);
+            ctlSock->setWriteBuffer(buf2);
         }
+        handShakeRecv = true;
     } else {
         qDebug("Got something to read");
     }
