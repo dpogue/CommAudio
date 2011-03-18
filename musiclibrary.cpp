@@ -70,3 +70,7 @@ void MusicLibrary::addSongs(QDir* directory) {
         addItem(fileName);
     }
 }
+
+void MusicLibrary::onSongDoubleClicked(QListWidgetItem* songListing) {
+    emit signalSongDoubleClicked(songListing->text());
+}

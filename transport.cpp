@@ -79,3 +79,6 @@ void Transport::onNextClicked() {
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
     playingState = PLAYING;
 }
+
+void Transport::onSongDoubleClicked(QString songName) {
+}

@@ -54,6 +54,12 @@ public:
 
     void addFolder(QString path);
     void addSongs(QDir* directory);
+
+signals:
+    void signalSongDoubleClicked(QString songName);
+
+public slots:
+    void onSongDoubleClicked(QListWidgetItem* songListing);
 };
 
 #endif // MUSICLIBRARY_H

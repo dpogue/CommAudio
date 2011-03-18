@@ -48,6 +48,8 @@ public slots:
      * @author Dean Morin
      */
     void onNextClicked();
+
+    void onSongDoubleClicked(QString songName);
 };
 
 #endif // TRANSPORT_H
