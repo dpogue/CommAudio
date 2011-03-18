@@ -43,10 +43,18 @@ bool Connection::handShake() {
 	return true;
 }
 void Connection::onCtlReadReady() {
+    QByteArray buf = ctlSock->getReadBuffer();
 
-    qDebug("Got something to read");
-    //QByteArray data = ctlSock->getReadBuffer();
-   // qDebug(data.data());
+    if (buf[0] == (char)0x01) {
+        qDebug("Received handshake");
+        if (mode == SERVER) {
+            QByteArray buf;
+            buf.append(0x01);
+            ctlSock->setWriteBuffer(buf);
+        }
+    } else {
+        qDebug("Got something to read");
+    }
 }
 
 void Connection::onCtlWrite() {
@@ -55,10 +63,12 @@ void Connection::onCtlWrite() {
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
-	ctlSock->setWriteBuffer("1");
 }
 
 void Connection::onCtlConnect() {
-	qDebug("Connected");
-	ctlSock->setWriteBuffer("1");
+    if (protocol == TCP && mode == CLIENT) {
+        QByteArray buf;
+        buf.append(0x01);
+        ctlSock->setWriteBuffer(buf);
+    }
 }
