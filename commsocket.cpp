@@ -60,8 +60,7 @@ bool CommSocket::winEvent(MSG* message, long* result) {
 				closesocket(sock);
     			emit socketClose();
     			break;
-        }
-        
+		}
         return true;
     }
     return false;
@@ -194,7 +193,7 @@ void CommSocket::closeSocket() {
     sock = 0;
 }
 
-bool CommSocket::connectToServ(LPWSABUF dataToSend,LPWSABUF lpCalleeData) {
+bool CommSocket::connectToServ() {
 	
 	if(WSAConnect(sock,(sockaddr*)&server,sizeof(server),NULL,NULL,NULL,NULL) == SOCKET_ERROR)
 	{

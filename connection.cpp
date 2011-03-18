@@ -14,18 +14,14 @@ Connection::Connection(int protocol,int port) : mode(SERVER) {
 }
 
 void Connection::run() {
-	WSABUF sendData;
-	WSABUF recvData;
-	ZeroMemory(&sendData,sizeof(WSABUF));
-	ZeroMemory(&recvData,sizeof(WSABUF));
-
+	
 	if(mode == SERVER) {
 		ctlSock->listenForConn(BACKLOG);
 	}
 	else {
-		sendData.buf[0] = 1;
-		sendData.len    = 1;
-		ctlSock->connectToServ(&sendData,&recvData);
+		//sendData.buf[0] = 1;
+		//sendData.len    = 1;
+		ctlSock->connectToServ();
 	}
 	//handShake();
 	this->exec();

@@ -30,7 +30,7 @@ public:
 	CommSocket* getLastAcceptedSocket();
 	bool setWriteBuffer(QByteArray data);
     QByteArray getReadBuffer();
-	bool connectToServ(LPWSABUF dataToSend,LPWSABUF dataFromServ);
+	bool connectToServ();
 	bool listenForConn(int backlog);
     void closeSocket();
 
