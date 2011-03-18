@@ -44,7 +44,7 @@ bool Connection::handShake() {
 }
 void Connection::onCtlReadReady() {
     QByteArray buf = ctlSock->getReadBuffer();
-
+	qDebug("Buffer Size:%d",buf.size());
     if (buf[0] == (char)0x01) {
         qDebug("Received handshake");
         if (mode == SERVER) {
@@ -63,6 +63,13 @@ void Connection::onCtlWrite() {
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
+	ctlSock->closeSocket();
+	ctlSock = ctlSock->getLastAcceptedSocket();
+	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
+	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+
 }
 
 void Connection::onCtlConnect() {

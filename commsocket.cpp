@@ -220,6 +220,7 @@ bool CommSocket::acceptConn() {
 	if(lastAccepted == INVALID_SOCKET) {
 		return false;
 	}
+	WSAAsyncSelect(lastAccepted,winId(),WM_SOCKET,0);
 	return true;
 }
 
