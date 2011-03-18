@@ -51,3 +51,7 @@ void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
 	ctlSock->setWriteBuffer("1");
 }
+
+void Connection::onCtlConnect() {
+	//To be implemented
+}

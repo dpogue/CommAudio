@@ -15,9 +15,6 @@ private:
 	bool acceptConn();
     SOCKET sock;
 	SOCKET lastAccepted;
-	//Don't ask me, talk to microsoft
-	static int CALLBACK acceptCondition(LPWSABUF lpCallerId,LPWSABUF lpCallerData,LPQOS lpSQOS,LPQOS lpGQOS,
-		LPWSABUF lpCalleeId,LPWSABUF lpCalleeData,GROUP *g,DWORD* dwCallbackData);
 	sockaddr_in server;
 	QByteArray readBuffer;
 	QByteArray writeBuffer;

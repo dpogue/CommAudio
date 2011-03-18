@@ -205,19 +205,10 @@ bool CommSocket::connectToServ() {
 	return true;
 }
 
-int CALLBACK CommSocket::acceptCondition(LPWSABUF lpCallerId,LPWSABUF lpCallerData,LPQOS lpSQOS,LPQOS lpGQOS,
-		LPWSABUF lpCalleeId,LPWSABUF lpCalleeData,GROUP *g,DWORD* dwCallbackData) {
-			
-	if(lpCalleeData->buf[0] != 1) {
-		return false;
-	}
-	return true;
-}
-
 bool CommSocket::acceptConn() {
 
 	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE; 
-	lastAccepted = WSAAccept(sock,NULL,NULL,((LPCONDITIONPROC)&acceptCondition),NULL);
+	lastAccepted = WSAAccept(sock,NULL,NULL,NULL,NULL);
 	
 	if(lastAccepted == INVALID_SOCKET) {
 		return false;

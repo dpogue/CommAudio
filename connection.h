@@ -27,6 +27,7 @@ public slots:
 	void onCtlReadReady();
 	void onCtlWrite();
 	void onCtlAccept();
+	void onCtlConnect();
 };
 
 #endif
