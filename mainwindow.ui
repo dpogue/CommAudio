@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>441</width>
+    <width>440</width>
     <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CommAudio</string>
+   <string>DBDLCAWT</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/dbdl.jpeg</normaloff>img/dbdl.jpeg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel#connectErrorLabel { 
@@ -42,7 +46,7 @@ QFrame#nowPlayingFrame {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="localTab">
      <attribute name="title">
@@ -201,25 +205,14 @@ QFrame#nowPlayingFrame {
       <string>Start Server</string>
      </property>
     </widget>
-    <zorder>ipLineEdit</zorder>
-    <zorder>portLineEdit</zorder>
-    <zorder>ipLabel</zorder>
-    <zorder>portLabel</zorder>
-    <zorder>multicastCheckBox</zorder>
-    <zorder>connectPushButton</zorder>
-    <zorder>connectErrorLabel</zorder>
-    <zorder>startServerPushButton</zorder>
-    <zorder>playPushButton</zorder>
-    <zorder>gridLayoutWidget</zorder>
-    <zorder>stopPushButton</zorder>
    </widget>
    <widget class="QPushButton" name="chatPushButton">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>570</y>
-      <width>62</width>
-      <height>21</height>
+      <x>170</x>
+      <y>560</y>
+      <width>101</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
@@ -236,35 +229,12 @@ QFrame#nowPlayingFrame {
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="settingsPushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>350</y>
-      <width>62</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>img/settings.png</normaloff>img/settings.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>32</width>
-      <height>32</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>-1</x>
       <y>-1</y>
-      <width>482</width>
+      <width>441</width>
       <height>271</height>
      </rect>
     </property>
@@ -294,12 +264,13 @@ QFrame#nowPlayingFrame {
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <zorder>gridLayoutWidget</zorder>
-         <zorder>gridLayoutWidget</zorder>
         </widget>
        </item>
        <item>
         <widget class="QSlider" name="volumeSlider">
+         <property name="toolTip">
+          <string>Volume</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -408,35 +379,44 @@ QFrame#nowPlayingFrame {
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="settingsPushButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/settings.png</normaloff>img/settings.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="connectionPushButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/connect.png</normaloff>img/connect.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
    </widget>
-   <zorder>fileTabWidget</zorder>
-   <zorder>groupBox</zorder>
-   <zorder>chatPushButton</zorder>
-   <zorder>settingsPushButton</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>stopPushButton</zorder>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>441</width>
-     <height>20</height>
-    </rect>
-   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

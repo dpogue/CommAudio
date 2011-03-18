@@ -4,7 +4,9 @@
 #include "mainwindow.h"
 #include "manager.h"
 #include "defines.h"
+#include "spacebargrabber.h"
 #include "stylesheet.h"
+#include "transport.h"
 #include <qlayout.h>
 CommSocket* test;
 
@@ -15,6 +17,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     this->setStyleSheet(StyleSheet::commAudio());
 
     transport = new Transport(&ui, this);
+    spacebarGrabber = new SpacebarGrabber(&ui);
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -52,20 +55,21 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 CommAudio::~CommAudio() { 
     AudioManager::instance()->shutdown();
 
+    delete spacebarGrabber;
+    delete transport;
     delete ctlSock;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
     switch (keyEvent->key()) {
-        case Qt::Key_Space:
-            transport->onPlayClicked();
+        case Qt::Key_Space:    
+            ui.playPushButton->animateClick();
             return;
         case Qt::Key_C:
             onChatPressed();
             return;
-        default:
-            QMainWindow::keyPressEvent(keyEvent);
     }
+    QMainWindow::keyPressEvent(keyEvent);
 }
 
 void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {

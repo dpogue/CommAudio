@@ -5,7 +5,8 @@
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
 #include "commsocket.h"
-#include "transport.h"
+class SpacebarGrabber;
+class Transport;
 
 class CommAudio : public QMainWindow {
 	Q_OBJECT
@@ -34,6 +35,9 @@ private:
 
     /** True if currently chatting. */
     bool chatting;
+
+    /** Prevents buttons other that play from stealing the spacebar. */
+    SpacebarGrabber* spacebarGrabber;
 
     /** The open TCP socket either for the control channel. */
     CommSocket* ctlSock;
