@@ -5,18 +5,24 @@ Connection::Connection(QString host,int protocol,int port) : mode(CLIENT) {
 	
 	ctlSock = new CommSocket("",protocol,port);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
-	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlRead()));	
+	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 }
 
 Connection::Connection(int protocol,int port) : mode(SERVER) {
+
 	ctlSock = new CommSocket("",protocol,port);
+	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+	qDebug((QString::number(port)).toAscii().data());
 }
 
 void Connection::run() {
 	
 	if(mode == SERVER) {
 		ctlSock->listenForConn(BACKLOG);
+		qDebug("listening");
 	}
 	else {
 		//sendData.buf[0] = 1;

@@ -6,7 +6,7 @@
 #include "musiclibrary.h"
 #include "commsocket.h"
 #include "transport.h"
-
+#include "connection.h"
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
@@ -18,6 +18,9 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 
+	Connection* server;
+
+	Connection* client;
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 

@@ -32,9 +32,11 @@ bool CommSocket::listenForConn(int backlog) {
 }
 
 bool CommSocket::winEvent(MSG* message, long* result) {
+	
+	
 	switch(message->message) {
-    
 	case WM_SOCKET:
+		
         switch(WSAGETSELECTEVENT(message->lParam)) {
     		case FD_WRITE:
 				if(writeBuffer.isEmpty()) {
@@ -85,6 +87,7 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 
 	if(mode == SERVER) {
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
+		qDebug("binding");
 		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
 			int s = WSAGetLastError();
 			exit(1);

@@ -5,15 +5,13 @@
 #include "defines.h"
 #include "stylesheet.h"
 #include <qlayout.h>
-#include "connection.h"
-CommSocket* test;
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags) {
+	: QMainWindow(parent, flags),server(NULL),client(NULL) {
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
-
+	
     transport = new Transport(&ui, this);
 
     connect(ui.connectPushButton, SIGNAL(clicked()),
@@ -79,7 +77,9 @@ void CommAudio::onConnectClicked() {
 
     ui.connectPushButton->setDisabled(false);
     ui.connectPushButton->setText("Disconnect");
-	Connection conn(QString::number(ip),TCP,port);
+	
+	client = new Connection(ui.ipLineEdit->text(),TCP,port);
+	client->start();
 }
 
 void CommAudio::onStartServerClicked() {
@@ -103,7 +103,9 @@ void CommAudio::onStartServerClicked() {
     ui.startServerPushButton->setText("Stop Server");
     connect(ui.startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStopServerClicked()));
-	Connection conn(TCP,port);
+	
+	server = new Connection(TCP,port);
+	server->start();
 }
 
 void CommAudio::onStopServerClicked() {
