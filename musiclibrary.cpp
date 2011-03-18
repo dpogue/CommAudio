@@ -1,6 +1,8 @@
 #include "musiclibrary.h"
 
 MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
+    connect(this, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            this, SLOT(onItemDoubleClicked(QListWidgetItem*)));
 }
 
 MusicLibrary::~MusicLibrary() {
@@ -71,6 +73,6 @@ void MusicLibrary::addSongs(QDir* directory) {
     }
 }
 
-void MusicLibrary::onSongDoubleClicked(QListWidgetItem* songListing) {
+void MusicLibrary::onItemDoubleClicked(QListWidgetItem* songListing) {
     emit signalSongDoubleClicked(songListing->text());
 }

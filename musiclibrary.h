@@ -59,7 +59,7 @@ signals:
     void signalSongDoubleClicked(QString songName);
 
 public slots:
-    void onSongDoubleClicked(QListWidgetItem* songListing);
+    void onItemDoubleClicked(QListWidgetItem* songListing);
 };
 
 #endif // MUSICLIBRARY_H

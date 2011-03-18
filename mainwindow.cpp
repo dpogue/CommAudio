@@ -50,6 +50,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     userSongs = new MusicLibrary();
     userSongs->addFolder("music/");
     hl->addWidget(userSongs);
+    connect(userSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            transport, SLOT(onSongDoubleClicked(QString)));
 }
 
 CommAudio::~CommAudio() { 
