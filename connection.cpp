@@ -5,6 +5,7 @@ Connection::Connection(QString host,int prot,int port) : mode(CLIENT),protocol(p
 	
 	ctlSock = new CommSocket(host,port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 }
@@ -13,6 +14,7 @@ Connection::Connection(int prot,int port) : mode(SERVER),protocol(prot) {
 
 	ctlSock = new CommSocket("",port,protocol);
 	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 	qDebug((QString::number(port)).toAscii().data());
@@ -25,11 +27,9 @@ void Connection::run() {
 		qDebug("listening");
 	}
 	else {
-		//sendData.buf[0] = 1;
-		//sendData.len    = 1;
 		ctlSock->connectToServ();
 	}
-	//handShake();
+
 	this->exec();
 }
 
@@ -59,5 +59,6 @@ void Connection::onCtlAccept() {
 }
 
 void Connection::onCtlConnect() {
-	//To be implemented
+	qDebug("Connected");
+	ctlSock->setWriteBuffer("1");
 }

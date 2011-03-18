@@ -19,9 +19,14 @@ private:
 	/** The open UDP socket for streaming data. */
     CommSocket* strSock;
 
+	/** Retains memory regarding the type of connection */
 	int protocol;
 
+	/** Specifies whether the connection is client or server */
 	int mode;
+
+	/** Boolean for determing whether or not the handshake has been received*/
+	bool handShakeRecv;
 
 protected:
 	virtual void run();
