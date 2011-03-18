@@ -81,4 +81,7 @@ void Transport::onNextClicked() {
 }
 
 void Transport::onSongDoubleClicked(QString songName) {
+    AudioManager::instance()->playMusic(songName);
+    ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    playingState = PLAYING;
 }
