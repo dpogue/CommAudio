@@ -5,14 +5,11 @@
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
 #include "commsocket.h"
-<<<<<<< HEAD
 #include "transport.h"
 #include "connection.h"
-=======
 class SpacebarGrabber;
 class Transport;
 
->>>>>>> master
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
