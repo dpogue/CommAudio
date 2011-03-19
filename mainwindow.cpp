@@ -1,9 +1,12 @@
 #include <WinSock2.h>
 #include <qdir.h>
+#include <QKeyEvent>
 #include "mainwindow.h"
 #include "manager.h"
 #include "defines.h"
+#include "spacebargrabber.h"
 #include "stylesheet.h"
+#include "transport.h"
 #include <qlayout.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
@@ -13,7 +16,10 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     this->setStyleSheet(StyleSheet::commAudio());
 	
     transport = new Transport(&ui, this);
+    spacebarGrabber = new SpacebarGrabber(&ui);
 
+    connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
+            this, SLOT(onVolumeMoved(int)));
     connect(ui.connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
     connect(ui.startServerPushButton, SIGNAL(clicked()),
@@ -26,8 +32,12 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onMulticastStateChanged(int)));
 
     multicastServer = ui.multicastCheckBox->isChecked();
+    ui.volumeSlider->setMinimum(0);
+    ui.volumeSlider->setMaximum(100);
+    ui.volumeSlider->setValue(50);
+    onVolumeMoved(50);
     chatting = false;
-    stickyChat = false;
+    stickyChat = true;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -39,15 +49,41 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     userSongs = new MusicLibrary();
     userSongs->addFolder("music/");
     hl->addWidget(userSongs);
+    connect(userSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            transport, SLOT(onSongDoubleClicked(QString)));
 }
 
 CommAudio::~CommAudio() { 
 
     AudioManager::instance()->shutdown();    
+    delete spacebarGrabber;
+    delete transport;
 }
 
-QString CommAudio::getSelectedSong() {
-    return userSongs->getSelectedSong();
+void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_Space:    
+            ui.playPushButton->animateClick();
+            return;
+        case Qt::Key_C:
+            onChatPressed();
+            return;
+    }
+    QMainWindow::keyPressEvent(keyEvent);
+}
+
+void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
+    switch (keyEvent->key()) {
+        case Qt::Key_C:
+            onChatReleased();
+            return;
+        default:
+            QMainWindow::keyReleaseEvent(keyEvent);
+    }
+}
+
+void CommAudio::onVolumeMoved(int volume) {
+    AudioManager::setGain(volume / 100.0);
 }
 
 void CommAudio::onConnectClicked() {

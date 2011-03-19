@@ -1,7 +1,7 @@
 #include "transport.h"
 #include "defines.h"
-#include "manager.h"
 #include "mainwindow.h"
+#include "manager.h"
 #include <qmessagebox.h>
 
 Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
@@ -59,9 +59,29 @@ void Transport::onStopClicked() {
 }
 
 void Transport::onPreviousClicked() {
-    qDebug("Transport::onPreviousClicked()");
+    QString fileName = ((CommAudio*)parent())->getPrevSong();
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    AudioManager::instance()->playMusic(fileName);
+    ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    playingState = PLAYING;
 }
 
 void Transport::onNextClicked() {
-    qDebug("Transport::onNextClicked()");
+    QString fileName = ((CommAudio*)parent())->getNextSong();
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    AudioManager::instance()->playMusic(fileName);
+    ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    playingState = PLAYING;
+}
+
+void Transport::onSongDoubleClicked(QString songName) {
+    AudioManager::instance()->playMusic(songName);
+    ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    playingState = PLAYING;
 }

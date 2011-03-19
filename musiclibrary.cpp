@@ -1,6 +1,8 @@
 #include "musiclibrary.h"
 
 MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
+    connect(this, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            this, SLOT(onItemDoubleClicked(QListWidgetItem*)));
 }
 
 MusicLibrary::~MusicLibrary() {
@@ -20,6 +22,36 @@ QString MusicLibrary::getSelectedSong() {
     return songs[sel.at(0)->text()];
 }
 
+QString MusicLibrary::getNextSong() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        return getSelectedSong();
+    }
+
+    int row = this->row(sel.at(0));
+    if (++row >= count()) {
+        return "";
+    }
+
+    this->item(row)->setSelected(true);
+    return songs[this->item(row)->text()];
+}
+
+QString MusicLibrary::getPrevSong() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        return getSelectedSong();
+    }
+
+    int row = this->row(sel.at(0));
+    if (--row < 0) {
+        return "";
+    }
+
+    this->item(row)->setSelected(true);
+    return songs[this->item(row)->text()];
+}
+
 void MusicLibrary::addFolder(QString path) {
     QDir* directory = new QDir(path);
     if (!directory->makeAbsolute()) {
@@ -31,7 +63,7 @@ void MusicLibrary::addFolder(QString path) {
 
 void MusicLibrary::addSongs(QDir* directory) {
     QStringList filters;
-    filters << "*.wav" << "*.ogg";
+    filters << "*.wav" << "*.ogg" << "*.oga";
     QStringList newSongs = directory->entryList(filters, QDir::Readable | QDir::Files, QDir::Name);
     
     while (!newSongs.isEmpty()) {
@@ -39,4 +71,10 @@ void MusicLibrary::addSongs(QDir* directory) {
         songs.insert(fileName, directory->absoluteFilePath(fileName));
         addItem(fileName);
     }
+}
+
+void MusicLibrary::onItemDoubleClicked(QListWidgetItem* songListing) {
+  //  emit signalSongDoubleClicked(songListing->text());
+    emit signalSongDoubleClicked(songs[songListing->text()]);
+    //emit signalSongDoubleClicked(songs[this->item(1)->text()]);
 }

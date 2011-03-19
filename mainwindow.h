@@ -5,8 +5,14 @@
 #include "ui_mainwindow.h"
 #include "musiclibrary.h"
 #include "commsocket.h"
+<<<<<<< HEAD
 #include "transport.h"
 #include "connection.h"
+=======
+class SpacebarGrabber;
+class Transport;
+
+>>>>>>> master
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
@@ -38,6 +44,26 @@ private:
     /** True if currently chatting. */
     bool chatting;
 
+    /** Prevents buttons other that play from stealing the spacebar. */
+    SpacebarGrabber* spacebarGrabber;
+
+protected:
+    /**
+     * Handles keyboard presses.
+     *
+     * @author Dean Morin
+     * @param keyEvent The triggering key event.
+     */
+    virtual void keyPressEvent(QKeyEvent* keyEvent);
+    
+    /**
+     * Handles keyboard releases.
+     *
+     * @author Dean Morin
+     * @param keyEvent The triggering key event.
+     */
+    virtual void keyReleaseEvent(QKeyEvent* keyEvent);
+
 public:
     /**
      * Returns the currently selected song filename.
@@ -45,9 +71,39 @@ public:
      * @author Darryl Pogue
      * @return The filename of the selected song.
      */
-    QString getSelectedSong();
+    QString getSelectedSong() {
+        return userSongs->getSelectedSong();
+    }
+
+    /**
+     * Returns the next song's filename, or an empty string if there is no next song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the next song.
+     */
+    QString getNextSong() {
+        return userSongs->getNextSong();
+    }
+
+    /**
+     * Returns the previous song's filename, or an empty string if there is no previous song.
+     *
+     * @author Darryl Pogue
+     * @return The filename of the previous song.
+     */
+    QString getPrevSong() {
+        return userSongs->getPrevSong();
+    }
 
 public slots:
+    /**
+     * Adjusts the volume based on the volume slider.
+     *
+     * @author Dean Morin
+     * @param volume The new value for volume.
+     */
+    void onVolumeMoved(int volume);
+
     /**
      * Attempts to connect to the server specified in the server group box. 
      *
