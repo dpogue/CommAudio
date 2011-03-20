@@ -49,8 +49,9 @@ bool Connection::handShake() {
 void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
     Stream s(buf);
+    unsigned char msgType = s.readByte();
 
-    if (s.readByte() == (char)0x01) {
+    if (msgType == (char)0x01) {
         qDebug("Received handshake");
         if (mode == SERVER) {
             Stream str;
@@ -69,7 +70,7 @@ void Connection::onCtlReadReady() {
         }
         buf.remove(0, s.position());
         handShakeRecv = true;
-    } else if (s.readByte() == (char)0x02) {
+    } else if (msgType == (char)0x02) {
         qDebug("Got the list of remote files");
         int count = s.readInt();
         QList<QString> songs;
