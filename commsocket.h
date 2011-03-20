@@ -26,7 +26,7 @@ public:
     virtual ~CommSocket();
 	CommSocket* getLastAcceptedSocket();
 	bool setWriteBuffer(QByteArray data);
-    QByteArray getReadBuffer();
+    QByteArray& getReadBuffer();
 	bool connectToServ();
 	bool listenForConn(int backlog);
     void closeSocket();

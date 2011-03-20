@@ -190,7 +190,7 @@ bool CommSocket::qBinCpy(QByteArray& dest,QByteArray& src,int size)
 	return true;
 }
 
-QByteArray CommSocket::getReadBuffer() {
+QByteArray& CommSocket::getReadBuffer() {
 	return readBuffer;
 }
 

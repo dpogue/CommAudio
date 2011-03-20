@@ -92,6 +92,16 @@ public:
         return userSongs->getPrevSong();
     }
 
+    /**
+     * Returns the list of songs in the local library.
+     *
+     * @author Darryl Pogue
+     * @return The list of songs.
+     */
+    QList<QString> getSongList() {
+        return userSongs->getSongList();
+    }
+
 public slots:
     /**
      * Adjusts the volume based on the volume slider.

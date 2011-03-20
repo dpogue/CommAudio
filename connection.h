@@ -2,17 +2,23 @@
 #define CONNECTION_H
 #include <qthread.h>
 #include "commsocket.h"
+
+class CommAudio;
+
 class Connection : public QThread {
 	
 	Q_OBJECT
 
 public:
 	//for client
-	Connection(QString host,int protocol,int port);
+	Connection(CommAudio* owner, QString host,int protocol,int port);
 	//for server
-	Connection(int protocol,int port);
+	Connection(CommAudio* owner, int protocol,int port);
 private:
 	bool handShake();
+
+    CommAudio* mwOwner;
+
 	/** The open TCP socket either for the control channel. */
     CommSocket* ctlSock;
 

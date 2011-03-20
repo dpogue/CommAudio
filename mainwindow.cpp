@@ -114,7 +114,7 @@ void CommAudio::onConnectClicked() {
     ui.connectPushButton->setDisabled(false);
     ui.connectPushButton->setText("Disconnect");
 	
-	client = new Connection(ui.ipLineEdit->text(),TCP,port);
+	client = new Connection(this, ui.ipLineEdit->text(), TCP, port);
 	client->start();
 }
 
@@ -140,7 +140,7 @@ void CommAudio::onStartServerClicked() {
     connect(ui.startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStopServerClicked()));
 	
-	server = new Connection(TCP,port);
+	server = new Connection(this, TCP, port);
 	server->start();
 }
 
