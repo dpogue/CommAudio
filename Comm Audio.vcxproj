@@ -147,6 +147,7 @@
     <ClCompile Include="musiclibrary.cpp" />
     <ClCompile Include="openal_helper.cpp" />
     <ClCompile Include="spacebargrabber.cpp" />
+    <ClCompile Include="stream.cpp" />
     <ClCompile Include="transport.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +238,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_DLL "-I." "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtNetwork" "-I." "-I." "-I." "-I." "-I."</Command>
     </CustomBuild>
+    <ClInclude Include="stream.h" />
     <ClInclude Include="stylesheet.h" />
     <CustomBuild Include="commsocket.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

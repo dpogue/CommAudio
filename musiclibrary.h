@@ -55,6 +55,14 @@ public:
     void addFolder(QString path);
     void addSongs(QDir* directory);
 
+    /**
+     * Adds a list of songs to the music library.
+     *
+     * @author Darryl Pogue
+     * @param songlist The list of songs to add to the library.
+     */
+    void addSongs(QList<QString> songlist);
+
 signals:
     void signalSongDoubleClicked(QString songName);
 

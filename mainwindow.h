@@ -35,6 +35,9 @@ private:
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary* userSongs;
 
+    /** Contains the songs that are on the remote drive. */
+    MusicLibrary* remoteSongs;
+
     /** True if the chat button should toggle chat. */
     bool stickyChat;
 
@@ -101,6 +104,8 @@ public:
     QList<QString> getSongList() {
         return userSongs->getSongList();
     }
+
+    void addRemoteSongs(QList<QString> songs);
 
 public slots:
     /**

@@ -73,6 +73,13 @@ void MusicLibrary::addSongs(QDir* directory) {
     }
 }
 
+void MusicLibrary::addSongs(QList<QString> songlist) {
+    for (int i = 0; i < songs.size(); i++) {
+        songs.insert(songlist[i], songlist[i]);
+        addItem(songlist[i]);
+    }
+}
+
 void MusicLibrary::onItemDoubleClicked(QListWidgetItem* songListing) {
   //  emit signalSongDoubleClicked(songListing->text());
     emit signalSongDoubleClicked(songs[songListing->text()]);

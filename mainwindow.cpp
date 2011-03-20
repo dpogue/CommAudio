@@ -51,6 +51,13 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     hl->addWidget(userSongs);
     connect(userSongs, SIGNAL(signalSongDoubleClicked(QString)),
             transport, SLOT(onSongDoubleClicked(QString)));
+
+    ui.fileTabWidget->setTabEnabled(1, false);
+    ui.fileTabWidget->setTabEnabled(2, false);
+    QBoxLayout* hr = new QBoxLayout(QBoxLayout::TopToBottom, ui.peerTab);
+    hr->setMargin(0);
+    remoteSongs = new MusicLibrary();
+    hr->addWidget(remoteSongs);
 }
 
 CommAudio::~CommAudio() { 
@@ -80,6 +87,10 @@ void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
         default:
             QMainWindow::keyReleaseEvent(keyEvent);
     }
+}
+
+void CommAudio::addRemoteSongs(QList<QString> songs) {
+    remoteSongs->addSongs(songs);
 }
 
 void CommAudio::onVolumeMoved(int volume) {
@@ -116,6 +127,8 @@ void CommAudio::onConnectClicked() {
 	
 	client = new Connection(this, ui.ipLineEdit->text(), TCP, port);
 	client->start();
+
+    ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::onStartServerClicked() {
@@ -142,12 +155,15 @@ void CommAudio::onStartServerClicked() {
 	
 	server = new Connection(this, TCP, port);
 	server->start();
+
+    ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::onStopServerClicked() {
     disconnect(ui.startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStopServerClicked()));
 
+    ui.fileTabWidget->setTabEnabled(1, false);
     ui.connectPushButton->setDisabled(false);
     ui.startServerPushButton->setText("Start Server");
     connect(ui.startServerPushButton, SIGNAL(clicked()),

@@ -1,6 +1,7 @@
 #include "connection.h"
 #include "defines.h"
 #include "mainwindow.h"
+#include "stream.h"
 
 Connection::Connection(CommAudio* owner, QString host, int prot, int port)
         : mwOwner(owner), mode(CLIENT), protocol(prot) {
@@ -47,8 +48,9 @@ bool Connection::handShake() {
 }
 void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
+    Stream s(buf);
 
-    if (buf[0] == (char)0x01) {
+    if (s.readByte() == (char)0x01) {
         qDebug("Received handshake");
         if (mode == SERVER) {
             QByteArray buf2;
@@ -65,7 +67,19 @@ void Connection::onCtlReadReady() {
             }
             ctlSock->setWriteBuffer(buf3);
         }
+        buf.remove(0, s.position());
         handShakeRecv = true;
+    } else if (s.readByte() == (char)0x02) {
+        qDebug("Got the list of remote files");
+        int count = s.readInt();
+        QList<QString> songs;
+        for (int i = 0; i < count; i++) {
+            int len = s.readInt();
+            songs.append(QString(s.read(len)));
+        }
+        mwOwner->addRemoteSongs(songs);
+
+        buf.remove(0, s.position());
     } else {
         qDebug("Got something to read");
     }
