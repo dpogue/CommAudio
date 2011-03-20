@@ -53,19 +53,19 @@ void Connection::onCtlReadReady() {
     if (s.readByte() == (char)0x01) {
         qDebug("Received handshake");
         if (mode == SERVER) {
-            QByteArray buf2;
-            buf2.append(0x01);
-            ctlSock->setWriteBuffer(buf2);
+            Stream str;
+            str.writeByte(0x01);
+            ctlSock->setWriteBuffer(str.data());
 
-            QByteArray buf3;
-            QList<QString> list = mwOwner->getSongList();
-            buf3.append(0x02);
-            buf3.append(list.size());
-            for (int i = 0; i < list.size(); i++) {
-                buf3.append(list[i].length());
-                buf3.append(list[i]);
+            QList<QString> songs = mwOwner->getSongList();
+            Stream list;
+            list.writeByte(0x02);
+            list.writeInt(songs.size());
+            for (int i = 0; i < songs.size(); i++) {
+                list.writeInt(songs[i].size());
+                list.write(songs[i].toUtf8());
             }
-            ctlSock->setWriteBuffer(buf3);
+            ctlSock->setWriteBuffer(list.data());
         }
         buf.remove(0, s.position());
         handShakeRecv = true;
