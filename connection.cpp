@@ -48,6 +48,7 @@ bool Connection::handShake() {
 }
 void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
+    qDebug("Stream is %d bytes long.", buf.size());
     Stream s(buf);
     unsigned char msgType = s.readByte();
 

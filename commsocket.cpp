@@ -126,7 +126,7 @@ bool CommSocket::read() {
 		if(bytesRead == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s == WSAEWOULDBLOCK) {
-                readBuffer.append(buffer);
+                readBuffer.append(buffer, BUFSIZE - bytesToRead);
 				return true;
 			}
 			else {
@@ -135,7 +135,7 @@ bool CommSocket::read() {
 		}
 		bytesToRead -= bytesRead;
 	}
-    readBuffer.append(buffer);
+    readBuffer.append(buffer, BUFSIZE - bytesToRead);
 	return true;
 }
 
