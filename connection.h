@@ -14,6 +14,8 @@ public:
 	Connection(CommAudio* owner, QString host,int protocol,int port);
 	//for server
 	Connection(CommAudio* owner, int protocol,int port);
+
+	bool requestForFile(QString filename);
 private:
 	bool handShake();
 
@@ -33,6 +35,17 @@ private:
 
 	/** Boolean for determing whether or not the handshake has been received*/
 	bool handShakeRecv;
+
+	/** sends the file to the client*/
+	bool sendFile(QString filename);
+
+	/** saves the incoming file */
+	bool saveFile();
+
+	bool isFileTransferInProgress;
+	int fileSize;
+	HANDLE saveFileHandle;
+	
 
 protected:
 	virtual void run();

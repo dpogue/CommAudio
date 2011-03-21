@@ -8,6 +8,9 @@
 #define SERVER 3
 #define BUFSIZE 1024
 #define BACKLOG 5
+#define NORMAL     0
+#define FILESAVING 1
+
 
 // images
 #define ICON_PLAY       "img/play.png"
