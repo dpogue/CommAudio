@@ -12,6 +12,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 	fileSize = 0;
+	isFileTransferInProgress = false;
 }
 
 Connection::Connection(CommAudio* owner, int prot, int port)
@@ -24,6 +25,7 @@ Connection::Connection(CommAudio* owner, int prot, int port)
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
 	qDebug((QString::number(port)).toAscii().data());
 	fileSize = 0;
+	isFileTransferInProgress = false;
 }
 
 void Connection::run() {
@@ -52,6 +54,7 @@ void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
     qDebug("Stream is %d bytes long.", buf.size());
     Stream s(buf);
+	static int totalSize = 0;
     unsigned char msgType = s.readByte();
 	
     if (msgType == (char)0x01) {
@@ -84,14 +87,16 @@ void Connection::onCtlReadReady() {
         mwOwner->addRemoteSongs(songs);
 
         buf.remove(0, s.position());
+		this->requestForFile("test");
     } else if(msgType == (char)0x03) {
 		//lookup file
 		//sendFile(filename);
 	} else if(msgType == (char)0x04) {
 		fileSize = s.readInt();
+		//Need to strip out the file size before writing to file
+		buf.remove(0,s.position());
 		saveFile();
 	    isFileTransferInProgress = true;
-		//Need to strip out the file size before writing to file
 	} else if(msgType == (char)0x05) {
 		//file type requested does not exist
 	} else {
@@ -102,38 +107,43 @@ void Connection::onCtlReadReady() {
 		if(WriteFile(saveFileHandle,buf,buf.size(),&bytesWritten,NULL) == FALSE) {
 			//do something;
 		}
-		fileSize -= buf.size();
+		totalSize += s.size();
+		fileSize -= s.size();
 		if(fileSize <= 0) {
 			CloseHandle(saveFileHandle);
 			isFileTransferInProgress = false;
 		}
 	}
 }
+
 bool Connection::saveFile() {
 	
-	saveFileHandle =  CreateFileA("Change this later",CREATE_ALWAYS,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	saveFileHandle =  CreateFileA("./test.txt",CREATE_ALWAYS,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(saveFileHandle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 	return true;
 }
+
 bool Connection::sendFile(QString filename) {
 	HANDLE filehandle;
-	QByteArray data;
+	Stream data;
 	char buf[BUFSIZE];
 	DWORD bytesRead = 0;
 	filehandle = CreateFileA(filename.toAscii().data(),OPEN_EXISTING,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(filehandle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
-	while(ReadFile(filehandle,buf,BUFSIZE,&bytesRead,NULL)) {
+	data.writeByte(0x04);
+	data.writeInt(4977);
+	while(ReadFile(filehandle,buf,BUFSIZE-1,&bytesRead,NULL)) {
 		if(bytesRead == 0) {
 			break;
 		}
-		data.append(buf,bytesRead);
+		data.write(buf);
 		ZeroMemory(buf,BUFSIZE);
 	}
-	ctlSock->setWriteBuffer(data);
+	ctlSock->setWriteBuffer(data.data());
 	return true;
 }
 

@@ -111,13 +111,16 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 
 bool CommSocket::read() {
 	int bytesRead = 0;
-	int bytesToRead = BUFSIZE;
+	int bytesToRead = BUFSIZE-1;
 	char buffer[BUFSIZE];
-	ZeroMemory(buffer,BUFSIZE);
+	
 	int senderAddrSize = sizeof(server);
+	readBuffer.clear();
+	ZeroMemory(buffer,BUFSIZE);
 	while(bytesToRead > 0) {
 		if(prot == TCP) {
 			bytesRead = recv(sock,buffer,bytesToRead,0);
+			qDebug(buffer);
 		}
 		else {
 			bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
@@ -127,6 +130,7 @@ bool CommSocket::read() {
 			int s = WSAGetLastError();
 			if(s == WSAEWOULDBLOCK) {
                 readBuffer.append(buffer, BUFSIZE - bytesToRead);
+
 				return true;
 			}
 			else {
@@ -134,8 +138,9 @@ bool CommSocket::read() {
 			}
 		}
 		bytesToRead -= bytesRead;
+		
 	}
-    readBuffer.append(buffer, BUFSIZE - bytesToRead);
+    readBuffer.append(buffer, BUFSIZE-1 - bytesToRead);
 	return true;
 }
 
