@@ -54,7 +54,6 @@ void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
     qDebug("Stream is %d bytes long.", buf.size());
     Stream s(buf);
-	static int totalSize = 0;
     unsigned char msgType = s.readByte();
 	
     if (msgType == (char)0x01) {
@@ -87,16 +86,14 @@ void Connection::onCtlReadReady() {
         mwOwner->addRemoteSongs(songs);
 
         buf.remove(0, s.position());
-		this->requestForFile("test");
     } else if(msgType == (char)0x03) {
 		//lookup file
-		//sendFile(filename);
+		sendFile("test");
 	} else if(msgType == (char)0x04) {
 		fileSize = s.readInt();
-		//Need to strip out the file size before writing to file
-		buf.remove(0,s.position());
 		saveFile();
 	    isFileTransferInProgress = true;
+		//Need to strip out the file size before writing to file
 	} else if(msgType == (char)0x05) {
 		//file type requested does not exist
 	} else {
@@ -107,42 +104,45 @@ void Connection::onCtlReadReady() {
 		if(WriteFile(saveFileHandle,buf,buf.size(),&bytesWritten,NULL) == FALSE) {
 			//do something;
 		}
-		totalSize += s.size();
-		fileSize -= s.size();
+		fileSize -= buf.size();
 		if(fileSize <= 0) {
 			CloseHandle(saveFileHandle);
 			isFileTransferInProgress = false;
 		}
 	}
 }
-
 bool Connection::saveFile() {
 	
-	saveFileHandle =  CreateFileA("./test.txt",CREATE_ALWAYS,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	saveFileHandle =  CreateFileA("Change this later",CREATE_ALWAYS,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(saveFileHandle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 	return true;
 }
-
 bool Connection::sendFile(QString filename) {
 	HANDLE filehandle;
 	Stream data;
 	char buf[BUFSIZE];
 	DWORD bytesRead = 0;
-	filehandle = CreateFileA(filename.toAscii().data(),OPEN_EXISTING,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	DWORD filesize = 0;
+	filehandle = CreateFileA("./commsocket.cpp",OPEN_EXISTING,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(filehandle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 	data.writeByte(0x04);
+	//need to get size of file and append
+	GetFileSize(filehandle,&filesize);
 	data.writeInt(4977);
+	
 	while(ReadFile(filehandle,buf,BUFSIZE-1,&bytesRead,NULL)) {
 		if(bytesRead == 0) {
 			break;
 		}
 		data.write(buf);
+		qDebug(buf);
 		ZeroMemory(buf,BUFSIZE);
 	}
+	qDebug("File Size: %d",data.size());
 	ctlSock->setWriteBuffer(data.data());
 	return true;
 }
