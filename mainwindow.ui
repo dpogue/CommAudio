@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>871</height>
+    <width>749</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -343,8 +343,8 @@ QPushButton#nextPushButton {
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>670</y>
+      <x>460</x>
+      <y>400</y>
       <width>261</width>
       <height>151</height>
      </rect>
