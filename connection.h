@@ -1,6 +1,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 #include <qthread.h>
+#include <qfile.h>
 #include "commsocket.h"
 
 class CommAudio;
@@ -27,6 +28,12 @@ private:
 	/** The open UDP socket for streaming data. */
     CommSocket* strSock;
 
+	/** file to be saved */
+	QFile* saveFile;
+
+	/**file to be transmitted */
+	QFile* transmitFile;
+
 	/** Retains memory regarding the type of connection */
 	int protocol;
 
@@ -40,7 +47,7 @@ private:
 	bool sendFile(QString filename);
 
 	/** saves the incoming file */
-	bool saveFile();
+	//bool saveFile();
 
 	bool isFileTransferInProgress;
 	int fileSize;
