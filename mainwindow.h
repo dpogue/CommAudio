@@ -107,6 +107,10 @@ public:
         return userSongs->getSongList();
     }
 
+    QString getSongFilePath(QString song) {
+        return userSongs->getFilePath(song);
+    }
+
     void addRemoteSongs(QList<QString> songs);
 
 public slots:

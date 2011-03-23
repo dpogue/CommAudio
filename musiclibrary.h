@@ -29,6 +29,17 @@ public:
     }
 
     /**
+     * Returns the file path for a song.
+     *
+     * @author Darryl Pogue
+     * @param song The name of the song.
+     * @return The file path of the song.
+     */
+    QString getFilePath(QString song) {
+        return songs[song];
+    }
+
+    /**
      * Returns the currently selected song filename.
      *
      * @author Darryl Pogue

@@ -87,18 +87,29 @@ void Connection::onCtlReadReady() {
 
         buf.remove(0, s.position());
     } else if(msgType == (char)0x03) {
-		//lookup file
-		sendFile("test");
+        int len = s.readInt();
+        QString songname(s.read(len));
+
+        QString path = mwOwner->getSongFilePath(songname);
+        if (path.isEmpty() || !QFile::exists(path)) {
+            Stream resp;
+            resp.writeByte(0x05);
+            ctlSock->setWriteBuffer(resp.data());
+        } else {
+            sendFile(path);
+        }
+        buf.remove(0, s.position());
 	} else if(msgType == (char)0x04) {
 		fileSize = s.readInt();
 		saveFile();
 	    isFileTransferInProgress = true;
-		//Need to strip out the file size before writing to file
+        buf.remove(0, s.position());
 	} else if(msgType == (char)0x05) {
 		//file type requested does not exist
 	} else {
         qDebug("Got something to read");
     }
+
 	if(isFileTransferInProgress) {
 		DWORD bytesWritten;
 		if(WriteFile(saveFileHandle,buf,buf.size(),&bytesWritten,NULL) == FALSE) {
