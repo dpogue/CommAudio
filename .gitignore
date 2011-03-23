@@ -50,5 +50,6 @@ ipch/
 *.aiff
 *.oga
 
-# Temp Image Files #
+# Image Files #
 *.png
+*.jpg

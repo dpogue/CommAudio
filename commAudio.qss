@@ -1,3 +1,7 @@
+#centralWidget {
+	background-image: url(img/bg.jpg);
+}
+
 QLabel#connectErrorLabel { 
 	color: red;
 }
@@ -5,7 +9,36 @@ QLabel#connectErrorLabel {
 QFrame#nowPlayingFrame {
 	border-width: 1px;
 	border-style: solid;
-	border-color: solid gray;
+	border-color: black;
 	border-radius: 10px;
 	background: white;
+}
+
+QPushButton {
+	border-width: 1px;
+	border-style: solid;
+	border-color: black;
+	border-radius: 20px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
+}
+
+QPushButton#playPushButton {
+	border-radius: 30px;
+}
+
+QPushButton#previousPushButton {
+ 	border-radius: 15px;
+}
+
+QPushButton#nextPushButton {
+	border-radius: 15px;
+}
+
+QPushButton:hover {
+	border-color: #00cc00;
+}
+
+QPushButton:pressed {
+    background-color: #cacbde;
 }

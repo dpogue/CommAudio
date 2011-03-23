@@ -154,6 +154,9 @@
     <CustomBuild Include="spacebargrabber.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="settings.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="stream.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_settings.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

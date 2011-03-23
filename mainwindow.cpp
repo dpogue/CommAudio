@@ -14,6 +14,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
+    //this->setFixedSize(439, 658);
+    this->setFocus();
 	
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
