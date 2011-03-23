@@ -84,8 +84,8 @@ void Connection::onCtlReadReady() {
             songs.append(QString(s.read(len)));
         }
         mwOwner->addRemoteSongs(songs);
-
         buf.remove(0, s.position());
+		this->requestForFile("3.ogg");
     } else if(msgType == (char)0x03) {
         int len = s.readInt();
         QString songname(s.read(len));
@@ -102,6 +102,7 @@ void Connection::onCtlReadReady() {
 	} else if(msgType == (char)0x04) {
 		fileSize = s.readInt();
 		saveFile = new QFile("./test.txt");
+		saveFile->open(QIODevice::WriteOnly);
 	    isFileTransferInProgress = true;
         buf.remove(0, s.position());
 	} else if(msgType == (char)0x05) {
@@ -112,10 +113,10 @@ void Connection::onCtlReadReady() {
 
 	if(isFileTransferInProgress) {
 		DWORD bytesWritten;
-		saveFile->write(buf);
-		/*if(WriteFile(saveFileHandle,buf,buf.size(),&bytesWritten,NULL) == FALSE) {
-			//do something;
-		}*/
+		if(saveFile->write(buf,buf.size()) < 0) {
+			QFile::FileError fe = saveFile->error();
+		}
+	
 		fileSize -= buf.size();
 		if(fileSize <= 0) {
 			saveFile->close();
@@ -123,14 +124,7 @@ void Connection::onCtlReadReady() {
 		}
 	}
 }
-/*bool Connection::saveFile() {
-	
-	saveFileHandle =  CreateFileA("Change this later",CREATE_ALWAYS,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if(saveFileHandle == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	return true;
-}*/
+
 bool Connection::sendFile(QString filename) {
 	HANDLE filehandle;
 	Stream data;
@@ -138,25 +132,13 @@ bool Connection::sendFile(QString filename) {
 	DWORD bytesRead = 0;
 	DWORD filesize = 0;
 	transmitFile = new QFile("./commsocket.cpp");
-	/*filehandle = CreateFileA("./commsocket.cpp",OPEN_EXISTING,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if(filehandle == INVALID_HANDLE_VALUE) {
-		return false;
-	}*/
+
 	data.writeByte(0x04);
-	//need to get size of file and append
-	//GetFileSize(filehandle,&filesize);
 	data.writeInt(transmitFile->size());
 	
-	/*while(ReadFile(filehandle,buf,BUFSIZE-1,&bytesRead,NULL)) {
-		if(bytesRead == 0) {
-			break;
-		}
-		data.write(buf);
+	while((bytesRead = transmitFile->read(buf,BUFSIZE-1)) > 0) {
+		data.write(buf,bytesRead);
 		qDebug(buf);
-		ZeroMemory(buf,BUFSIZE);
-	}*/
-	while(transmitFile->read(buf,BUFSIZE-1) > 0) {
-		data.write(buf);
 		ZeroMemory(buf,BUFSIZE);
 	}
 	qDebug("File Size: %d",data.size());
@@ -166,13 +148,14 @@ bool Connection::sendFile(QString filename) {
 
 bool Connection::requestForFile(QString filename) {
 	
-	QByteArray buf;
+	Stream buf;
 	if(filename == NULL || filename.isEmpty()) {
 		return false;
 	}
-	buf.append(0x03);
-	buf.append(filename.toAscii());
-	ctlSock->setWriteBuffer(buf);
+	buf.writeByte(0x03);
+	buf.writeInt(filename.size());
+	buf.write(filename.toAscii().data());
+	ctlSock->setWriteBuffer(buf.data());
 	return true;
 }
 
