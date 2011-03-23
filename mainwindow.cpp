@@ -19,6 +19,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
+    this->installEventFilter(spacebarGrabber);
+    //connectDialog = new ConnectDialog();
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -39,7 +41,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     ui.volumeSlider->setValue(50);
     onVolumeMoved(50);
     chatting = false;
-    stickyChat = true;
+    stickyChat = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -67,23 +69,35 @@ CommAudio::~CommAudio() {
     AudioManager::instance()->shutdown();    
     delete spacebarGrabber;
     delete transport;
+    //delete connectDialog;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
+    if (keyEvent->isAutoRepeat()) {
+        return;
+    }
+
     switch (keyEvent->key()) {
-        case Qt::Key_Space:    
-            ui.playPushButton->animateClick();
-            return;
         case Qt::Key_C:
-            onChatPressed();
+            if (stickyChat) {
+                ui.chatPushButton->animateClick();
+            } else {
+                ui.chatPushButton->setDown(true);
+                onChatPressed();
+            }
             return;
     }
     QMainWindow::keyPressEvent(keyEvent);
 }
 
 void CommAudio::keyReleaseEvent(QKeyEvent* keyEvent) {
+    if (keyEvent->isAutoRepeat()) {
+        return;
+    }
+
     switch (keyEvent->key()) {
         case Qt::Key_C:
+            ui.chatPushButton->setDown(false);
             onChatReleased();
             return;
         default:

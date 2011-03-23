@@ -7,6 +7,7 @@
 #include "commsocket.h"
 #include "transport.h"
 #include "connection.h"
+class ConnectDialog;
 class SpacebarGrabber;
 class Transport;
 
@@ -27,7 +28,8 @@ private:
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
-	CommSocket* testing;
+    /** Encapsulates all of the connection info. */
+    ConnectDialog* connectDialog;
     
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
