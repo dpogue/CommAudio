@@ -166,6 +166,7 @@ bool CommSocket::write() {
 			return true;
 		}
 		writeBuffer = writeBuffer.right(writeBuffer.size()-buffer.size());
+		buffer.clear();
 		qBinCpy(buffer,writeBuffer,BUFSIZE);
 	}
 	emit socketWrite();
