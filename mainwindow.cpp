@@ -15,7 +15,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
-    //this->setFixedSize(439, 658);
+    this->setFixedSize(439, 658);
     this->setFocus();
 	
     transport = new Transport(&ui, this);
@@ -25,10 +25,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
-    connect(ui.connectPushButton, SIGNAL(clicked()),
-            this, SLOT(onConnectClicked()));
-    connect(ui.startServerPushButton, SIGNAL(clicked()),
-            this, SLOT(onStartServerClicked()));
     connect(ui.chatPushButton, SIGNAL(pressed()),
             this, SLOT(onChatPressed()));
     connect(ui.chatPushButton, SIGNAL(released()),
@@ -69,7 +65,7 @@ CommAudio::~CommAudio() {
     AudioManager::instance()->shutdown();    
     delete spacebarGrabber;
     delete transport;
-    //delete connectDialog;
+    delete connectDialog;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
@@ -113,61 +109,15 @@ void CommAudio::onVolumeMoved(int volume) {
     AudioManager::setGain(volume / 100.0);
 }
 
-void CommAudio::onConnectClicked() {
-    unsigned long ip = 0;
-    unsigned int port = 0;
-    bool validPort = false;
-    
-    if ((ip = inet_addr(ui.ipLineEdit->text().toAscii())) == INADDR_NONE) {
-        ui.connectErrorLabel->
-                setText("The ip address must be in the form x.x.x.x");
-        ui.ipLineEdit->selectAll();
-        return;
-    }
-
-    port = ui.portLineEdit->text().toUInt(&validPort);
-    if (!validPort || port < 1024 || port > 65535) {
-        ui.connectErrorLabel->
-                setText("The port number must be between 1024 and 65535");
-        ui.portLineEdit->selectAll();
-        return;
-    }
-
-    ui.connectErrorLabel->clear();
-
-    ui.connectPushButton->setDisabled(true);
-    ui.startServerPushButton->setDisabled(true);
-
-    ui.connectPushButton->setDisabled(false);
-    ui.connectPushButton->setText("Disconnect");
+void CommAudio::connectToServer(QString host, int port) {
 	
-	client = new Connection(this, ui.ipLineEdit->text(), TCP, port);
+	client = new Connection(this, host, TCP, port);
 	client->start();
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
-void CommAudio::onStartServerClicked() {
-    unsigned int port = 0;
-    bool validPort = false;
-
-    // TODO: disable gui components
-
-    port = ui.portLineEdit->text().toUInt(&validPort);
-    if (!validPort || port < 1024 || port > 65535) {
-        ui.connectErrorLabel->
-                setText("The port number must be between 1024 and 65535");
-        ui.portLineEdit->selectAll();
-        return;
-    }
-
-    disconnect(ui.startServerPushButton, SIGNAL(clicked()),
-                this, SLOT(onStartServerClicked()));
-
-    ui.connectPushButton->setDisabled(true);
-    ui.startServerPushButton->setText("Stop Server");
-    connect(ui.startServerPushButton, SIGNAL(clicked()),
-            this, SLOT(onStopServerClicked()));
+void CommAudio::startServer(int port) {
 	
 	server = new Connection(this, TCP, port);
 	server->start();
@@ -175,15 +125,12 @@ void CommAudio::onStartServerClicked() {
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
-void CommAudio::onStopServerClicked() {
-    disconnect(ui.startServerPushButton, SIGNAL(clicked()),
-               this, SLOT(onStopServerClicked()));
-
+void CommAudio::stopServer() {
     ui.fileTabWidget->setTabEnabled(1, false);
-    ui.connectPushButton->setDisabled(false);
-    ui.startServerPushButton->setText("Start Server");
-    connect(ui.startServerPushButton, SIGNAL(clicked()),
-            this, SLOT(onStartServerClicked()));
+}
+
+void CommAudio::onMulticastStateChanged(bool checked) {
+    multicastServer = checked;
 }
 
 void CommAudio::onChatPressed() {

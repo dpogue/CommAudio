@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>749</width>
+    <width>451</width>
     <height>706</height>
    </rect>
   </property>
@@ -340,109 +340,6 @@ QPushButton#nextPushButton {
      </size>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>310</y>
-      <width>261</width>
-      <height>151</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Connection</string>
-    </property>
-    <widget class="QLineEdit" name="ipLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>30</y>
-       <width>113</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>192.168.0.16</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="portLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>60</y>
-       <width>113</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>9500</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="ipLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>IP</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="portLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Port</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="connectErrorLabel">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>90</y>
-       <width>251</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>ArrowCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="startServerPushButton">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>120</y>
-       <width>62</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Start Server</string>
-     </property>
-    </widget>
-   </widget>
    <zorder>previousPushButton</zorder>
    <zorder>nextPushButton</zorder>
    <zorder>chatPushButton</zorder>
@@ -451,7 +348,6 @@ QPushButton#nextPushButton {
    <zorder>stopPushButton</zorder>
    <zorder>verticalLayoutWidget_2</zorder>
    <zorder>settingsPushButton</zorder>
-   <zorder>groupBox</zorder>
    <zorder>playPushButton</zorder>
   </widget>
  </widget>

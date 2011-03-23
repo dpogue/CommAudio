@@ -25,6 +25,9 @@ private:
 	Connection* server;
 
 	Connection* client;
+    
+    /** True if the program should multicast on clicking "Start Server". */
+    bool multicastServer;
 
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
@@ -119,27 +122,35 @@ public slots:
      * @param volume The new value for volume.
      */
     void onVolumeMoved(int volume);
-
+    //TODO: move out of slots
     /**
      * Attempts to connect to the server specified in the server group box. 
      *
      * @author Dean Morin
      */
-    void onConnectClicked();
+    void connectToServer(QString host, int port);
 
     /**
      * Starts listening for clients. 
      *
      * @author Dean Morin.
      */
-    void onStartServerClicked();
+    void startServer(int port);
 
     /**
      * Stops the server socket from listening for incoming connections.
      *
      * @author Darryl Pogue
      */
-    void onStopServerClicked();
+    void stopServer();
+
+    /**
+     * This server will multicast if this is selected.
+     *
+     * @author Dean Morin
+     * @param state The state of multicastCheckBox.
+     */
+    void onMulticastStateChanged(bool checked);
 
     /**
      * Starts transmitting voice data, or toggles the transmission on/off if
