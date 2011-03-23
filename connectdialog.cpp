@@ -3,27 +3,28 @@
 #include "commsocket.h"
 #include "defines.h"
 #include "ui_connect.h"
-//
-//ConnectDialog::ConnectDialog(QWidget *parent)
-//    : QDialog(parent), ui(new Ui::Connect()), ctlSock(NULL)
-//{
-//    ui->setupUi(this);
-//    
-//    connect(ui->connectPushButton, SIGNAL(clicked()),
-//            this, SLOT(onConnectClicked()));
-//    connect(ui->startServerPushButton, SIGNAL(clicked()),
-//            this, SLOT(onStartServerClicked()));
-//    connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
-//            this, SLOT(onMulticastStateChanged(int)));
-//    
-//    multicastServer = ui->multicastCheckBox->isChecked();
-//}
-//
-//ConnectDialog::~ConnectDialog() {
-//    delete ui;
-//    delete ctlSock;
-//}
-//
+
+ConnectDialog::ConnectDialog(QWidget *parent)
+    : QDialog(parent), ui(new Ui::Connect())
+{
+    ui->setupUi(this);
+/*    
+    connect(ui->connectPushButton, SIGNAL(clicked()),
+            this, SLOT(onConnectClicked()));
+    connect(ui->startServerPushButton, SIGNAL(clicked()),
+            this, SLOT(onStartServerClicked()));
+            */
+    connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(onMulticastStateChanged(int)));
+
+    multicastServer = ui->multicastCheckBox->isChecked();
+}
+
+ConnectDialog::~ConnectDialog() {
+    delete ui;
+    //delete ctlSock;
+}
+
 //void ConnectDialog::onConnectClicked() {
 //    unsigned long ip = 0;
 //    unsigned int port = 0;
@@ -112,11 +113,11 @@
 //    delete ctlSock;
 //    ctlSock = NULL;
 //}
-//
-//void ConnectDialog::onMulticastStateChanged(int state) {
-//    multicastServer = ui->multicastCheckBox->isChecked();
-//}
-//
+
+void ConnectDialog::onMulticastStateChanged(int state) {
+    multicastServer = ui->multicastCheckBox->isChecked();
+}
+
 //void ConnectDialog::onCtlReadReady() {
 //
 //    qDebug("Got something to read");

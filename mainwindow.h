@@ -25,15 +25,13 @@ private:
 	Connection* server;
 
 	Connection* client;
+
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
     /** Encapsulates all of the connection info. */
     ConnectDialog* connectDialog;
     
-    /** True if the program should multicast on clicking "Start Server". */
-    bool multicastServer;
-
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary* userSongs;
 
@@ -159,12 +157,11 @@ public slots:
     void onChatReleased();
 
     /**
-     * This server will multicast if this is selected.
+     * Opens the connect dialog.
      *
      * @author Dean Morin
-     * @param state The state of multicastCheckBox.
      */
-    void onMulticastStateChanged(int state);
+    void onConnectionPressed();
 };
 
 #endif // MAINWINDOW_H

@@ -10,13 +10,13 @@ namespace Ui {
 
 class ConnectDialog : public QDialog {
     Q_OBJECT
-//
-//private:
-//    /** The user interface for the dialog window. */
-//    Ui::Connect* ui;
-//    
-//    /** True if the program should multicast on clicking "Start Server". */
-//    bool multicastServer;
+
+private:
+    /** The user interface for the dialog window. */
+    Ui::Connect* ui;
+    
+    /** True if the program should multicast on clicking "Start Server". */
+    bool multicastServer;
 //
 //    /** The open TCP socket either for the control channel. */
 //    CommSocket* ctlSock;
@@ -24,10 +24,10 @@ class ConnectDialog : public QDialog {
 //    /** The open UDP socket for streaming data. */
 //    CommSocket* strSock;
 //
-//public:
-//    ConnectDialog(QWidget* parent = 0);
-//    ~ConnectDialog();
-//    
+public:
+    ConnectDialog(QWidget* parent = 0);
+    ~ConnectDialog();
+    
 //public slots:
 //    /**
 //     * Attempts to connect to the server. 
@@ -49,15 +49,15 @@ class ConnectDialog : public QDialog {
 //     * @author Darryl Pogue
 //     */
 //    void onStopServerClicked();
-//
-//    /**
-//     * This server will multicast if this is selected.
-//     *
-//     * @author Dean Morin
-//     * @param state The state of multicastCheckBox.
-//     */
-//    void onMulticastStateChanged(int state);
-//
+
+    /**
+     * This server will multicast if this is selected.
+     *
+     * @author Dean Morin
+     * @param state The state of multicastCheckBox.
+     */
+    void onMulticastStateChanged(int state);
+
 //	void onCtlWrite();
 //    void onCtlAccept();
 //

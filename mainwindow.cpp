@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include "mainwindow.h"
 #include "manager.h"
+#include "connectdialog.h"
 #include "defines.h"
 #include "spacebargrabber.h"
 #include "stylesheet.h"
@@ -20,7 +21,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
-    //connectDialog = new ConnectDialog();
+    connectDialog = new ConnectDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -32,10 +33,9 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onChatPressed()));
     connect(ui.chatPushButton, SIGNAL(released()),
             this, SLOT(onChatReleased()));
-    connect(ui.multicastCheckBox, SIGNAL(stateChanged(int)),
-            this, SLOT(onMulticastStateChanged(int)));
+    connect(ui.connectionPushButton, SIGNAL(pressed()),
+            this, SLOT(onConnectionPressed()));
 
-    multicastServer = ui.multicastCheckBox->isChecked();
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
     ui.volumeSlider->setValue(50);
@@ -177,7 +177,7 @@ void CommAudio::onStartServerClicked() {
 
 void CommAudio::onStopServerClicked() {
     disconnect(ui.startServerPushButton, SIGNAL(clicked()),
-                this, SLOT(onStopServerClicked()));
+               this, SLOT(onStopServerClicked()));
 
     ui.fileTabWidget->setTabEnabled(1, false);
     ui.connectPushButton->setDisabled(false);
@@ -203,8 +203,8 @@ void CommAudio::onChatReleased() {
         chatting = false;
         ui.chatPushButton->setIcon(QIcon(ICON_CHAT));
     }
- }
+}
 
-void CommAudio::onMulticastStateChanged(int state) {
-    multicastServer = ui.multicastCheckBox->isChecked();
+void CommAudio::onConnectionPressed() {
+    connectDialog->exec();
 }

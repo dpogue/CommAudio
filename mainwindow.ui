@@ -343,8 +343,8 @@ QPushButton#nextPushButton {
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>400</y>
+      <x>450</x>
+      <y>310</y>
       <width>261</width>
       <height>151</height>
      </rect>
@@ -410,19 +410,6 @@ QPushButton#nextPushButton {
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QCheckBox" name="multicastCheckBox">
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>30</y>
-       <width>70</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Multicast</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="connectErrorLabel">
      <property name="geometry">
       <rect>
@@ -469,8 +456,8 @@ QPushButton#nextPushButton {
      </property>
     </widget>
    </widget>
-   <zorder>nextPushButton</zorder>
    <zorder>previousPushButton</zorder>
+   <zorder>nextPushButton</zorder>
    <zorder>chatPushButton</zorder>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>connectionPushButton</zorder>

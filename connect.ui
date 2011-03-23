@@ -17,6 +17,19 @@
    <iconset>
     <normaloff>img/connect.png</normaloff>img/connect.png</iconset>
   </property>
+  <widget class="QCheckBox" name="multicastCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>70</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Multicast</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
