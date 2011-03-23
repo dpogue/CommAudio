@@ -28,14 +28,14 @@ public:
     ConnectDialog(QWidget* parent = 0);
     ~ConnectDialog();
     
-//public slots:
-//    /**
-//     * Attempts to connect to the server. 
-//     *
-//     * @author Dean Morin
-//     */
-//    void onConnectClicked();
-//    
+public slots:
+    /**
+     * Attempts to connect to the server. 
+     *
+     * @author Dean Morin
+     */
+    void onConnectClicked();
+    
 //    /**
 //     * Starts listening for clients. 
 //     *

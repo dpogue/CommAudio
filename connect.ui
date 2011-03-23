@@ -30,6 +30,19 @@
     <string>Multicast</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="connectPushButton">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>50</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -2,16 +2,17 @@
 #include <WinSock2.h>
 #include "commsocket.h"
 #include "defines.h"
+#include "mainwindow.h"
 #include "ui_connect.h"
 
 ConnectDialog::ConnectDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::Connect())
 {
     ui->setupUi(this);
-/*    
+    
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
-    connect(ui->startServerPushButton, SIGNAL(clicked()),
+/*    connect(ui->startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
             */
     connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
@@ -25,7 +26,9 @@ ConnectDialog::~ConnectDialog() {
     //delete ctlSock;
 }
 
-//void ConnectDialog::onConnectClicked() {
+void ConnectDialog::onConnectClicked() {
+    ((CommAudio*) this->parent())->onConnectClicked();
+}
 //    unsigned long ip = 0;
 //    unsigned int port = 0;
 //    bool validPort = false;
