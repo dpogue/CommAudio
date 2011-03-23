@@ -129,16 +129,15 @@ bool Connection::sendFile(QString filename) {
 	HANDLE filehandle;
 	Stream data;
 	char buf[BUFSIZE];
-	DWORD bytesRead = 0;
+	int bytesRead = 0;
 	DWORD filesize = 0;
 	transmitFile = new QFile("./commsocket.cpp");
-
+    transmitFile->open(QIODevice::ReadOnly);
 	data.writeByte(0x04);
 	data.writeInt(transmitFile->size());
 	
 	while((bytesRead = transmitFile->read(buf,BUFSIZE-1)) > 0) {
-		data.write(buf,bytesRead);
-		qDebug(buf);
+		data.write(buf, bytesRead);
 		ZeroMemory(buf,BUFSIZE);
 	}
 	qDebug("File Size: %d",data.size());
