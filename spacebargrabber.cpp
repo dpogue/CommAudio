@@ -17,11 +17,21 @@ SpacebarGrabber::~SpacebarGrabber() {
 }
 
 bool SpacebarGrabber::eventFilter(QObject* obj, QEvent* event) {
-    if (event->type() == QEvent::KeyPress) {
+    if (event->type() == QEvent::KeyPress  ||  
+        event->type() == QEvent::KeyRelease) {
+        
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         
         if (keyEvent->key() == Qt::Key_Space) {
-            if (!keyEvent->isAutoRepeat()) {
+            
+            if (keyEvent->type() == QEvent::KeyPress  &&
+                !keyEvent->isAutoRepeat()) {
+
+                    playButton->setDown(true);
+            
+            } else if (keyEvent->type() == QEvent::KeyRelease  &&
+                       !keyEvent->isAutoRepeat()) {
+                
                 playButton->animateClick();
             }
             return true;

@@ -469,6 +469,16 @@ QPushButton#nextPushButton {
      </property>
     </widget>
    </widget>
+   <zorder>nextPushButton</zorder>
+   <zorder>previousPushButton</zorder>
+   <zorder>chatPushButton</zorder>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>connectionPushButton</zorder>
+   <zorder>stopPushButton</zorder>
+   <zorder>verticalLayoutWidget_2</zorder>
+   <zorder>settingsPushButton</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>playPushButton</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
