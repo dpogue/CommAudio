@@ -22,9 +22,9 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 
-	Connection* server;
+	Connection* conn;
 
-	Connection* client;
+	//Connection* client;
     
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;

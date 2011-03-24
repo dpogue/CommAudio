@@ -12,9 +12,8 @@ ConnectDialog::ConnectDialog(QWidget *parent)
     
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
-/*    connect(ui->startServerPushButton, SIGNAL(clicked()),
+    connect(ui->startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
-            */
     connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(onMulticastStateChanged(int)));
 

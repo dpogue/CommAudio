@@ -11,7 +11,7 @@
 #include <qlayout.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags),server(NULL),client(NULL) {
+	: QMainWindow(parent, flags), conn(NULL) {
 	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
@@ -111,16 +111,20 @@ void CommAudio::onVolumeMoved(int volume) {
 
 void CommAudio::connectToServer(QString host, int port) {
 	
-	client = new Connection(this, host, TCP, port);
-	client->start();
+	conn = new Connection(this, host, TCP, port);
+	conn->start();
+    connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::startServer(int port) {
 	
-	server = new Connection(this, TCP, port);
-	server->start();
+	conn = new Connection(this, TCP, port);
+	conn->start();
+    connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
@@ -153,5 +157,5 @@ void CommAudio::onChatReleased() {
 }
 
 void CommAudio::onConnectionPressed() {
-    connectDialog->exec();
+    connectDialog->show();
 }
