@@ -53,6 +53,7 @@ void ConnectDialog::onConnectClicked() {
     ui->connectPushButton->setText("Disconnect");
 
     ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
+    done(0);
 }
 
 void ConnectDialog::onStartServerClicked() {
@@ -78,6 +79,7 @@ void ConnectDialog::onStartServerClicked() {
             this, SLOT(onStopServerClicked()));
 
     ((CommAudio*) this->parent())->startServer(port);
+    done(0);
 }
 
 void ConnectDialog::onStopServerClicked() {
@@ -91,6 +93,7 @@ void ConnectDialog::onStopServerClicked() {
             this, SLOT(onStartServerClicked()));
     
     ((CommAudio*) this->parent())->stopServer();
+    done(0);
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {

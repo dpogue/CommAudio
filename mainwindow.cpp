@@ -162,9 +162,9 @@ void CommAudio::onChatReleased() {
 }
 
 void CommAudio::onConnectionPressed() {
-    connectDialog->show();
+    connectDialog->exec();
 }
 
 void CommAudio::onSettingsPressed() {
-    settingsDialog->show();
+    settingsDialog->exec();
 }
