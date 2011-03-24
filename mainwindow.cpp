@@ -58,6 +58,9 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     hr->setMargin(0);
     remoteSongs = new MusicLibrary();
     hr->addWidget(remoteSongs);
+
+	AudioManager::instance()->startCapture();
+	AudioManager::instance()->playStream();
 }
 
 CommAudio::~CommAudio() { 
@@ -137,6 +140,7 @@ void CommAudio::onChatPressed() {
     if (!stickyChat) {
         chatting = true;
         ui.chatPushButton->setIcon(QIcon(ICON_CHATTING));
+		AudioManager::instance()->toggleCapturePause();
         return;
     }
 
@@ -149,7 +153,8 @@ void CommAudio::onChatReleased() {
     if (!stickyChat) {
         chatting = false;
         ui.chatPushButton->setIcon(QIcon(ICON_CHAT));
-    }
+		AudioManager::instance()->toggleCapturePause();
+	}
 }
 
 void CommAudio::onConnectionPressed() {
