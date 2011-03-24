@@ -5,6 +5,7 @@
 #include "manager.h"
 #include "connectdialog.h"
 #include "defines.h"
+#include "settingsdialog.h"
 #include "spacebargrabber.h"
 #include "stylesheet.h"
 #include "transport.h"
@@ -22,6 +23,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
     connectDialog = new ConnectDialog(this);
+    settingsDialog = new SettingsDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -31,6 +33,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onChatReleased()));
     connect(ui.connectionPushButton, SIGNAL(pressed()),
             this, SLOT(onConnectionPressed()));
+    connect(ui.settingsPushButton, SIGNAL(pressed()),
+            this, SLOT(onSettingsPressed()));
 
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
@@ -66,6 +70,7 @@ CommAudio::~CommAudio() {
     delete spacebarGrabber;
     delete transport;
     delete connectDialog;
+    delete settingsDialog;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
@@ -158,4 +163,8 @@ void CommAudio::onChatReleased() {
 
 void CommAudio::onConnectionPressed() {
     connectDialog->show();
+}
+
+void CommAudio::onSettingsPressed() {
+    settingsDialog->show();
 }

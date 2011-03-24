@@ -8,6 +8,7 @@
 #include "transport.h"
 #include "connection.h"
 class ConnectDialog;
+class SettingsDialog;
 class SpacebarGrabber;
 class Transport;
 
@@ -32,9 +33,12 @@ private:
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
-    /** Encapsulates all of the connection info. */
+    /** The connect dialog window. */
     ConnectDialog* connectDialog;
     
+    /** The settings dialog window. */
+    SettingsDialog* settingsDialog;
+
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary* userSongs;
 
@@ -173,6 +177,13 @@ public slots:
      * @author Dean Morin
      */
     void onConnectionPressed();
+
+    /**
+     * Opens the settings dialog.
+     *
+     * @author Dean Morin
+     */
+    void onSettingsPressed();
 };
 
 #endif // MAINWINDOW_H
