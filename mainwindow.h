@@ -8,6 +8,7 @@
 #include "transport.h"
 #include "connection.h"
 class ConnectDialog;
+class SettingsDialog;
 class SpacebarGrabber;
 class Transport;
 
@@ -22,9 +23,9 @@ private:
     /** The program's gui. */
 	Ui::CommAudioClass ui;
 
-	Connection* server;
+	Connection* conn;
 
-	Connection* client;
+	//Connection* client;
     
     /** True if the program should multicast on clicking "Start Server". */
     bool multicastServer;
@@ -32,9 +33,12 @@ private:
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
-    /** Encapsulates all of the connection info. */
+    /** The connect dialog window. */
     ConnectDialog* connectDialog;
     
+    /** The settings dialog window. */
+    SettingsDialog* settingsDialog;
+
     /** Contains the songs that are on the user's local drive. */
     MusicLibrary* userSongs;
 
@@ -82,7 +86,7 @@ public:
      * Returns the next song's filename, or an empty string if there is no next song.
      *
      * @author Darryl Pogue
-     * @return The filename of the next song.
+     * @return The filename eof the next song.
      */
     QString getNextSong() {
         return userSongs->getNextSong();
@@ -113,6 +117,27 @@ public:
     }
 
     void addRemoteSongs(QList<QString> songs);
+
+    /**
+     * Returns whether or not the chat button is in toggle mode.
+     *
+     * @author Dean Morin
+     * @return True if the chat button is in toggle mode.
+     */
+    bool getStickyChat() {
+        return stickyChat;
+    }
+
+    /**
+     * Set whether or not the chat button is in toggle mode.
+     *
+     * @author Dean Morin
+     * @param Whether the chat button should be in toggle mode, or held down to
+     * use.
+     */
+    void setStickyChat(bool sticky) {
+        stickyChat = sticky;
+    }
 
 public slots:
     /**
@@ -173,6 +198,13 @@ public slots:
      * @author Dean Morin
      */
     void onConnectionPressed();
+
+    /**
+     * Opens the settings dialog.
+     *
+     * @author Dean Morin
+     */
+    void onSettingsPressed();
 };
 
 #endif // MAINWINDOW_H

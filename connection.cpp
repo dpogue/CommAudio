@@ -56,27 +56,22 @@ void Connection::onCtlReadReady() {
     Stream s(buf);
     unsigned char msgType = s.readByte();
 	
-    if (msgType == (char)0x01) {
-        qDebug("Received handshake");
+    if (msgType == (char)0x01 && !isFileTransferInProgress)
+    {
+        /* Received handshake */
         if (mode == SERVER) {
             Stream str;
             str.writeByte(0x01);
             ctlSock->setWriteBuffer(str.data());
 
-            QList<QString> songs = mwOwner->getSongList();
-            Stream list;
-            list.writeByte(0x02);
-            list.writeInt(songs.size());
-            for (int i = 0; i < songs.size(); i++) {
-                list.writeInt(songs[i].size());
-                list.write(songs[i].toUtf8());
-            }
-            ctlSock->setWriteBuffer(list.data());
+            sendFileList();
         }
         buf.remove(0, s.position());
         handShakeRecv = true;
-    } else if (msgType == (char)0x02) {
-        qDebug("Got the list of remote files");
+    }
+    else if (msgType == (char)0x02 && !isFileTransferInProgress)
+    {
+        /* Got the list of remote files */
         int count = s.readInt();
         QList<QString> songs;
         for (int i = 0; i < count; i++) {
@@ -85,8 +80,14 @@ void Connection::onCtlReadReady() {
         }
         mwOwner->addRemoteSongs(songs);
         buf.remove(0, s.position());
-		this->requestForFile("3.ogg");
-    } else if(msgType == (char)0x03) {
+
+        if (mode == CLIENT) {
+            sendFileList();
+        }
+    }
+    else if(msgType == (char)0x03 && !isFileTransferInProgress)
+    {
+        /* Got a file request */
         int len = s.readInt();
         QString songname(s.read(len));
 
@@ -99,14 +100,20 @@ void Connection::onCtlReadReady() {
             sendFile(path);
         }
         buf.remove(0, s.position());
-	} else if(msgType == (char)0x04) {
+	}
+    else if(msgType == (char)0x04 && !isFileTransferInProgress)
+    {
+        /* Got the file data for a transfer */
 		fileSize = s.readInt();
+
 		saveFile = new QFile("./test.txt");
 		saveFile->open(QIODevice::WriteOnly);
 	    isFileTransferInProgress = true;
         buf.remove(0, s.position());
-	} else if(msgType == (char)0x05) {
-		//file type requested does not exist
+	}
+    else if(msgType == (char)0x05 && !isFileTransferInProgress)
+    {
+		/* Requested file does not exist */
 	} else {
         qDebug("Got something to read");
     }
@@ -123,6 +130,19 @@ void Connection::onCtlReadReady() {
 			isFileTransferInProgress = false;
 		}
 	}
+}
+
+void Connection::sendFileList() {
+    QList<QString> songs = mwOwner->getSongList();
+
+    Stream list;
+    list.writeByte(0x02);
+    list.writeInt(songs.size());
+    for (int i = 0; i < songs.size(); i++) {
+        list.writeInt(songs[i].size());
+        list.write(songs[i].toUtf8());
+    }
+    ctlSock->setWriteBuffer(list.data());
 }
 
 bool Connection::sendFile(QString filename) {
@@ -145,17 +165,18 @@ bool Connection::sendFile(QString filename) {
 	return true;
 }
 
-bool Connection::requestForFile(QString filename) {
+void Connection::requestForFile(QString filename) {
 	
-	Stream buf;
 	if(filename == NULL || filename.isEmpty()) {
-		return false;
+		return;
 	}
+
+	Stream buf;
 	buf.writeByte(0x03);
 	buf.writeInt(filename.size());
 	buf.write(filename.toAscii().data());
+
 	ctlSock->setWriteBuffer(buf.data());
-	return true;
 }
 
 void Connection::onCtlWrite() {

@@ -16,7 +16,6 @@ public:
 	//for server
 	Connection(CommAudio* owner, int protocol,int port);
 
-	bool requestForFile(QString filename);
 private:
 	bool handShake();
 
@@ -43,6 +42,13 @@ private:
 	/** Boolean for determing whether or not the handshake has been received*/
 	bool handShakeRecv;
 
+    /**
+     * Sends the list of local files to the other client.
+     *
+     * @author Darryl Pogue
+     */
+    void sendFileList();
+
 	/** sends the file to the client*/
 	bool sendFile(QString filename);
 
@@ -61,6 +67,8 @@ public slots:
 	void onCtlWrite();
 	void onCtlAccept();
 	void onCtlConnect();
+
+	void requestForFile(QString filename);
 };
 
 #endif

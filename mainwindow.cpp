@@ -5,14 +5,16 @@
 #include "manager.h"
 #include "connectdialog.h"
 #include "defines.h"
+#include "settingsdialog.h"
 #include "spacebargrabber.h"
 #include "stylesheet.h"
 #include "transport.h"
 #include <qlayout.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags),server(NULL),client(NULL) {
-	
+	: QMainWindow(parent, flags), conn(NULL), stickyChat(false), 
+      chatting(false)
+{	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
     this->setFixedSize(439, 658);
@@ -22,6 +24,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
     connectDialog = new ConnectDialog(this);
+    settingsDialog = new SettingsDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -31,13 +34,13 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onChatReleased()));
     connect(ui.connectionPushButton, SIGNAL(pressed()),
             this, SLOT(onConnectionPressed()));
+    connect(ui.settingsPushButton, SIGNAL(pressed()),
+            this, SLOT(onSettingsPressed()));
 
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
     ui.volumeSlider->setValue(50);
     onVolumeMoved(50);
-    chatting = false;
-    stickyChat = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -69,6 +72,7 @@ CommAudio::~CommAudio() {
     delete spacebarGrabber;
     delete transport;
     delete connectDialog;
+    delete settingsDialog;
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
@@ -114,16 +118,20 @@ void CommAudio::onVolumeMoved(int volume) {
 
 void CommAudio::connectToServer(QString host, int port) {
 	
-	client = new Connection(this, host, TCP, port);
-	client->start();
+	conn = new Connection(this, host, TCP, port);
+	conn->start();
+    connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::startServer(int port) {
 	
-	server = new Connection(this, TCP, port);
-	server->start();
+	conn = new Connection(this, TCP, port);
+	conn->start();
+    connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
@@ -159,4 +167,8 @@ void CommAudio::onChatReleased() {
 
 void CommAudio::onConnectionPressed() {
     connectDialog->exec();
+}
+
+void CommAudio::onSettingsPressed() {
+    settingsDialog->exec();
 }

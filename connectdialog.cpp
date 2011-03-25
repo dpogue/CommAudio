@@ -6,15 +6,15 @@
 #include "ui_connect.h"
 
 ConnectDialog::ConnectDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::Connect())
+    : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
+      ui(new Ui::Connect())
 {
     ui->setupUi(this);
     
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
-/*    connect(ui->startServerPushButton, SIGNAL(clicked()),
+    connect(ui->startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
-            */
     connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(onMulticastStateChanged(int)));
 
@@ -54,6 +54,7 @@ void ConnectDialog::onConnectClicked() {
     ui->connectPushButton->setText("Disconnect");
 
     ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
+    done(0);
 }
 
 void ConnectDialog::onStartServerClicked() {
@@ -79,6 +80,7 @@ void ConnectDialog::onStartServerClicked() {
             this, SLOT(onStopServerClicked()));
 
     ((CommAudio*) this->parent())->startServer(port);
+    done(0);
 }
 
 void ConnectDialog::onStopServerClicked() {
@@ -92,6 +94,7 @@ void ConnectDialog::onStopServerClicked() {
             this, SLOT(onStartServerClicked()));
     
     ((CommAudio*) this->parent())->stopServer();
+    done(0);
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {
