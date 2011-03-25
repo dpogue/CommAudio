@@ -15,7 +15,7 @@
 #include "openal_helper.h"
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*8)
+#define BUFFERSIZE (1024*4)
 
 enum fileType{ 
 OGG,
@@ -257,7 +257,9 @@ public:
      */    
     void playStream();	
 
-
+signals:
+	void finished();
+	
 };
 
 #endif

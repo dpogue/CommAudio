@@ -36,6 +36,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onConnectionPressed()));
     connect(ui.settingsPushButton, SIGNAL(pressed()),
             this, SLOT(onSettingsPressed()));
+	connect(AudioManager::instance(), SIGNAL(finished()),
+            this, SLOT(playFinished()));
 
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
@@ -171,4 +173,9 @@ void CommAudio::onConnectionPressed() {
 
 void CommAudio::onSettingsPressed() {
     settingsDialog->exec();
+}
+
+void CommAudio::playFinished() {
+	//do something of value here
+	qDebug("playing stopped");
 }

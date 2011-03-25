@@ -278,7 +278,7 @@ void AudioManager::streamFile(QString filename)
 
             if (queued > 2 && play) {
 				alSourcePlay(source);
-                play = AL_FALSE;
+                play = AL_FALSE;				
             }
         } else {
             alSleep(0.1f);			
@@ -346,7 +346,9 @@ void AudioManager::cleanUp(ALuint *source, ALuint *buffer)
     } while (playing != AL_STOPPED && !checkCondition());
 
     alGetSourcei(*source, AL_BUFFERS_PROCESSED, &processed);
-
+	
+	emit finished();
+ 		
     while (processed && !checkCondition()) {
         alSourceUnqueueBuffers(*source, 1, &tempBuffer);
         processed--;
@@ -354,6 +356,7 @@ void AudioManager::cleanUp(ALuint *source, ALuint *buffer)
 
     alDeleteSources(1, source);
     alDeleteBuffers(QUEUESIZE, buffer);
+
 }
 
 void AudioManager::clearProcessedBuffers
