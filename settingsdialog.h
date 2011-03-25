@@ -25,6 +25,11 @@ public slots:
      * @author Dean Morin
      */
 //    void onConnectClicked();
+    void onOkClicked();
+
+    void onCancelClicked();
+
+    void onStickyChatStateChanged(int state);
 };
 
 #endif

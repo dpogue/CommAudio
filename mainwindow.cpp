@@ -12,8 +12,9 @@
 #include <qlayout.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags), conn(NULL) {
-	
+	: QMainWindow(parent, flags), conn(NULL), stickyChat(false), 
+      chatting(false)
+{	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
     this->setFixedSize(439, 658);
@@ -40,8 +41,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     ui.volumeSlider->setMaximum(100);
     ui.volumeSlider->setValue(50);
     onVolumeMoved(50);
-    chatting = false;
-    stickyChat = false;
 
     //TODO: move to settings
     if(!QDir("music").exists()) {

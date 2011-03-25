@@ -17,17 +17,46 @@
    <iconset>
     <normaloff>img/settings.png</normaloff>img/settings.png</iconset>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="okPushButton">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>110</y>
+     <x>210</x>
+     <y>260</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="stickyChatCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>81</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Check to make the chat button a toggle button</string>
+   </property>
+   <property name="text">
+    <string>Sticky Chat</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cancelPushButton">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>260</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
    </property>
   </widget>
  </widget>

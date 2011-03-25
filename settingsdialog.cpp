@@ -1,21 +1,40 @@
 #include "settingsdialog.h"
+#include <QtDebug>
+#include "mainwindow.h"
 #include "ui_settings.h"
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::Settings())
+    : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint), 
+      ui(new Ui::Settings())
 {
     ui->setupUi(this);
-/*    
-    connect(ui->connectPushButton, SIGNAL(clicked()),
-            this, SLOT(onConnectClicked()));
-    connect(ui->startServerPushButton, SIGNAL(clicked()),
-            this, SLOT(onStartServerClicked()));
-    connect(ui->multicastCheckBox, SIGNAL(stateChanged(int)),
-            this, SLOT(onMulticastStateChanged(int)));
+    
+    connect(ui->okPushButton, SIGNAL(clicked()),
+            this, SLOT(onOkClicked()));
+    connect(ui->cancelPushButton, SIGNAL(clicked()),
+            this, SLOT(onCancelClicked()));
+    connect(ui->stickyChatCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(onStickyChatChanged(int)));
 
-    onMulticastStateChanged(0); */
+    onStickyChatStateChanged(0);
+    ui->okPushButton->setDefault(true);
 }
 
 SettingsDialog::~SettingsDialog() {
     delete ui;
+}
+
+void SettingsDialog::onOkClicked() {
+    //save to settings
+    done(0);
+}
+
+void SettingsDialog::onCancelClicked() {
+    reject();
+}
+
+void SettingsDialog::onStickyChatStateChanged(int state) {
+    bool checked = ui->stickyChatCheckBox->isChecked();
+    qDebug() << "checked";
+    ((CommAudio*) this->parent())->setStickyChat(checked);
 }

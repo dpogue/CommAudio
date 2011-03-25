@@ -6,7 +6,8 @@
 #include "ui_connect.h"
 
 ConnectDialog::ConnectDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::Connect())
+    : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
+      ui(new Ui::Connect())
 {
     ui->setupUi(this);
     

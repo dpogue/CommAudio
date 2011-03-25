@@ -86,7 +86,7 @@ public:
      * Returns the next song's filename, or an empty string if there is no next song.
      *
      * @author Darryl Pogue
-     * @return The filename of the next song.
+     * @return The filename eof the next song.
      */
     QString getNextSong() {
         return userSongs->getNextSong();
@@ -117,6 +117,27 @@ public:
     }
 
     void addRemoteSongs(QList<QString> songs);
+
+    /**
+     * Returns whether or not the chat button is in toggle mode.
+     *
+     * @author Dean Morin
+     * @return True if the chat button is in toggle mode.
+     */
+    bool getStickyChat() {
+        return stickyChat;
+    }
+
+    /**
+     * Set whether or not the chat button is in toggle mode.
+     *
+     * @author Dean Morin
+     * @param Whether the chat button should be in toggle mode, or held down to
+     * use.
+     */
+    void setStickyChat(bool sticky) {
+        stickyChat = sticky;
+    }
 
 public slots:
     /**
