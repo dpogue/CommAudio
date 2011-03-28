@@ -155,6 +155,8 @@ public slots:
      */
     void connectToServer(QString host, int port);
 
+	void disconnectFromServer();
+
     /**
      * Starts listening for clients. 
      *

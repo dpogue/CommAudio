@@ -123,6 +123,11 @@ void CommAudio::connectToServer(QString host, int port) {
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
+void CommAudio::disconnectFromServer() {
+	conn->closeConnection();
+	ui.fileTabWidget->setTabEnabled(1, false);
+}
+
 void CommAudio::startServer(int port) {
 	
 	conn = new Connection(this, TCP, port);
@@ -134,6 +139,7 @@ void CommAudio::startServer(int port) {
 }
 
 void CommAudio::stopServer() {
+	conn->closeConnection();
     ui.fileTabWidget->setTabEnabled(1, false);
 }
 

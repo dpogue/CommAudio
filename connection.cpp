@@ -28,6 +28,10 @@ Connection::Connection(CommAudio* owner, int prot, int port)
 	isFileTransferInProgress = false;
 }
 
+void Connection::closeConnection() {
+	ctlSock->closeSocket();
+}
+
 void Connection::run() {
 	
 	if(mode == SERVER) {

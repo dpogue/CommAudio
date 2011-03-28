@@ -52,8 +52,23 @@ void ConnectDialog::onConnectClicked() {
 
     ui->connectPushButton->setDisabled(false);
     ui->connectPushButton->setText("Disconnect");
+	connect(ui->connectPushButton, SIGNAL(clicked()),
+            this, SLOT(onDisconnectClicked()));
 
     ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
+    done(0);
+}
+
+void ConnectDialog::onDisconnectClicked() {
+	disconnect(ui->connectPushButton, SIGNAL(clicked()),
+               this, SLOT(onDisconnectClicked()));
+
+    ui->connectPushButton->setDisabled(false);
+    ui->connectPushButton->setText("Connect");
+    connect(ui->connectPushButton, SIGNAL(clicked()),
+            this, SLOT(onConnectClicked()));
+    
+    ((CommAudio*) this->parent())->disconnectFromServer();
     done(0);
 }
 

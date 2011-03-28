@@ -16,6 +16,8 @@ public:
 	//for server
 	Connection(CommAudio* owner, int protocol,int port);
 
+	void closeConnection();
+
 private:
 	bool handShake();
 

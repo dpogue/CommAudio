@@ -26,6 +26,13 @@ public slots:
      * @author Dean Morin
      */
     void onConnectClicked();
+
+	/**
+	 * Closes the open connection.
+	 *
+	 * @author Darryl Pogue
+	 */
+	void onDisconnectClicked();
     
     /**
      * Starts listening for clients. 
