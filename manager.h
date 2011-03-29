@@ -15,12 +15,11 @@
 #include "openal_helper.h"
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*8)
+#define BUFFERSIZE (1024*4)
 
 enum fileType{ 
 OGG,
-WAV,
-NETWORK
+WAV
 };
 
 
@@ -37,6 +36,7 @@ private:
     static AudioManager* instance_;
 
     static QMutex mutex_;
+    static int playCount_;	
 
     static bool pause_;
     static bool stop_;	
@@ -65,13 +65,21 @@ private:
     ~AudioManager();
     
     /**
+     * Does a check for stop flags
+     * and errors
+     * @author Terence Stenvold
+     * @return bool if True and 
+     */
+    bool checkCondition();
+
+	/**
      * Does a check for openal errors and destroys the openal 
      * context if any are found
      * 
      * @author Terence Stenvold
      * @return bool if True and error occured
      */
-    bool checkCondition();
+	bool checkError();
 
     /**
      * Streams and plays an audio File.
@@ -80,9 +88,17 @@ private:
      *
      * @author Terence Stenvold
      * @param filename the path to file.
-     * @param gain is a float with a default param of 1.0
      */
     void streamFile(QString filename);
+
+    /**
+     * Streams and plays an audio from the queue.
+     *
+     * This is meant to be called in it's own thread.
+     *
+     * @author Terence Stenvold
+     */
+	void streamStream();
 
 	void cleanUp(ALuint *source, ALuint *buffer);
 	void clearProcessedBuffers
@@ -123,6 +139,46 @@ public:
 		mutex_.unlock();
 	}
 
+	static bool getPause() {
+        bool temp;		
+		mutex_.lock();
+		temp = pause_;
+		mutex_.unlock();
+		return temp;
+	}
+
+	static bool getStop() {
+        bool temp;		
+		mutex_.lock();
+		temp = stop_;
+		mutex_.unlock();
+		return temp;
+	}
+
+	static bool getCapturePause() {
+        bool temp;		
+		mutex_.lock();
+		temp = capturePause_;
+		mutex_.unlock();
+		return temp;
+	}
+
+	static bool getCaptureStop() {
+        bool temp;		
+		mutex_.lock();
+		temp = captureStop_;
+		mutex_.unlock();
+		return temp;
+	}
+
+	static int getPlayCount() {
+        int temp;		
+		mutex_.lock();
+		temp = playCount_;
+		mutex_.unlock();
+		return temp;
+	}
+
 	static void toggleCapturePause() {
 		mutex_.lock();
 		capturePause_ = !capturePause_;
@@ -147,6 +203,24 @@ public:
 		mutex_.unlock();
 	}
 
+    static int getQueueSize() {
+		int temp;
+		mutex_.lock();
+		temp = streamQueue.count();
+		mutex_.unlock();
+		return temp;
+	}
+
+	static QByteArray getNextInQueue() {
+		QByteArray temp = NULL;
+		mutex_.lock();
+        if(streamQueue.count() > 0) {		
+			temp = streamQueue.dequeue();
+		}
+		mutex_.unlock();
+		return temp;
+	}
+
 	void startCapture();
 	void captureMic();
     /**
@@ -169,14 +243,23 @@ public:
     void startup();
     
     /**
-     * Play the Ogg Vorbis sound file as background music.
+     * Play the Ogg Vorbis or wav sound file
      *
      * @author Terence Stenvold
      * @param filename QString of ogg file.
      */    
     void playMusic(QString filename);
 
+    /**
+     * Play the queue stream
+     *
+     * @author Terence Stenvold
+     */    
+    void playStream();	
 
+signals:
+	void finished();
+	
 };
 
 #endif

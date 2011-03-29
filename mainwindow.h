@@ -207,6 +207,13 @@ public slots:
      * @author Dean Morin
      */
     void onSettingsPressed();
+
+	/**
+     * Tells the dialog music track finished
+     *
+     * @author Terence Stenvold
+     */
+    void playFinished();
 };
 
 #endif // MAINWINDOW_H
