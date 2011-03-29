@@ -2,6 +2,8 @@
 #include "defines.h"
 #include "mainwindow.h"
 #include "stream.h"
+#include <qmessagebox.h>
+#include <qfiledialog.h>
 
 Connection::Connection(CommAudio* owner, QString host, int prot, int port)
         : mwOwner(owner), mode(CLIENT), protocol(prot) {
@@ -109,15 +111,13 @@ void Connection::onCtlReadReady() {
     {
         /* Got the file data for a transfer */
 		fileSize = s.readInt();
-
-		saveFile = new QFile("./test.txt");
-		saveFile->open(QIODevice::WriteOnly);
 	    isFileTransferInProgress = true;
         buf.remove(0, s.position());
 	}
     else if(msgType == (char)0x05 && !isFileTransferInProgress)
     {
 		/* Requested file does not exist */
+        QMessageBox(QMessageBox::Critical, QString("Error"), QString("Could not transfer the requested file"));
 	} else {
         qDebug("Got something to read");
     }
@@ -174,6 +174,11 @@ void Connection::requestForFile(QString filename) {
 	if(filename == NULL || filename.isEmpty()) {
 		return;
 	}
+
+    QString defPath = QString("music/") + filename;
+    QString savefilename = QFileDialog::getSaveFileName(mwOwner, QString("Save File"), defPath);
+    saveFile = new QFile(savefilename);
+    saveFile->open(QIODevice::WriteOnly);
 
 	Stream buf;
 	buf.writeByte(0x03);
