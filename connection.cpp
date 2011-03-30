@@ -62,6 +62,10 @@ bool Connection::handShake() {
 void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
     qDebug("Stream is %d bytes long.", buf.size());
+    if (buf.size() == 0) {
+        return;
+    }
+
     Stream s(buf);
     unsigned char msgType = s.readByte();
 	
@@ -121,7 +125,7 @@ void Connection::onCtlReadReady() {
     {
 		/* Requested file does not exist */
         QMessageBox(QMessageBox::Critical, QString("Error"), QString("Could not transfer the requested file"));
-	} else {
+	} else if (!isFileTransferInProgress) {
         qDebug("Got something to read");
     }
 
