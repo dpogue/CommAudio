@@ -47,6 +47,9 @@ private:
 	/** Boolean for determing whether or not the handshake has been received*/
 	bool handShakeRecv;
 
+    /** Whether the list of files has been transferred or not. */
+    bool sentFileList;
+
     /**
      * Sends the list of local files to the other client.
      *

@@ -17,6 +17,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 	fileSize = 0;
 	isFileTransferInProgress = false;
+    sentFileList = false;
 	progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
@@ -32,6 +33,7 @@ Connection::Connection(CommAudio* owner, int prot, int port)
 	qDebug((QString::number(port)).toAscii().data());
 	fileSize = 0;
 	isFileTransferInProgress = false;
+    sentFileList = false;
 	progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
@@ -100,7 +102,7 @@ void Connection::onCtlReadReady() {
         mwOwner->addRemoteSongs(songs);
         buf.remove(0, s.position());
 
-        if (mode == CLIENT) {
+        if (mode == CLIENT && !sentFileList) {
             sendFileList();
         }
     }
@@ -154,6 +156,8 @@ void Connection::onCtlReadReady() {
             QFileInfo fi(*saveFile);
             mwOwner->addSong(fi.fileName(), fi.absoluteFilePath());
 
+            progressBar->setValue(progressBar->maximum());
+
             Stream list;
             list.writeByte(0x02);
             list.writeInt(1);
@@ -175,6 +179,8 @@ void Connection::sendFileList() {
         list.write(songs[i].toUtf8());
     }
     ctlSock->setWriteBuffer(list.data());
+
+    sentFileList = true;
 }
 
 bool Connection::sendFile(QString filename) {
