@@ -37,6 +37,10 @@ void Connection::closeConnection() {
 	ctlSock->closeSocket();
 }
 
+void Connection::makeMulticast() {
+    ctlSock->toggleMulticast();
+}
+
 void Connection::run() {
 	
 	if(mode == SERVER) {

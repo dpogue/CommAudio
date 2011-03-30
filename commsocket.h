@@ -2,6 +2,7 @@
 #define COMMSOCKET_H
 #include <QtGui/QMainWindow>
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <Windows.h>
 
 class CommSocket : public QWidget {
@@ -19,6 +20,7 @@ private:
 	QByteArray readBuffer;
 	QByteArray writeBuffer;
 	int prot;
+    bool multicasting;
 	
 public:
     CommSocket(QString host, int port,int protocol);
@@ -30,6 +32,8 @@ public:
 	bool connectToServ();
 	bool listenForConn(int backlog);
     void closeSocket();
+
+    bool toggleMulticast();
 
 protected:
     virtual bool winEvent(MSG* message, long* result);

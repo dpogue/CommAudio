@@ -11,6 +11,8 @@
 #define NORMAL     0
 #define FILESAVING 1
 
+#define MULTICAST 0xE8152A01
+
 
 // images
 #define ICON_PLAY       "img/play.png"

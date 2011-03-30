@@ -5,6 +5,7 @@
 
 CommSocket::CommSocket(QString host, int port,int protocol) : QWidget(NULL) {
 	prot = protocol;
+    multicasting = false;
 	sock = createSocket(host,(host.isEmpty() ? SERVER : CLIENT),port);
 }
 
@@ -12,12 +13,37 @@ CommSocket::CommSocket(SOCKET socket) {
 	long events = FD_CONNECT | FD_WRITE | FD_ACCEPT | FD_READ | FD_CLOSE;
 	prot = TCP;
 	sock = socket;
+    multicasting = false;
 	WSAAsyncSelect(sock, winId(), WM_SOCKET, events);
 }
 
 CommSocket::~CommSocket() {
     if (sock != 0) {
         closesocket(sock);
+    }
+}
+
+bool CommSocket::toggleMulticast() {
+    if (prot == TCP) {
+        return false;
+    }
+
+    ip_mreq mreq;
+    mreq.imr_multiaddr.s_addr = htonl(MULTICAST);
+    mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+
+    if (!multicasting) {
+        if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
+            perror("setsockopt");
+        }
+        multicasting = !multicasting;
+        return true;
+    } else {
+        if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
+            perror("setsockopt");
+        }
+        multicasting = !multicasting;
+        return false;
     }
 }
 

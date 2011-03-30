@@ -170,7 +170,7 @@ public slots:
      *
      * @author Dean Morin
      */
-    void connectToServer(QString host, int port);
+    void connectToServer(QString host, int port, bool multicast);
 
 	void disconnectFromServer();
 

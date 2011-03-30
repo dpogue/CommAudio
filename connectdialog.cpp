@@ -29,6 +29,7 @@ void ConnectDialog::onConnectClicked() {
     unsigned long ip = 0;
     unsigned int port = 0;
     bool validPort = false;
+    bool multicast = ui->multicastCheckBox->isChecked();
     
     if ((ip = inet_addr(ui->ipLineEdit->text().toAscii())) == INADDR_NONE) {
         ui->connectErrorLabel->
@@ -55,7 +56,7 @@ void ConnectDialog::onConnectClicked() {
 	connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onDisconnectClicked()));
 
-    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
+    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port, multicast);
     done(0);
 }
 

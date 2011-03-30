@@ -118,9 +118,12 @@ void CommAudio::onVolumeMoved(int volume) {
     AudioManager::setGain(volume / 100.0);
 }
 
-void CommAudio::connectToServer(QString host, int port) {
+void CommAudio::connectToServer(QString host, int port, bool multicast) {
 	
 	conn = new Connection(this, host, TCP, port);
+    if (multicast) {
+        conn->makeMulticast();
+    }
 	conn->start();
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
