@@ -65,6 +65,7 @@ bool CommSocket::winEvent(MSG* message, long* result) {
 
 		if(WSAGETSELECTERROR(message->lParam)) {
 				qDebug((QString::number(WSAGETSELECTERROR(message->lParam))).toAscii().data());
+                emit socketDisconnected();
 		}
         switch(WSAGETSELECTEVENT(message->lParam)) {
 			

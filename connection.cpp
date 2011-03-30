@@ -32,6 +32,7 @@ Connection::Connection(CommAudio* owner, int prot, int port)
 	qDebug((QString::number(port)).toAscii().data());
 	fileSize = 0;
 	isFileTransferInProgress = false;
+	progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
 void Connection::closeConnection() {
