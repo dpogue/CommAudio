@@ -64,6 +64,7 @@ void ConnectDialog::onDisconnectClicked() {
                this, SLOT(onDisconnectClicked()));
 
     ui->connectPushButton->setDisabled(false);
+    ui->connectPushButton->setDisabled(false);
     ui->connectPushButton->setText("Connect");
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
@@ -104,6 +105,7 @@ void ConnectDialog::onStopServerClicked() {
                this, SLOT(onStopServerClicked()));
 
     ui->connectPushButton->setDisabled(false);
+    ui->startServerPushButton->setDisabled(false);
     ui->startServerPushButton->setText("Start Server");
     connect(ui->startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
