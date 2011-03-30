@@ -4,6 +4,7 @@
 #include "stream.h"
 #include <qmessagebox.h>
 #include <qfiledialog.h>
+#include <qfileinfo.h>
 
 Connection::Connection(CommAudio* owner, QString host, int prot, int port)
         : mwOwner(owner), mode(CLIENT), protocol(prot) {
@@ -13,6 +14,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 	fileSize = 0;
 	isFileTransferInProgress = false;
 }
@@ -25,6 +27,7 @@ Connection::Connection(CommAudio* owner, int prot, int port)
 	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 	qDebug((QString::number(port)).toAscii().data());
 	fileSize = 0;
 	isFileTransferInProgress = false;
@@ -132,6 +135,16 @@ void Connection::onCtlReadReady() {
 		if(fileSize <= 0) {
 			saveFile->close();
 			isFileTransferInProgress = false;
+
+            QFileInfo fi(*saveFile);
+            mwOwner->addSong(fi.fileName(), fi.absoluteFilePath());
+
+            Stream list;
+            list.writeByte(0x02);
+            list.writeInt(1);
+            list.writeInt(fi.fileName().size());
+            list.write(fi.fileName().toUtf8());
+            ctlSock->setWriteBuffer(list.data());
 		}
 	}
 }
@@ -155,7 +168,8 @@ bool Connection::sendFile(QString filename) {
 	char buf[BUFSIZE];
 	int bytesRead = 0;
 	DWORD filesize = 0;
-	transmitFile = new QFile("./commsocket.cpp");
+
+	transmitFile = new QFile(filename);
     transmitFile->open(QIODevice::ReadOnly);
 	data.writeByte(0x04);
 	data.writeInt(transmitFile->size());
@@ -177,6 +191,10 @@ void Connection::requestForFile(QString filename) {
 
     QString defPath = QString("music/") + filename;
     QString savefilename = QFileDialog::getSaveFileName(mwOwner, QString("Save File"), defPath);
+    if (savefilename.isNull() || savefilename.isEmpty()) {
+        return;
+    }
+
     saveFile = new QFile(savefilename);
     saveFile->open(QIODevice::WriteOnly);
 
@@ -200,7 +218,7 @@ void Connection::onCtlAccept() {
 	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
 	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
 	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
-
+	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 }
 
 void Connection::onCtlConnect() {
@@ -209,4 +227,8 @@ void Connection::onCtlConnect() {
         buf.append(0x01);
         ctlSock->setWriteBuffer(buf);
     }
+}
+
+void Connection::onDisconnected() {
+    mwOwner->disconnected();
 }

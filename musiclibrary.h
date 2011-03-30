@@ -74,6 +74,15 @@ public:
      */
     void addSongs(QList<QString> songlist);
 
+    /**
+     * Adds a single song to the music library.
+     *
+     * @author Darryl Pogue
+     * @param name The song name.
+     * @param path The path to the song file.
+     */
+    void addSong(QString name, QString path);
+
 signals:
     void signalSongDoubleClicked(QString songName);
 

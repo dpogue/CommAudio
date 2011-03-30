@@ -64,11 +64,14 @@ private:
 
 protected:
 	virtual void run();
+
 public slots:
 	void onCtlReadReady();
 	void onCtlWrite();
 	void onCtlAccept();
 	void onCtlConnect();
+
+    void onDisconnected();
 
 	void requestForFile(QString filename);
 };

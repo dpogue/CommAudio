@@ -36,6 +36,7 @@ protected:
 
 signals:
     void socketConnected();
+    void socketDisconnected();
     void socketAccepted();
     void socketRead();
     void socketWrite();

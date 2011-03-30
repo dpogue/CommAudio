@@ -118,6 +118,10 @@ public:
 
     void addRemoteSongs(QList<QString> songs);
 
+    void addSong(QString song, QString path) {
+        userSongs->addSong(song, path);
+    }
+
     /**
      * Returns whether or not the chat button is in toggle mode.
      *
@@ -138,6 +142,19 @@ public:
     void setStickyChat(bool sticky) {
         stickyChat = sticky;
     }
+
+    /**
+     * Informs the application that a socket connection has been disconnected in
+     * an abnormal way.
+     *
+     * @author Darryl Pogue
+     */
+    void disconnected() {
+        emit gotDisconnected();
+    }
+
+signals:
+    void gotDisconnected();
 
 public slots:
     /**

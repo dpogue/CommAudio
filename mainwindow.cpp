@@ -125,11 +125,18 @@ void CommAudio::connectToServer(QString host, int port) {
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
 
+    connect(this, SIGNAL(gotDisconnected()), this, SLOT(disconnectFromServer()));
+
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::disconnectFromServer() {
 	conn->closeConnection();
+    disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(disconnectFromServer()));
+
+    disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
+    remoteSongs->clear();
 	ui.fileTabWidget->setTabEnabled(1, false);
 }
 
@@ -140,11 +147,18 @@ void CommAudio::startServer(int port) {
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
 
+    connect(this, SIGNAL(gotDisconnected()), this, SLOT(stopServer()));
+
     ui.fileTabWidget->setTabEnabled(1, true);
 }
 
 void CommAudio::stopServer() {
 	conn->closeConnection();
+    disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(stopServer()));
+
+    disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
+            conn, SLOT(requestForFile(QString)));
+    remoteSongs->clear();
     ui.fileTabWidget->setTabEnabled(1, false);
 }
 

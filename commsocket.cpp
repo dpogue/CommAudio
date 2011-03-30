@@ -136,7 +136,11 @@ bool CommSocket::read() {
 			else {
 				return false;
 			}
-		}
+		} else if (bytesRead == 0) {
+            /* Disconnected! */
+            emit socketDisconnected();
+            return false;
+        }
 		bytesToRead -= bytesRead;
 		
 	}

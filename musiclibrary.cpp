@@ -80,6 +80,11 @@ void MusicLibrary::addSongs(QList<QString> songlist) {
     }
 }
 
+void MusicLibrary::addSong(QString name, QString path) {
+    songs.insert(name, path);
+    addItem(name);
+}
+
 void MusicLibrary::onItemDoubleClicked(QListWidgetItem* songListing) {
     emit signalSongDoubleClicked(songs[songListing->text()]);
 }
