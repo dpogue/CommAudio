@@ -153,6 +153,10 @@ public:
         emit gotDisconnected();
     }
 
+	Ui::CommAudioClass* getUi() {
+		return &ui;
+	}
+
 signals:
     void gotDisconnected();
 
@@ -164,7 +168,7 @@ public slots:
      * @param volume The new value for volume.
      */
     void onVolumeMoved(int volume);
-    //TODO: move out of slots
+
     /**
      * Attempts to connect to the server specified in the server group box. 
      *

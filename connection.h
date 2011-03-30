@@ -2,6 +2,7 @@
 #define CONNECTION_H
 #include <qthread.h>
 #include <qfile.h>
+#include <qprogressbar.h>
 #include "commsocket.h"
 
 class CommAudio;
@@ -62,7 +63,9 @@ private:
 	bool isFileTransferInProgress;
 	int fileSize;
 	HANDLE saveFileHandle;
-	
+
+	/** The download progress bar. */
+	QProgressBar* progressBar;	
 
 protected:
 	virtual void run();

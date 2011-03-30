@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>iMusic</string>
+   <string>Windows Audio Manager - Professional Edition</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -296,7 +296,7 @@ QPushButton#nextPushButton {
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="localTab">
         <attribute name="title">
@@ -340,14 +340,28 @@ QPushButton#nextPushButton {
      </size>
     </property>
    </widget>
-   <zorder>previousPushButton</zorder>
+   <widget class="QProgressBar" name="downloadProgressBar">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>640</y>
+      <width>118</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
    <zorder>nextPushButton</zorder>
+   <zorder>previousPushButton</zorder>
    <zorder>chatPushButton</zorder>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>connectionPushButton</zorder>
    <zorder>stopPushButton</zorder>
    <zorder>verticalLayoutWidget_2</zorder>
    <zorder>settingsPushButton</zorder>
+   <zorder>downloadProgressBar</zorder>
    <zorder>playPushButton</zorder>
   </widget>
  </widget>

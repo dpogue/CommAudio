@@ -17,6 +17,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 	fileSize = 0;
 	isFileTransferInProgress = false;
+	progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
 Connection::Connection(CommAudio* owner, int prot, int port)
@@ -124,6 +125,10 @@ void Connection::onCtlReadReady() {
 		fileSize = s.readInt();
 	    isFileTransferInProgress = true;
         buf.remove(0, s.position());
+
+		progressBar->setMinimum(0);
+		progressBar->setMaximum(fileSize);
+		progressBar->reset();
 	}
     else if(msgType == (char)0x05 && !isFileTransferInProgress)
     {
@@ -138,7 +143,8 @@ void Connection::onCtlReadReady() {
 		if(saveFile->write(buf,buf.size()) < 0) {
 			QFile::FileError fe = saveFile->error();
 		}
-	
+		
+		progressBar->setValue(progressBar->value() + buf.size());
 		fileSize -= buf.size();
 		if(fileSize <= 0) {
 			saveFile->close();
