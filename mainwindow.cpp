@@ -13,7 +13,7 @@
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), conn(NULL), stickyChat(false), 
-      chatting(false)
+      chatting(false), muted(false)
 {	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
@@ -28,6 +28,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 
     connect(ui.volumeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(onVolumeMoved(int)));
+    connect(ui.mutePushButton, SIGNAL(clicked()),
+            this, SLOT(onMuteClicked()));
     connect(ui.chatPushButton, SIGNAL(pressed()),
             this, SLOT(onChatPressed()));
     connect(ui.chatPushButton, SIGNAL(released()),
@@ -43,6 +45,9 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     ui.volumeSlider->setMaximum(100);
     ui.volumeSlider->setValue(50);
     onVolumeMoved(50);
+
+    ui.downloadProgressBar->hide();
+    ui.playPushButton->raise();
 
     //TODO: move to settings
     if(!QDir("music").exists()) {
@@ -116,6 +121,17 @@ void CommAudio::addRemoteSongs(QList<QString> songs) {
 
 void CommAudio::onVolumeMoved(int volume) {
     AudioManager::setGain(volume / 100.0);
+}
+
+void CommAudio::onMuteClicked() {
+    muted = !muted;
+    if (muted) {
+        AudioManager::setGain(0);
+        ui.statusLabel->setText("Mute");
+    } else {
+        AudioManager::setGain(ui.volumeSlider->value() / 100.0);
+        ui.statusLabel->setText("");
+    }
 }
 
 void CommAudio::connectToServer(QString host, int port, bool multicast) {

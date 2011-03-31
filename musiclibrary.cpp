@@ -29,11 +29,15 @@ QString MusicLibrary::getNextSong(bool loop) {
 
     int row = this->row(sel.at(0));
     if (++row >= count()) {
-        QList<QListWidgetItem*>::iterator it;
-        for (it = sel.begin(); it != sel.end(); ++it) {
-            setItemSelected(*it, false);
+        if (loop) {
+            row = 0;
+        } else {
+            QList<QListWidgetItem*>::iterator it;
+            for (it = sel.begin(); it != sel.end(); ++it) {
+                setItemSelected(*it, false);
+            }
+            return "";
         }
-        return "";
     }
 
     this->item(row)->setSelected(true);
@@ -48,11 +52,15 @@ QString MusicLibrary::getPrevSong(bool loop) {
 
     int row = this->row(sel.at(0));
     if (--row < 0) {
-        QList<QListWidgetItem*>::iterator it;
-        for (it = sel.begin(); it != sel.end(); ++it) {
-            setItemSelected(*it, false);
+        if (loop) {
+            row = this->count() - 1;
+        } else {
+            QList<QListWidgetItem*>::iterator it;
+            for (it = sel.begin(); it != sel.end(); ++it) {
+                setItemSelected(*it, false);
+            }
+            return "";
         }
-        return "";
     }
 
     this->item(row)->setSelected(true);

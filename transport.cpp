@@ -44,12 +44,14 @@ void Transport::onPlayClicked() {
         case PLAYING:
             AudioManager::instance()->togglePause();
             ui->playPushButton->setIcon(QIcon(ICON_PLAY));
+            ui->statusLabel->setText("Paused");
             playingState = PAUSED;
             break;
 
         case PAUSED:
             AudioManager::instance()->togglePause();
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+            ui->statusLabel->setText("");
             playingState = PLAYING;
             break;
     }
@@ -74,6 +76,7 @@ void Transport::onPreviousClicked() {
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    ui->currentSongLabel->setText(fileName);
     playingState = PLAYING;
 }
 

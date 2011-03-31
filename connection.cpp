@@ -8,37 +8,37 @@
 
 Connection::Connection(CommAudio* owner, QString host, int prot, int port)
         : mwOwner(owner), mode(CLIENT), protocol(prot) {
-	
-	ctlSock = new CommSocket(host,port,protocol);
-	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
-	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
-	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
-	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
-	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
-	fileSize = 0;
-	isFileTransferInProgress = false;
+    
+    ctlSock = new CommSocket(host,port,protocol);
+    connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+    connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
+    connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+    connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+    connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
+    fileSize = 0;
+    isFileTransferInProgress = false;
     sentFileList = false;
-	progressBar = mwOwner->getUi()->downloadProgressBar;
+    progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
 Connection::Connection(CommAudio* owner, int prot, int port)
         : mwOwner(owner), mode(SERVER), protocol(prot) {
 
-	ctlSock = new CommSocket("",port,protocol);
-	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
-	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
-	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
-	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
-	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
-	qDebug((QString::number(port)).toAscii().data());
-	fileSize = 0;
-	isFileTransferInProgress = false;
+    ctlSock = new CommSocket("",port,protocol);
+    connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+    connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
+    connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+    connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+    connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
+    qDebug((QString::number(port)).toAscii().data());
+    fileSize = 0;
+    isFileTransferInProgress = false;
     sentFileList = false;
-	progressBar = mwOwner->getUi()->downloadProgressBar;
+    progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
 void Connection::closeConnection() {
-	ctlSock->closeSocket();
+    ctlSock->closeSocket();
 }
 
 void Connection::makeMulticast() {
@@ -46,26 +46,26 @@ void Connection::makeMulticast() {
 }
 
 void Connection::run() {
-	
-	if(mode == SERVER) {
-		ctlSock->listenForConn(BACKLOG);
-		qDebug("listening");
-	}
-	else {
-		ctlSock->connectToServ();
-	}
+    
+    if(mode == SERVER) {
+        ctlSock->listenForConn(BACKLOG);
+        qDebug("listening");
+    }
+    else {
+        ctlSock->connectToServ();
+    }
 
-	this->exec();
+    this->exec();
 }
 
 bool Connection::handShake() {
-	WSABUF sendData;
+    WSABUF sendData;
 
-	if(mode == CLIENT) {	
-	}
-	else if(mode == SERVER) {
-	}
-	return true;
+    if(mode == CLIENT) {	
+    }
+    else if(mode == SERVER) {
+    }
+    return true;
 }
 void Connection::onCtlReadReady() {
     QByteArray& buf = ctlSock->getReadBuffer();
@@ -76,7 +76,7 @@ void Connection::onCtlReadReady() {
 
     Stream s(buf);
     unsigned char msgType = s.readByte();
-	
+    
     if (msgType == (char)0x01 && !isFileTransferInProgress)
     {
         /* Received handshake */
@@ -121,42 +121,45 @@ void Connection::onCtlReadReady() {
             sendFile(path);
         }
         buf.remove(0, s.position());
-	}
+    }
     else if(msgType == (char)0x04 && !isFileTransferInProgress)
     {
         /* Got the file data for a transfer */
-		fileSize = s.readInt();
-	    isFileTransferInProgress = true;
+        fileSize = s.readInt();
+        isFileTransferInProgress = true;
         buf.remove(0, s.position());
 
-		progressBar->setMinimum(0);
-		progressBar->setMaximum(fileSize);
-		progressBar->reset();
-	}
+        progressBar->setMinimum(0);
+        progressBar->setMaximum(fileSize);
+        progressBar->reset();
+        progressBar->show();
+        progressBar->raise();
+    }
     else if(msgType == (char)0x05 && !isFileTransferInProgress)
     {
-		/* Requested file does not exist */
+        /* Requested file does not exist */
         QMessageBox(QMessageBox::Critical, QString("Error"), QString("Could not transfer the requested file"));
-	} else if (!isFileTransferInProgress) {
+    } else if (!isFileTransferInProgress) {
         qDebug("Got something to read");
     }
 
-	if(isFileTransferInProgress) {
-		DWORD bytesWritten;
-		if(saveFile->write(buf,buf.size()) < 0) {
-			QFile::FileError fe = saveFile->error();
-		}
-		
-		progressBar->setValue(progressBar->value() + buf.size());
-		fileSize -= buf.size();
-		if(fileSize <= 0) {
-			saveFile->close();
-			isFileTransferInProgress = false;
+    if(isFileTransferInProgress) {
+        DWORD bytesWritten;
+        if(saveFile->write(buf,buf.size()) < 0) {
+            QFile::FileError fe = saveFile->error();
+        }
+        
+        progressBar->setValue(progressBar->value() + buf.size());
+        fileSize -= buf.size();
+        if(fileSize <= 0) {
+            saveFile->close();
+            isFileTransferInProgress = false;
 
             QFileInfo fi(*saveFile);
             mwOwner->addSong(fi.fileName(), fi.absoluteFilePath());
 
             progressBar->setValue(progressBar->maximum());
+            progressBar->hide();
 
             Stream list;
             list.writeByte(0x02);
@@ -164,8 +167,8 @@ void Connection::onCtlReadReady() {
             list.writeInt(fi.fileName().size());
             list.write(fi.fileName().toUtf8());
             ctlSock->setWriteBuffer(list.data());
-		}
-	}
+        }
+    }
 }
 
 void Connection::sendFileList() {
@@ -184,31 +187,31 @@ void Connection::sendFileList() {
 }
 
 bool Connection::sendFile(QString filename) {
-	HANDLE filehandle;
-	Stream data;
-	char buf[BUFSIZE];
-	int bytesRead = 0;
-	DWORD filesize = 0;
+    HANDLE filehandle;
+    Stream data;
+    char buf[BUFSIZE];
+    int bytesRead = 0;
+    DWORD filesize = 0;
 
-	transmitFile = new QFile(filename);
+    transmitFile = new QFile(filename);
     transmitFile->open(QIODevice::ReadOnly);
-	data.writeByte(0x04);
-	data.writeInt(transmitFile->size());
-	
-	while((bytesRead = transmitFile->read(buf,BUFSIZE-1)) > 0) {
-		data.write(buf, bytesRead);
-		ZeroMemory(buf,BUFSIZE);
-	}
-	qDebug("File Size: %d",data.size());
-	ctlSock->setWriteBuffer(data.data());
-	return true;
+    data.writeByte(0x04);
+    data.writeInt(transmitFile->size());
+    
+    while((bytesRead = transmitFile->read(buf,BUFSIZE-1)) > 0) {
+        data.write(buf, bytesRead);
+        ZeroMemory(buf,BUFSIZE);
+    }
+    qDebug("File Size: %d",data.size());
+    ctlSock->setWriteBuffer(data.data());
+    return true;
 }
 
 void Connection::requestForFile(QString filename) {
-	
-	if(filename == NULL || filename.isEmpty()) {
-		return;
-	}
+    
+    if(filename == NULL || filename.isEmpty()) {
+        return;
+    }
 
     QString defPath = QString("music/") + filename;
     QString savefilename = QFileDialog::getSaveFileName(mwOwner, QString("Save File"), defPath);
@@ -219,27 +222,27 @@ void Connection::requestForFile(QString filename) {
     saveFile = new QFile(savefilename);
     saveFile->open(QIODevice::WriteOnly);
 
-	Stream buf;
-	buf.writeByte(0x03);
-	buf.writeInt(filename.size());
-	buf.write(filename.toAscii().data());
+    Stream buf;
+    buf.writeByte(0x03);
+    buf.writeInt(filename.size());
+    buf.write(filename.toAscii().data());
 
-	ctlSock->setWriteBuffer(buf.data());
+    ctlSock->setWriteBuffer(buf.data());
 }
 
 void Connection::onCtlWrite() {
-	qDebug("Got something to write");
+    qDebug("Got something to write");
 }
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
-	ctlSock->closeSocket();
-	ctlSock = ctlSock->getLastAcceptedSocket();
-	connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
-	connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
-	connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
-	connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
-	connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
+    ctlSock->closeSocket();
+    ctlSock = ctlSock->getLastAcceptedSocket();
+    connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+    connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
+    connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+    connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+    connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 }
 
 void Connection::onCtlConnect() {

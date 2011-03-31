@@ -63,8 +63,7 @@ QPushButton#previousPushButton {
 
 QPushButton#nextPushButton {
 	border-radius: 15px;
-}
-</string>
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="chatPushButton">
@@ -125,6 +124,40 @@ QPushButton#nextPushButton {
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
+         <widget class="QLabel" name="currentSongLabel">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>291</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>MS Shell Dlg 2</family>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="statusLabel">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>30</y>
+            <width>111</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <zorder>statusLabel</zorder>
+         <zorder>currentSongLabel</zorder>
         </widget>
        </item>
        <item>
@@ -307,6 +340,25 @@ QPushButton#nextPushButton {
         <attribute name="title">
          <string>Peer's Songs</string>
         </attribute>
+        <widget class="QProgressBar" name="downloadProgressBar">
+         <property name="geometry">
+          <rect>
+           <x>280</x>
+           <y>250</y>
+           <width>91</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+         <property name="format">
+          <string>%p%</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="playlistTab">
         <attribute name="title">
@@ -338,19 +390,6 @@ QPushButton#nextPushButton {
       <width>32</width>
       <height>32</height>
      </size>
-    </property>
-   </widget>
-   <widget class="QProgressBar" name="downloadProgressBar">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>640</y>
-      <width>118</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
     </property>
    </widget>
    <widget class="QPushButton" name="shufflePushButton">

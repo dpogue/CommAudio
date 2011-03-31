@@ -51,6 +51,9 @@ private:
     /** True if currently chatting. */
     bool chatting;
 
+    /** True if the audio should be muted. */
+    bool muted;
+
     /** Prevents buttons other that play from stealing the spacebar. */
     SpacebarGrabber* spacebarGrabber;
 
@@ -157,6 +160,13 @@ public slots:
      * @param volume The new value for volume.
      */
     void onVolumeMoved(int volume);
+
+    /**
+     * Mutes the audio.
+     *
+     * @author Dean Morin
+     */
+    void onMuteClicked();
 
     /**
      * Attempts to connect to the server specified in the server group box. 
