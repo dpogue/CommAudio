@@ -50,6 +50,7 @@ private:
 
 
 	static QQueue<QByteArray> streamQueue;
+	static QQueue<QByteArray> netQueue;
 
     /**
      * Whether the AudioManager has been initialized.
@@ -203,6 +204,12 @@ public:
 		mutex_.unlock();
 	}
 
+	static void addToNetworkQueue(QByteArray buffer) {
+		mutex_.lock();
+	    netQueue.enqueue(buffer);
+		mutex_.unlock();
+	}	
+
     static int getQueueSize() {
 		int temp;
 		mutex_.lock();
@@ -216,6 +223,16 @@ public:
 		mutex_.lock();
         if(streamQueue.count() > 0) {		
 			temp = streamQueue.dequeue();
+		}
+		mutex_.unlock();
+		return temp;
+	}
+
+	static QByteArray getNextNetworkQueue() {
+		QByteArray temp = NULL;
+		mutex_.lock();
+        if(netQueue.count() > 0) {		
+			temp = netQueue.dequeue();
 		}
 		mutex_.unlock();
 		return temp;

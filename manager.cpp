@@ -11,6 +11,7 @@ int AudioManager::playCount_ = 0;
 float AudioManager::musicGain_ = 0.5;
 QMutex AudioManager::mutex_;
 QQueue<QByteArray> AudioManager::streamQueue;
+QQueue<QByteArray> AudioManager::netQueue;
 
 AudioManager::AudioManager()
 {
@@ -325,8 +326,7 @@ void AudioManager::captureMic()
 			} else if (samplesAvailable > (BUFFERSIZE)) {
 
 				alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
-				//TODO: Send to the network here!
-				this->addToQueue(buffer);
+				this->addToNetworkQueue(buffer);
 			}
 		}
 	}
