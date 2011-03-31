@@ -35,6 +35,8 @@ public:
 
     bool toggleMulticast();
 
+    void getHostAndPort(QString* host, unsigned short* port);
+
 protected:
     virtual bool winEvent(MSG* message, long* result);
 

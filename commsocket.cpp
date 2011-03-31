@@ -47,6 +47,23 @@ bool CommSocket::toggleMulticast() {
     }
 }
 
+void CommSocket::getHostAndPort(QString* host, unsigned short* port) {
+    sockaddr_in addr;
+    int size = sizeof(addr);
+
+    getpeername(sock, (sockaddr*)&addr, (socklen_t*)&size);
+
+    hostent* hp = gethostbyaddr((char*)addr.sin_addr.s_addr, sizeof(addr.sin_addr.s_addr), AF_INET);
+    if (hp != NULL) {
+        *host = QString(hp->h_name);
+    } else {
+        qDebug("Something went wrong getting the hostname!");
+        *host = QString();
+    }
+
+    *port = ntohs(addr.sin_port);
+}
+
 bool CommSocket::listenForConn(int backlog) {
 	
 	if(listen(sock,backlog) == SOCKET_ERROR) {
