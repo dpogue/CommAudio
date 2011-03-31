@@ -20,6 +20,10 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
     strSock = new CommSocket(host, port, UDP);
     connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 
+    timer.setInterval(23);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+    timer.start();
+
     fileSize = 0;
     isFileTransferInProgress = false;
     sentFileList = false;
@@ -260,6 +264,10 @@ void Connection::onCtlAccept() {
     unsigned short cport;
     ctlSock->getHostAndPort(&host, &cport);
 	strSock = new CommSocket(host, cport, UDP);
+
+    timer.setInterval(23);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+    timer.start();
 
     connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
     connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));

@@ -194,19 +194,28 @@ bool CommSocket::read() {
 }
 
 bool CommSocket::write() {
-	QByteArray buffer;
 	int bytesSent = 0;
+
+    if (prot == UDP) {
+        bytesSent = sendto(sock, writeBuffer.data(), writeBuffer.size(), 0, (SOCKADDR *)&server,
+				sizeof(server));
+        if (bytesSent == SOCKET_ERROR) {
+			int s = WSAGetLastError();
+			if(s != WSAEWOULDBLOCK){
+				return false;
+			}
+			return true;
+        }
+        writeBuffer.clear();
+        emit socketWrite();
+        return true;
+    }
+
+	QByteArray buffer;
 	qBinCpy(buffer,writeBuffer,BUFSIZE);
 	
 	while(!writeBuffer.isEmpty()) {
-		if(prot == TCP) {
-			bytesSent = send(sock,buffer.data(),buffer.size(),0);
-		}
-		else {
-			bytesSent = sendto(sock,buffer.data(),buffer.size(),0,(SOCKADDR *)&server,
-				sizeof(server));
-		}
-
+        bytesSent = send(sock,buffer.data(),buffer.size(),0);
 		if(bytesSent == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s != WSAEWOULDBLOCK){

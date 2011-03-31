@@ -3,6 +3,7 @@
 #include <qthread.h>
 #include <qfile.h>
 #include <qprogressbar.h>
+#include <qtimer.h>
 #include "commsocket.h"
 
 class CommAudio;
@@ -66,7 +67,6 @@ private:
 	/** sends the file to the client*/
 	bool sendFile(QString filename);
 
-    void sendAudioBuffer();
 
 	/** saves the incoming file */
 	//bool saveFile();
@@ -78,6 +78,8 @@ private:
 	/** The download progress bar. */
 	QProgressBar* progressBar;	
 
+    QTimer timer;
+
 protected:
 	virtual void run();
 
@@ -88,6 +90,8 @@ public slots:
 	void onCtlConnect();
 
 	void onStrReadReady();
+
+    void sendAudioBuffer();
 
     void onDisconnected();
 

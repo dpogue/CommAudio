@@ -232,7 +232,7 @@ public:
 		QByteArray* temp = NULL;
 		mutex_.lock();
         if(netQueue.count() > 0) {		
-			*temp = netQueue.dequeue();
+			temp = new QByteArray(netQueue.dequeue());
 		}
 		mutex_.unlock();
 		return temp;
