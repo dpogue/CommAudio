@@ -41,6 +41,12 @@ private:
 	/** Retains memory regarding the type of connection */
 	int protocol;
 
+	/** Retains memory regarding the host ip */
+	QString host;
+
+	/** Retains the port number */
+	int port;
+
 	/** Specifies whether the connection is client or server */
 	int mode;
 
