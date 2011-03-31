@@ -66,6 +66,8 @@ private:
 	/** sends the file to the client*/
 	bool sendFile(QString filename);
 
+    void sendAudioBuffer();
+
 	/** saves the incoming file */
 	//bool saveFile();
 
@@ -84,6 +86,8 @@ public slots:
 	void onCtlWrite();
 	void onCtlAccept();
 	void onCtlConnect();
+
+	void onStrReadReady();
 
     void onDisconnected();
 

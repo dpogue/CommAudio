@@ -5,6 +5,7 @@
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qfileinfo.h>
+#include "manager.h"
 
 Connection::Connection(CommAudio* owner, QString host, int prot, int port)
         : mwOwner(owner), mode(CLIENT), protocol(prot) {
@@ -15,6 +16,10 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
     connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
     connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
     connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
+
+    strSock = new CommSocket(host, port, UDP);
+    connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
+
     fileSize = 0;
     isFileTransferInProgress = false;
     sentFileList = false;
@@ -208,6 +213,17 @@ bool Connection::sendFile(QString filename) {
     return true;
 }
 
+void Connection::sendAudioBuffer() {
+    QByteArray* packet = AudioManager::getNextNetworkQueue();
+
+    if (packet == NULL) {
+        return;
+    }
+
+    strSock->setWriteBuffer(*packet);
+    delete packet;
+}
+
 void Connection::requestForFile(QString filename) {
     
     if(filename == NULL || filename.isEmpty()) {
@@ -237,9 +253,14 @@ void Connection::onCtlWrite() {
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
-	strSock = new CommSocket("",port,protocol);
     ctlSock->closeSocket();
     ctlSock = ctlSock->getLastAcceptedSocket();
+
+    QString host;
+    unsigned short cport;
+    ctlSock->getHostAndPort(&host, &cport);
+	strSock = new CommSocket(host, cport, UDP);
+
     connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
     connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
     connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
@@ -257,4 +278,10 @@ void Connection::onCtlConnect() {
 
 void Connection::onDisconnected() {
     mwOwner->disconnected();
+}
+
+void Connection::onStrReadReady() {
+    QByteArray& buf = strSock->getReadBuffer();
+
+    AudioManager::addToNetworkQueue(buf);
 }

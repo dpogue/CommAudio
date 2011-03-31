@@ -228,11 +228,11 @@ public:
 		return temp;
 	}
 
-	static QByteArray getNextNetworkQueue() {
-		QByteArray temp = NULL;
+	static QByteArray* getNextNetworkQueue() {
+		QByteArray* temp = NULL;
 		mutex_.lock();
         if(netQueue.count() > 0) {		
-			temp = netQueue.dequeue();
+			*temp = netQueue.dequeue();
 		}
 		mutex_.unlock();
 		return temp;
