@@ -145,6 +145,12 @@ public:
         emit gotDisconnected();
     }
 
+    /**
+     * Gets a reference to the main window ui.
+     *
+     * @author Dean Morin
+     * @return The main window ui.
+     */
 	Ui::CommAudioClass* getUi() {
 		return &ui;
 	}
