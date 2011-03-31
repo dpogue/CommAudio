@@ -18,6 +18,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
     fileSize = 0;
     isFileTransferInProgress = false;
     sentFileList = false;
+	this->port = port;
     progressBar = mwOwner->getUi()->downloadProgressBar;
 }
 
@@ -42,7 +43,7 @@ void Connection::closeConnection() {
 }
 
 void Connection::makeMulticast() {
-    ctlSock->toggleMulticast();
+    strSock->toggleMulticast();
 }
 
 void Connection::run() {
@@ -236,6 +237,7 @@ void Connection::onCtlWrite() {
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
+	strSock = new CommSocket("",port,protocol);
     ctlSock->closeSocket();
     ctlSock = ctlSock->getLastAcceptedSocket();
     connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
