@@ -71,6 +71,13 @@ public slots:
      * @author Dean Morin
      */
     void onLoopClicked();
+
+    /**
+     * Sets the state when a song finishes playing.
+     *
+     * @author Darryl Pogue
+     */
+    void onSongFinished();
 };
 
 #endif // TRANSPORT_H

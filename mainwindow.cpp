@@ -215,6 +215,7 @@ void CommAudio::onSettingsPressed() {
 }
 
 void CommAudio::playFinished() {
-	//do something of value here
 	qDebug("playing stopped");
+
+    transport->onSongFinished();
 }
