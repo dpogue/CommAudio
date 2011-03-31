@@ -8,7 +8,7 @@ bool AudioManager::stop_ = false;
 bool AudioManager::capturePause_ = true;
 bool AudioManager::captureStop_ = false;
 int AudioManager::playCount_ = 0;
-float AudioManager::musicGain_ = 0.9;
+float AudioManager::musicGain_ = 0.5;
 QMutex AudioManager::mutex_;
 QQueue<QByteArray> AudioManager::streamQueue;
 
@@ -347,8 +347,10 @@ void AudioManager::cleanUp(ALuint *source, ALuint *buffer)
 
     alGetSourcei(*source, AL_BUFFERS_PROCESSED, &processed);
 	
-	emit finished();
- 		
+	if(getStop() != true) {	
+		emit finished();
+	}
+
     while (processed && !checkCondition()) {
         alSourceUnqueueBuffers(*source, 1, &tempBuffer);
         processed--;
