@@ -127,10 +127,14 @@ void CommAudio::onMuteClicked() {
     muted = !muted;
     if (muted) {
         AudioManager::setGain(0);
-        ui.statusLabel->setText("Mute");
+        if (transport->getPlayingState() != PAUSED) {
+            ui.statusLabel->setText("Mute");
+        }
     } else {
         AudioManager::setGain(ui.volumeSlider->value() / 100.0);
-        ui.statusLabel->setText("");
+        if (transport->getPlayingState() != PAUSED) {
+            ui.statusLabel->setText("");
+        }
     }
 }
 

@@ -51,7 +51,8 @@ void Transport::onPlayClicked() {
         case PAUSED:
             AudioManager::instance()->togglePause();
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-            ui->statusLabel->setText("");
+            QString text = ((CommAudio*) parent())->getMuted() ? "Mute" : "";
+            ui->statusLabel->setText(text);
             playingState = PLAYING;
             break;
     }
@@ -115,4 +116,5 @@ void Transport::onLoopClicked() {
 void Transport::onSongFinished() {
     ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     playingState = STOPPED;
+    onNextClicked();
 }

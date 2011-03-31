@@ -24,6 +24,16 @@ private:
 public:
     Transport(Ui::CommAudioClass* gui, QWidget* parent = 0);
     ~Transport() { }
+
+    /**
+     * Gets the current state of the player (playing, paused, or stopped).
+     *
+     * @author Dean Morin
+     * @return The current player state.
+     */
+    int getPlayingState() {
+        return playingState;
+    }
    
 public slots:
     /**
