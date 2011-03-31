@@ -73,6 +73,15 @@ protected:
 
 public:
     /**
+     * Returns the collection of local songs.
+     *
+     * @author Dean Morin
+     * @return The collection of songs on the client's computer.
+     */
+    MusicLibrary* getUserSongs() {
+        return userSongs;
+    }
+    /**
      * Returns the currently selected song filename.
      *
      * @author Darryl Pogue
@@ -80,26 +89,6 @@ public:
      */
     QString getSelectedSong() {
         return userSongs->getSelectedSong();
-    }
-
-    /**
-     * Returns the next song's filename, or an empty string if there is no next song.
-     *
-     * @author Darryl Pogue
-     * @return The filename eof the next song.
-     */
-    QString getNextSong() {
-        return userSongs->getNextSong();
-    }
-
-    /**
-     * Returns the previous song's filename, or an empty string if there is no previous song.
-     *
-     * @author Darryl Pogue
-     * @return The filename of the previous song.
-     */
-    QString getPrevSong() {
-        return userSongs->getPrevSong();
     }
 
     /**

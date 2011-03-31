@@ -14,6 +14,13 @@ private:
     /** The state of the current song (stopped, playing, or paused). */
     int playingState;
 
+	/** True if the order of songs played should be random. */
+	bool shuffle;
+
+	/** True if it should continue playing songs once the end of the list is 
+	 *  reached. */
+	int loop;
+
 public:
     Transport(Ui::CommAudioClass* gui, QWidget* parent = 0);
     ~Transport() { }
@@ -50,6 +57,20 @@ public slots:
     void onNextClicked();
 
     void onSongDoubleClicked(QString songName);
+
+    /**
+     * Toggles shuffle mode.
+     *
+     * @author Dean Morin
+     */
+    void onShuffleClicked();
+
+    /**
+     * Toggles loop mode.
+     *
+     * @author Dean Morin
+     */
+    void onLoopClicked();
 };
 
 #endif // TRANSPORT_H

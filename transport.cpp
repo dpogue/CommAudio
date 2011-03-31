@@ -15,8 +15,14 @@ Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
             this, SLOT(onPreviousClicked()));
     connect(ui->nextPushButton, SIGNAL(clicked()), 
             this, SLOT(onNextClicked()));
+    connect(ui->shufflePushButton, SIGNAL(clicked()), 
+            this, SLOT(onShuffleClicked()));
+    connect(ui->loopPushButton, SIGNAL(clicked()), 
+            this, SLOT(onLoopClicked()));
     
     playingState = STOPPED;
+    shuffle = false;
+    loop = false;
 }
 
 void Transport::onPlayClicked() {
@@ -59,8 +65,10 @@ void Transport::onStopClicked() {
 }
 
 void Transport::onPreviousClicked() {
-    QString fileName = ((CommAudio*)parent())->getPrevSong();
+    QString fileName = 
+            ((CommAudio*) parent())->getUserSongs()->getPrevSong(loop);
     if (fileName.isEmpty()) {
+        onStopClicked();
         return;
     }
 
@@ -70,8 +78,15 @@ void Transport::onPreviousClicked() {
 }
 
 void Transport::onNextClicked() {
-    QString fileName = ((CommAudio*)parent())->getNextSong();
+    QString fileName;
+
+    if (shuffle) {
+        fileName = ((CommAudio*) parent())->getUserSongs()->getRandSong(loop);
+    } else {
+        fileName = ((CommAudio*) parent())->getUserSongs()->getNextSong(loop);
+    }
     if (fileName.isEmpty()) {
+        onStopClicked();
         return;
     }
 
@@ -84,4 +99,12 @@ void Transport::onSongDoubleClicked(QString songName) {
     AudioManager::instance()->playMusic(songName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
     playingState = PLAYING;
+}
+
+void Transport::onShuffleClicked() {
+    shuffle = !shuffle;
+}
+
+void Transport::onLoopClicked() {
+    loop = !loop;
 }

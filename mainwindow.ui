@@ -296,7 +296,7 @@ QPushButton#nextPushButton {
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="localTab">
         <attribute name="title">
@@ -353,16 +353,45 @@ QPushButton#nextPushButton {
      <number>24</number>
     </property>
    </widget>
-   <zorder>nextPushButton</zorder>
-   <zorder>previousPushButton</zorder>
-   <zorder>chatPushButton</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>connectionPushButton</zorder>
-   <zorder>stopPushButton</zorder>
-   <zorder>verticalLayoutWidget_2</zorder>
-   <zorder>settingsPushButton</zorder>
-   <zorder>downloadProgressBar</zorder>
-   <zorder>playPushButton</zorder>
+   <widget class="QPushButton" name="shufflePushButton">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>570</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Shuffle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loopPushButton">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>600</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Loop</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mutePushButton">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>630</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mute</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

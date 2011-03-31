@@ -14,6 +14,9 @@ private:
     QList<QDir*> directories;
     QMap<QString, QString> songs;
 
+    /* Keeps track of which songs have already been played (shuffle mode). */
+    QSet<int> playedSongs;
+
 public:
     MusicLibrary(QWidget* parent = 0);
     ~MusicLibrary();
@@ -53,7 +56,7 @@ public:
      * @author Darryl Pogue
      * @return The filename of the next song.
      */
-    QString getNextSong();
+    QString getNextSong(bool loop);
 
     /**
      * Returns the previous song's filename, or an empty string if there is no previous song.
@@ -61,7 +64,15 @@ public:
      * @author Darryl Pogue
      * @return The filename of the previous song.
      */
-    QString getPrevSong();
+    QString getPrevSong(bool loop);
+
+    /**
+     * Returns a random song's filename.
+     *
+     * @author Dean Morin
+     * @return The filename of the random song.
+     */
+    QString getRandSong(bool loop);
 
     void addFolder(QString path);
     void addSongs(QDir* directory);

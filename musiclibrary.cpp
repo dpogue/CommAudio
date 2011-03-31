@@ -6,7 +6,6 @@ MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
 }
 
 MusicLibrary::~MusicLibrary() {
-    // delete list contents
 }
 
 QString MusicLibrary::getSelectedSong() {
@@ -22,7 +21,7 @@ QString MusicLibrary::getSelectedSong() {
     return songs[sel.at(0)->text()];
 }
 
-QString MusicLibrary::getNextSong() {
+QString MusicLibrary::getNextSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
         return getSelectedSong();
@@ -30,6 +29,10 @@ QString MusicLibrary::getNextSong() {
 
     int row = this->row(sel.at(0));
     if (++row >= count()) {
+        QList<QListWidgetItem*>::iterator it;
+        for (it = sel.begin(); it != sel.end(); ++it) {
+            setItemSelected(*it, false);
+        }
         return "";
     }
 
@@ -37,7 +40,7 @@ QString MusicLibrary::getNextSong() {
     return songs[this->item(row)->text()];
 }
 
-QString MusicLibrary::getPrevSong() {
+QString MusicLibrary::getPrevSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
         return getSelectedSong();
@@ -45,11 +48,35 @@ QString MusicLibrary::getPrevSong() {
 
     int row = this->row(sel.at(0));
     if (--row < 0) {
+        QList<QListWidgetItem*>::iterator it;
+        for (it = sel.begin(); it != sel.end(); ++it) {
+            setItemSelected(*it, false);
+        }
         return "";
     }
 
     this->item(row)->setSelected(true);
     return songs[this->item(row)->text()];
+}
+
+QString MusicLibrary::getRandSong(bool loop) {
+
+    // check if all songs have been played
+    if (playedSongs.size() == this->count()) {
+        playedSongs.clear();
+        if (!loop) {
+            return "";
+        }
+    }
+ 
+    int nextSong = qrand() % this->count();
+    while (playedSongs.contains(nextSong)) {
+        nextSong = qrand() % this->count();
+    }
+    playedSongs.insert(nextSong);
+
+    this->item(nextSong)->setSelected(true);
+    return songs[this->item(nextSong)->text()];
 }
 
 void MusicLibrary::addFolder(QString path) {
