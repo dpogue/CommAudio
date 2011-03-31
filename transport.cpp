@@ -111,3 +111,8 @@ void Transport::onShuffleClicked() {
 void Transport::onLoopClicked() {
     loop = !loop;
 }
+
+void Transport::onSongFinished() {
+    ui->playPushButton->setIcon(QIcon(ICON_PLAY));
+    playingState = STOPPED;
+}

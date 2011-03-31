@@ -14,7 +14,7 @@ QFrame#nowPlayingFrame {
 	background: white;
 }
 
-QPushButton {
+#centralWidget QPushButton {
 	border-width: 1px;
 	border-style: solid;
 	border-color: black;
@@ -35,10 +35,10 @@ QPushButton#nextPushButton {
 	border-radius: 15px;
 }
 
-QPushButton:hover {
+#centralWidget QPushButton:hover {
 	border-color: #00cc00;
 }
 
-QPushButton:pressed {
+#centralWidget QPushButton:pressed {
     background-color: #cacbde;
 }
