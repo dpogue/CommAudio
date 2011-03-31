@@ -26,7 +26,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     connectDialog = new ConnectDialog(this);
     settingsDialog = new SettingsDialog(this);
 
-    connect(ui.volumeSlider, SIGNAL(sliderMoved(int)),
+    connect(ui.volumeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(onVolumeMoved(int)));
     connect(ui.chatPushButton, SIGNAL(pressed()),
             this, SLOT(onChatPressed()));
