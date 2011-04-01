@@ -59,7 +59,7 @@ void CommSocket::getHostAndPort(QString* host, unsigned short* port) {
 
     hostent* hp = gethostbyaddr((char*)&addr.sin_addr, sizeof(addr.sin_addr), AF_INET);
     if (hp != NULL) {
-        *host = QString(hp->h_name);
+        *host = QString(inet_ntoa(*((in_addr*)hp->h_addr)));
     } else {
         qDebug("Something went wrong getting the hostname!");
         *host = QString();
@@ -145,7 +145,8 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 			exit(1);
 		}
 	}
-	else {
+	
+    if (mode != SERVER || prot == UDP) {
 		memcpy(&server,&sin,sizeof(sockaddr_in));
 		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
 	}

@@ -263,7 +263,7 @@ void Connection::onCtlAccept() {
     QString host;
     unsigned short cport;
     ctlSock->getHostAndPort(&host, &cport);
-	strSock = new CommSocket(host, cport, UDP);
+	strSock = new CommSocket(host, 9500, UDP);
 
     timer.setInterval(23);
     connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
@@ -289,7 +289,8 @@ void Connection::onDisconnected() {
 }
 
 void Connection::onStrReadReady() {
+    qDebug("Reading");
     QByteArray& buf = strSock->getReadBuffer();
 
-    AudioManager::addToNetworkQueue(buf);
+    AudioManager::addToQueue(buf);
 }
