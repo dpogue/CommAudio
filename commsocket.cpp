@@ -137,6 +137,8 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 	sin.sin_port = htons(port);
 	setsockopt(s,SOL_SOCKET,SO_REUSEADDR,"1",1);
 
+    //setsockopt(s, SOL_SOCKET, SO_RCVBUF, "5000", 4);
+
 	if((mode == SERVER && prot == TCP) || prot == UDP) {
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
 		qDebug("binding");
@@ -161,19 +163,30 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 bool CommSocket::read() {
 	int bytesRead = 0;
 	int bytesToRead = BUFSIZE;
+
+    if (prot == UDP) {
+        char buffer[5000];
+        int bytesToRead = 5000;
+        int senderAddrSize = sizeof(server);
+
+        readBuffer.clear();
+        ZeroMemory(buffer, 5000);
+
+        bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
+				&senderAddrSize);
+		if(bytesRead == SOCKET_ERROR) {
+			int s = WSAGetLastError();
+            return false;
+        }
+        readBuffer.append(buffer, bytesRead);
+        return true;
+    }
+
 	char buffer[BUFSIZE];
-	
-	int senderAddrSize = sizeof(server);
 	readBuffer.clear();
 	ZeroMemory(buffer,BUFSIZE);
 	while(bytesToRead > 0) {
-		if(prot == TCP) {
-			bytesRead = recv(sock,buffer,bytesToRead,0);
-		}
-		else {
-			bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
-				&senderAddrSize);
-		}
+        bytesRead = recv(sock,buffer,bytesToRead,0);
 		if(bytesRead == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s == WSAEWOULDBLOCK) {

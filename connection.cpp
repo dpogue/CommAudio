@@ -274,6 +274,8 @@ void Connection::onCtlAccept() {
     connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
     connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
     connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
+
+    connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 }
 
 void Connection::onCtlConnect() {
