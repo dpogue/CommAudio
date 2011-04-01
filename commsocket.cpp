@@ -33,12 +33,14 @@ bool CommSocket::toggleMulticast() {
     mreq.imr_interface.s_addr = htonl(INADDR_ANY);
 
     if (!multicasting) {
+        qDebug("Joining Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
         multicasting = !multicasting;
         return true;
     } else {
+        qDebug("Leaving Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }

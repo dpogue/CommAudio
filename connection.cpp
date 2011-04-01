@@ -20,10 +20,13 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 
     strSock = new CommSocket(host, port, UDP);
     connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
-
-    timer.setInterval(23);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
-    timer.start();
+    if (isMulticast) {
+		strSock->toggleMulticast();
+    } else {
+        timer.setInterval(23);
+        connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+        timer.start();
+    }
 
     fileSize = 0;
     isFileTransferInProgress = false;
@@ -37,9 +40,6 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
         : mwOwner(owner), mode(SERVER), protocol(prot) {
 
     ctlSock = new CommSocket("",port,protocol);
-	if(multicast) {
-		ctlSock->toggleMulticast();
-	}
     connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
     connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
     connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
@@ -51,6 +51,15 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
     sentFileList = false;
 	isMulticast = multicast;
     progressBar = mwOwner->getUi()->downloadProgressBar;
+
+    if (isMulticast) {
+        strSock = new CommSocket("232.21.42.1", port, UDP);
+        connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
+
+        timer.setInterval(23);
+        connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+        timer.start();
+    }
 }
 
 void Connection::closeConnection() {
