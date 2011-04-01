@@ -183,6 +183,7 @@ void CommAudio::stopServer() {
 
 void CommAudio::onMulticastStateChanged(bool checked) {
     multicastServer = checked;
+    AudioManager::setMulticast(checked);
 }
 
 void CommAudio::onChatPressed() {

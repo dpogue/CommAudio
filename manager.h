@@ -42,6 +42,7 @@ private:
     static bool stop_;	
 	static bool capturePause_;
 	static bool captureStop_;
+    static bool multicast_;
 
     /**
      * The volume/gain of the background music.
@@ -191,6 +192,12 @@ public:
 		captureStop_ = !captureStop_;
 		mutex_.unlock();
 	}
+
+    static void setMulticast(bool mcast) {
+        mutex_.lock();
+        multicast_ = mcast;
+        mutex_.unlock();
+    }
 
 	static void setGain(float vol) {
 		mutex_.lock();
