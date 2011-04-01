@@ -274,22 +274,24 @@ void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
 	if(!isMulticast) {
 		ctlSock->closeSocket();
+		ctlSock = ctlSock->getLastAcceptedSocket();
 	}
-    ctlSock = ctlSock->getLastAcceptedSocket();
-
-    QString host;
-    unsigned short cport;
-    ctlSock->getHostAndPort(&host, &cport);
-	strSock = new CommSocket(host, 9500, UDP);
-	strSock->toggleMulticast();
-
+    
 	if(isMulticast) {
-		multicastClients.push_back(strSock);
-	}
-    timer.setInterval(23);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
-    timer.start();
+		multicastClients.push_back(ctlSock->getLastAcceptedSocket());
 
+	}
+	if(!isMulticast) {
+		QString host;
+		unsigned short cport;
+		ctlSock->getHostAndPort(&host, &cport);
+		strSock = new CommSocket(host, 9500, UDP);
+		
+		timer.setInterval(23);
+		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+		timer.start();
+	}
+	
     connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
     connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
     connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
