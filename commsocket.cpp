@@ -142,10 +142,10 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 		qDebug("binding");
 		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
 			int s = WSAGetLastError();
+			qDebug("Bind Error:%d",s);
 			exit(1);
 		}
 	}
-	
     if (mode != SERVER || prot == UDP) {
 		memcpy(&server,&sin,sizeof(sockaddr_in));
 		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
