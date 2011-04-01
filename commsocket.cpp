@@ -137,7 +137,7 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 	sin.sin_port = htons(port);
 	setsockopt(s,SOL_SOCKET,SO_REUSEADDR,"1",1);
 
-	if(mode == SERVER) {
+	if((mode == SERVER && prot == TCP) || prot == UDP) {
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
 		qDebug("binding");
 		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
