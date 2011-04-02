@@ -87,18 +87,20 @@ void Connection::run() {
 bool Connection::handShake() {
     WSABUF sendData;
 
-    if(mode == CLIENT) {	
+    if(mode == CLIENT) {
     }
     else if(mode == SERVER) {
     }
     return true;
 }
 void Connection::onCtlReadReady() {
-    QByteArray& buf = ctlSock->getReadBuffer();
+    CommSocket* sock = (CommSocket*)QObject::sender();
+    QByteArray& buf = sock->getReadBuffer();
     qDebug("Stream is %d bytes long.", buf.size());
     if (buf.size() == 0) {
         return;
     }
+
 
     Stream s(buf);
     unsigned char msgType = s.readByte();
@@ -111,7 +113,7 @@ void Connection::onCtlReadReady() {
             Stream str;
             str.writeByte(0x01);
 			str.writeByte(isMulticast);
-            ctlSock->setWriteBuffer(str.data());
+            sock->setWriteBuffer(str.data());
 			if(!isMulticast) {
 				sendFileList();
 			}
@@ -150,7 +152,7 @@ void Connection::onCtlReadReady() {
         if (path.isEmpty() || !QFile::exists(path)) {
             Stream resp;
             resp.writeByte(0x05);
-            ctlSock->setWriteBuffer(resp.data());
+            sock->setWriteBuffer(resp.data());
         } else {
             sendFile(path);
         }
@@ -200,7 +202,7 @@ void Connection::onCtlReadReady() {
             list.writeInt(1);
             list.writeInt(fi.fileName().size());
             list.write(fi.fileName().toUtf8());
-            ctlSock->setWriteBuffer(list.data());
+            sock->setWriteBuffer(list.data());
         }
     }
 }
@@ -281,15 +283,22 @@ void Connection::onCtlWrite() {
 
 void Connection::onCtlAccept() {
     qDebug("Accepted a socket");
+    CommSocket* tmp = NULL;
+
 	if(!isMulticast) {
 		ctlSock->closeSocket();
 		ctlSock = ctlSock->getLastAcceptedSocket();
+        tmp = ctlSock;
+	} else {
+        tmp = ctlSock->getLastAcceptedSocket();
+		multicastClients.push_back(tmp);
 	}
-    
-	if(isMulticast) {
-		multicastClients.push_back(ctlSock->getLastAcceptedSocket());
+    connect(tmp,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
+    connect(tmp,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
+    connect(tmp,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
+    connect(tmp,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
+    connect(tmp,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
 
-	}
 	if(!isMulticast) {
 		QString host;
 		unsigned short cport;
@@ -300,13 +309,6 @@ void Connection::onCtlAccept() {
 		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
 		timer.start();
 	}
-	
-    connect(ctlSock,SIGNAL(socketAccepted()),this,SLOT(onCtlAccept()));
-    connect(ctlSock,SIGNAL(socketConnected()),this,SLOT(onCtlConnect()));
-    connect(ctlSock,SIGNAL(socketRead()),this,SLOT(onCtlReadReady()));	
-    connect(ctlSock,SIGNAL(socketWrite()),this,SLOT(onCtlWrite()));
-    connect(ctlSock,SIGNAL(socketDisconnected()),this,SLOT(onDisconnected()));
-
     connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 }
 
