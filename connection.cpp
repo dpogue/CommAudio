@@ -120,6 +120,9 @@ void Connection::onCtlReadReady() {
         }
 		else {
 			isMulticast = s.readByte();
+            if (isMulticast) {
+                strSock->toggleMulticast();
+            }
 		}
         buf.remove(0, s.position());
         handShakeRecv = true;
