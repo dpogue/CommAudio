@@ -6,7 +6,7 @@
 #define UDP 1
 #define CLIENT 2
 #define SERVER 3
-#define BUFSIZE 1024
+#define BUFSIZE (1024 * 4)
 #define BACKLOG 5
 #define NORMAL     0
 #define FILESAVING 1

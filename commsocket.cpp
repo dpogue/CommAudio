@@ -59,7 +59,7 @@ void CommSocket::getHostAndPort(QString* host, unsigned short* port) {
 
     hostent* hp = gethostbyaddr((char*)&addr.sin_addr, sizeof(addr.sin_addr), AF_INET);
     if (hp != NULL) {
-        *host = QString(hp->h_name);
+        *host = QString(inet_ntoa(*((in_addr*)hp->h_addr)));
     } else {
         qDebug("Something went wrong getting the hostname!");
         *host = QString();
@@ -137,15 +137,18 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 	sin.sin_port = htons(port);
 	setsockopt(s,SOL_SOCKET,SO_REUSEADDR,"1",1);
 
-	if(mode == SERVER) {
+    //setsockopt(s, SOL_SOCKET, SO_RCVBUF, "5000", 4);
+
+	if((mode == SERVER && prot == TCP) || prot == UDP) {
 		sin.sin_addr.s_addr = htonl(INADDR_ANY);
 		qDebug("binding");
 		if(bind(s, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
 			int s = WSAGetLastError();
+			qDebug("Bind Error:%d",s);
 			exit(1);
 		}
 	}
-	else {
+    if (mode != SERVER || prot == UDP) {
 		memcpy(&server,&sin,sizeof(sockaddr_in));
 		server.sin_addr.s_addr = inet_addr(host.toAscii().data());
 	}
@@ -160,19 +163,30 @@ SOCKET CommSocket::createSocket(QString host,int mode,int port) {
 bool CommSocket::read() {
 	int bytesRead = 0;
 	int bytesToRead = BUFSIZE;
+
+    if (prot == UDP) {
+        char buffer[5000];
+        int bytesToRead = 5000;
+        int senderAddrSize = sizeof(server);
+
+        readBuffer.clear();
+        ZeroMemory(buffer, 5000);
+
+        bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
+				&senderAddrSize);
+		if(bytesRead == SOCKET_ERROR) {
+			int s = WSAGetLastError();
+            return false;
+        }
+        readBuffer.append(buffer, bytesRead);
+        return true;
+    }
+
 	char buffer[BUFSIZE];
-	
-	int senderAddrSize = sizeof(server);
 	readBuffer.clear();
 	ZeroMemory(buffer,BUFSIZE);
 	while(bytesToRead > 0) {
-		if(prot == TCP) {
-			bytesRead = recv(sock,buffer,bytesToRead,0);
-		}
-		else {
-			bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
-				&senderAddrSize);
-		}
+        bytesRead = recv(sock,buffer,bytesToRead,0);
 		if(bytesRead == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s == WSAEWOULDBLOCK) {
@@ -194,19 +208,28 @@ bool CommSocket::read() {
 }
 
 bool CommSocket::write() {
-	QByteArray buffer;
 	int bytesSent = 0;
+
+    if (prot == UDP) {
+        bytesSent = sendto(sock, writeBuffer.data(), writeBuffer.size(), 0, (SOCKADDR *)&server,
+				sizeof(server));
+        if (bytesSent == SOCKET_ERROR) {
+			int s = WSAGetLastError();
+			if(s != WSAEWOULDBLOCK){
+				return false;
+			}
+			return true;
+        }
+        writeBuffer.clear();
+        emit socketWrite();
+        return true;
+    }
+
+	QByteArray buffer;
 	qBinCpy(buffer,writeBuffer,BUFSIZE);
 	
 	while(!writeBuffer.isEmpty()) {
-		if(prot == TCP) {
-			bytesSent = send(sock,buffer.data(),buffer.size(),0);
-		}
-		else {
-			bytesSent = sendto(sock,buffer.data(),buffer.size(),0,(SOCKADDR *)&server,
-				sizeof(server));
-		}
-
+        bytesSent = send(sock,buffer.data(),buffer.size(),0);
 		if(bytesSent == SOCKET_ERROR) {
 			int s = WSAGetLastError();
 			if(s != WSAEWOULDBLOCK){
