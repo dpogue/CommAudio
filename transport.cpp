@@ -89,7 +89,6 @@ void Transport::onNextClicked() {
         fileName = ((CommAudio*) parent())->getUserSongs()->getNextSong(loop);
     }
     if (fileName.isEmpty()) {
-        onStopClicked();
         return;
     }
 
@@ -120,4 +119,7 @@ void Transport::onSongFinished() {
     ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     playingState = STOPPED;
     onNextClicked();
+    if (!loop) {
+        ((CommAudio*) parent())->getUserSongs()->clearSelectedItems();
+    }
 }

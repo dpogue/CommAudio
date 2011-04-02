@@ -32,14 +32,9 @@ QString MusicLibrary::getNextSong(bool loop) {
         if (loop) {
             row = 0;
         } else {
-            QList<QListWidgetItem*>::iterator it;
-            for (it = sel.begin(); it != sel.end(); ++it) {
-                setItemSelected(*it, false);
-            }
             return "";
         }
     }
-
     this->item(row)->setSelected(true);
     return songs[this->item(row)->text()];
 }
@@ -58,7 +53,6 @@ QString MusicLibrary::getPrevSong(bool loop) {
             return "";
         }
     }
-
     this->item(row)->setSelected(true);
     return songs[this->item(row)->text()];
 }
@@ -81,6 +75,15 @@ QString MusicLibrary::getRandSong(bool loop) {
 
     this->item(nextSong)->setSelected(true);
     return songs[this->item(nextSong)->text()];
+}
+
+void MusicLibrary::clearSelectedItems() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    QList<QListWidgetItem*>::iterator it;
+    
+    for (it = sel.begin(); it != sel.end(); ++it) {
+        setItemSelected(*it, false);
+    }
 }
 
 void MusicLibrary::addFolder(QString path) {

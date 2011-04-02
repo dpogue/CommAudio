@@ -73,6 +73,13 @@ public:
      * @return The filename of the random song.
      */
     QString getRandSong(bool loop);
+    
+    /**
+     * Clears any song selections in the list. 
+     *
+     * @author Dean Morin
+     */
+    void clearSelectedItems();
 
     void addFolder(QString path);
     void addSongs(QDir* directory);
