@@ -8,6 +8,7 @@ bool AudioManager::stop_ = false;
 bool AudioManager::capturePause_ = true;
 bool AudioManager::captureStop_ = false;
 int AudioManager::playCount_ = 0;
+QString AudioManager::nextplay_; 
 float AudioManager::musicGain_ = 0.5;
 QMutex AudioManager::mutex_;
 QQueue<QByteArray> AudioManager::streamQueue;
@@ -41,10 +42,12 @@ void AudioManager::startup()
 
 void AudioManager::playMusic(QString filename)
 {
+    
     toggleStop();
     if(getPause() == true) { 
 		togglePause();
 	}
+    setNextPlaying(filename);
     QFuture<void> future =
         QtConcurrent::run(this, &AudioManager::streamFile, filename);
 }
@@ -191,7 +194,7 @@ void AudioManager::streamFile(QString filename)
 
     while(getPlayCount() > 0) {
 		alSleep(0.1f);
-		if(checkError()) {
+        if(checkError() || nextplay_.compare(filename) != 0) {
 			return;
 		}
 	}	

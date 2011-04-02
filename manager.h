@@ -42,6 +42,7 @@ private:
     static bool stop_;	
 	static bool capturePause_;
 	static bool captureStop_;
+    static QString nextplay_; 
 
     /**
      * The volume/gain of the background music.
@@ -237,6 +238,12 @@ public:
 		mutex_.unlock();
 		return temp;
 	}
+
+    static void setNextPlaying(QString next) {
+        mutex_.lock();
+        nextplay_ = next;
+        mutex_.unlock();
+    }
 
 	void startCapture();
 	void captureMic();
