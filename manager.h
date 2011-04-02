@@ -101,6 +101,7 @@ private:
      * @author Terence Stenvold
      */
 	void streamStream();
+    char getBitmask(ALenum format, ALuint freq);
 
 	void cleanUp(ALuint *source, ALuint *buffer);
 	void clearProcessedBuffers

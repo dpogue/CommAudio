@@ -90,6 +90,36 @@ bool AudioManager::checkError()
     return false;
 }
 
+char AudioManager::getBitmask(ALenum format, ALuint freq) {
+    
+    char bitmask;
+    
+    switch(freq)
+    {
+    case 22050:
+        bitmask |= 0x00010000;
+        break;
+    case 44100:
+        bitmask |= 0x00100000;
+        break;
+    case 48000:
+        bitmask |= 0x01000000;
+        break;
+    }
+
+    if(format == AL_FORMAT_MONO8) {
+        bitmask |= 0x00000101;
+    } else if(format == AL_FORMAT_MONO16) {
+        bitmask |= 0x00000110;
+    } else if(format == AL_FORMAT_STEREO8) {
+        bitmask |= 0x00001001;
+    } else if(format == AL_FORMAT_STEREO16) {
+        bitmask |= 0x00001010;
+    }
+
+    return bitmask;
+}
+
 void AudioManager::streamStream()
 {
     char array[BUFFERSIZE];
