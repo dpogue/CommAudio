@@ -71,7 +71,6 @@ void Transport::onPreviousClicked() {
     QString fileName = 
             ((CommAudio*) parent())->getUserSongs()->getPrevSong(loop);
     if (fileName.isEmpty()) {
-        onStopClicked();
         return;
     }
 
@@ -107,10 +106,14 @@ void Transport::onSongDoubleClicked(QString songName) {
 
 void Transport::onShuffleClicked() {
     shuffle = !shuffle;
+    QString icon = (shuffle) ? ICON_SHUFFLE_ON : ICON_SHUFFLE_OFF;
+    ui->shufflePushButton->setIcon(QIcon(icon));
 }
 
 void Transport::onLoopClicked() {
     loop = !loop;
+    QString icon = (loop) ? ICON_LOOP_ON : ICON_LOOP_OFF;
+    ui->loopPushButton->setIcon(QIcon(icon));
 }
 
 void Transport::onSongFinished() {

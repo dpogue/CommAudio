@@ -47,7 +47,7 @@ QString MusicLibrary::getNextSong(bool loop) {
 QString MusicLibrary::getPrevSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
-        return getSelectedSong();
+        return "";
     }
 
     int row = this->row(sel.at(0));
@@ -55,10 +55,6 @@ QString MusicLibrary::getPrevSong(bool loop) {
         if (loop) {
             row = this->count() - 1;
         } else {
-            QList<QListWidgetItem*>::iterator it;
-            for (it = sel.begin(); it != sel.end(); ++it) {
-                setItemSelected(*it, false);
-            }
             return "";
         }
     }
