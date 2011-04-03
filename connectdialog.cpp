@@ -67,7 +67,7 @@ void ConnectDialog::onDisconnectClicked() {
                this, SLOT(onDisconnectClicked()));
 
     ui->connectPushButton->setDisabled(false);
-    ui->connectPushButton->setDisabled(false);
+    ui->startServerPushButton->setDisabled(false);
     ui->connectPushButton->setText("Connect");
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
@@ -82,13 +82,14 @@ void ConnectDialog::onStartServerClicked() {
 
     // TODO: disable gui components
 
-    port = ui->portLineEdit->text().toUInt(&validPort);
+    port = ui->startServerPortLineEdit->text().toUInt(&validPort);
     if (!validPort || port < 1024 || port > 65535) {
         ui->connectErrorLabel->
                 setText("The port number must be between 1024 and 65535");
-        ui->portLineEdit->selectAll();
+        ui->startServerPortLineEdit->selectAll();
         return;
     }
+    ui->connectErrorLabel->clear();
 
     disconnect(ui->startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStartServerClicked()));

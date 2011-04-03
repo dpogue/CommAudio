@@ -61,7 +61,7 @@ void SettingsDialog::onCancelClicked() {
     reject();
 }
 
-void SettingsDialog::onStickyChatStateChanged(int state) {
+void SettingsDialog::onStickyChatStateChanged(int) {
     bool checked = ui->stickyChatCheckBox->isChecked();
     ((CommAudio*) this->parent())->setStickyChat(checked);
 }
