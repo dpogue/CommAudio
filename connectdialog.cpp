@@ -34,6 +34,7 @@ void ConnectDialog::onConnectClicked() {
     if ((ip = inet_addr(ui->ipLineEdit->text().toAscii())) == INADDR_NONE) {
         ui->connectErrorLabel->
                 setText("The ip address must be in the form x.x.x.x");
+        ui->ipLineEdit->setFocus();
         ui->ipLineEdit->selectAll();
         return;
     }
@@ -42,6 +43,7 @@ void ConnectDialog::onConnectClicked() {
     if (!validPort || port < 1024 || port > 65535) {
         ui->connectErrorLabel->
                 setText("The port number must be between 1024 and 65535");
+        ui->portLineEdit->setFocus();
         ui->portLineEdit->selectAll();
         return;
     }
