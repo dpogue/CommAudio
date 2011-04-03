@@ -103,7 +103,7 @@ private:
      */
 	void streamStream();
     char getBitmask(ALenum format, ALuint freq);
-
+    void getSpecs(char bitmask, ALenum *format, ALuint *freq);
 	void cleanUp(ALuint *source, ALuint *buffer);
 	void clearProcessedBuffers
 		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
@@ -213,9 +213,9 @@ public:
 		mutex_.unlock();
 	}
 
-	static void addToNetworkQueue(QByteArray buffer) {
+	static void addToNetworkQueue(char bitmask, QByteArray buffer) {
 		mutex_.lock();
-	    netQueue.enqueue(buffer);
+        netQueue.enqueue(buffer.prepend(bitmask));
 		mutex_.unlock();
 	}	
 

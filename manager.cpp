@@ -91,6 +91,28 @@ bool AudioManager::checkError()
     return false;
 }
 
+void AudioManager::getSpecs(char bitmask, ALenum *format, ALuint *freq) {
+
+    if(bitmask ^= 0x00010000) {
+        *freq = 22050;
+    } else if (bitmask ^= 0x00100000) {
+        *freq = 44100;
+    } else if (bitmask ^= 0x01000000) {
+        *freq = 48000;
+    }
+
+    if (bitmask ^= 0x00000101) {
+        *format = AL_FORMAT_MONO8;
+    } else if (bitmask ^= 0x00000110) {
+        *format = AL_FORMAT_MONO16;
+    } else if (bitmask ^= 0x00001001) {
+        *format = AL_FORMAT_STEREO8;
+    } else if (bitmask ^= 0x00001010) {
+        *format = AL_FORMAT_STEREO16;
+    }
+
+}
+
 char AudioManager::getBitmask(ALenum format, ALuint freq) {
     
     char bitmask = 0;
@@ -135,6 +157,7 @@ void AudioManager::streamStream()
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
+    char bitmask, oldbmask;
     ALenum format = AL_FORMAT_MONO8;
     ALuint freq = 22050;
 
@@ -162,7 +185,8 @@ void AudioManager::streamStream()
 				
 				temp = getNextInQueue();
 				if(temp.data() != NULL) {
-					strncpy(array,temp,BUFFERSIZE);
+                    bitmask = array[0];
+					strncpy(array+1,temp,BUFFERSIZE);
 				}
 				result = sizeof(array);
 				
@@ -178,10 +202,21 @@ void AudioManager::streamStream()
                     break;
                 }
             }
+            //TODO check get format freq from bitmask
+            //Wait to add to buffer if different
+            if(bitmask != oldbmask){
+                do {
+                    alSleep(0.1f);
+                    alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
+                } while(queued > 1);
+            }
+            oldbmask = bitmask;
+            getSpecs(bitmask,&format,&freq);
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
             buffersAvailable--;
+
             /**Check the amount of buffers queued to see if
             * we should be playing the track right now.
             * If play is false it means it's playing already
@@ -304,8 +339,11 @@ void AudioManager::streamFile(QString filename)
                     break;
                 }
             }
-            //TODO check for multicast 
-            //If true addToNetworkQueue();
+            
+            if(multicast_ == true) {
+                addToNetworkQueue(bitmask, array);
+            }
+           
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
@@ -367,8 +405,8 @@ void AudioManager::captureMic()
 			} else if (samplesAvailable > (BUFFERSIZE)) {
 
 				alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
-                //TODO shift in the bitmask before adding to queue
-                this->addToNetworkQueue(buffer);
+                
+                addToNetworkQueue(bitmask, buffer);
 			}
 		}
 	}
