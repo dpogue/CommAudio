@@ -1,13 +1,15 @@
 #include "connectdialog.h"
+#include <QSettings>
 #include <WinSock2.h>
 #include "commsocket.h"
 #include "defines.h"
 #include "mainwindow.h"
+#include "settingsdialog.h"
 #include "ui_connect.h"
 
 ConnectDialog::ConnectDialog(QWidget *parent)
     : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
-      ui(new Ui::Connect())
+      ui(new Ui::Connect()), running(false)
 {
     ui->setupUi(this);
     
@@ -30,23 +32,20 @@ void ConnectDialog::onConnectClicked() {
     unsigned int port = 0;
     bool validPort = false;
     bool multicast = ui->multicastCheckBox->isChecked();
+    QSettings settings;
     
-    if ((ip = inet_addr(ui->ipLineEdit->text().toAscii())) == INADDR_NONE) {
-        ui->connectErrorLabel->
-                setText("The ip address must be in the form x.x.x.x");
-        ui->ipLineEdit->selectAll();
+    if (!(ip = ConnectDialog::validateIp(ui->ipLineEdit, 
+                                         ui->connectErrorLabel))) {
         return;
     }
 
-    port = ui->portLineEdit->text().toUInt(&validPort);
-    if (!validPort || port < 1024 || port > 65535) {
-        ui->connectErrorLabel->
-                setText("The port number must be between 1024 and 65535");
-        ui->portLineEdit->selectAll();
+    if (!(port = ConnectDialog::validatePort(ui->portLineEdit, 
+                                             ui->connectErrorLabel))) {
         return;
     }
-
-    ui->connectErrorLabel->clear();
+    
+    settings.setValue("lastHostIp", ui->ipLineEdit->text());
+    settings.setValue("lastHostPort", ui->portLineEdit->text());
 
     ui->connectPushButton->setDisabled(true);
     ui->startServerPushButton->setDisabled(true);
@@ -56,7 +55,9 @@ void ConnectDialog::onConnectClicked() {
 	connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onDisconnectClicked()));
 
-    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port, multicast);
+    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), 
+                                                   port, multicast);
+    running = true;
     done(0);
 }
 
@@ -65,28 +66,27 @@ void ConnectDialog::onDisconnectClicked() {
                this, SLOT(onDisconnectClicked()));
 
     ui->connectPushButton->setDisabled(false);
-    ui->connectPushButton->setDisabled(false);
+    ui->startServerPushButton->setDisabled(false);
     ui->connectPushButton->setText("Connect");
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
-    
+        
     ((CommAudio*) this->parent())->disconnectFromServer();
+    running = false;
     done(0);
 }
 
 void ConnectDialog::onStartServerClicked() {
     unsigned int port = 0;
-    bool validPort = false;
+    QSettings settings;
 
-    // TODO: disable gui components
-
-    port = ui->portLineEdit->text().toUInt(&validPort);
-    if (!validPort || port < 1024 || port > 65535) {
-        ui->connectErrorLabel->
-                setText("The port number must be between 1024 and 65535");
-        ui->portLineEdit->selectAll();
+    if (!(port = ConnectDialog::validatePort(ui->startServerPortLineEdit, 
+                                             ui->connectErrorLabel))) {
         return;
     }
+
+    settings.setValue("lastServerPort", ui->startServerPortLineEdit->text());
+    settings.setValue("lastMulticast", ui->multicastCheckBox->isChecked());
 
     disconnect(ui->startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStartServerClicked()));
@@ -97,6 +97,7 @@ void ConnectDialog::onStartServerClicked() {
             this, SLOT(onStopServerClicked()));
 
     ((CommAudio*) this->parent())->startServer(port);
+    running = true;
     done(0);
 }
 
@@ -112,10 +113,66 @@ void ConnectDialog::onStopServerClicked() {
             this, SLOT(onStartServerClicked()));
     
     ((CommAudio*) this->parent())->stopServer();
+    running = false;
     done(0);
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {
     bool checked = ui->multicastCheckBox->isChecked();
     ((CommAudio*) this->parent())->onMulticastStateChanged(checked);
+}
+
+unsigned long ConnectDialog::validateIp(QLineEdit* ipLineEdit, 
+                                        QLabel* errorLabel) {
+    unsigned long ip = 0;
+    
+    if ((ip = inet_addr(ipLineEdit->text().toAscii())) == INADDR_NONE) {
+        errorLabel->setText("The ip address must be in the form x.x.x.x");
+        ipLineEdit->setFocus();
+        ipLineEdit->selectAll();
+        return 0;
+    }
+    errorLabel->clear();
+    return ip;
+}
+
+unsigned int ConnectDialog::validatePort(QLineEdit* portLineEdit, 
+                                          QLabel* errorLabel) {
+    unsigned int port = 0;
+    bool validPort = false;
+    
+    port = portLineEdit->text().toUInt(&validPort);
+    if (!validPort || port < 1024 || port > 65535) {
+        errorLabel->setText("The port number must be between 1024 and 65535");
+        portLineEdit->setFocus();
+        portLineEdit->selectAll();
+        return 0;
+    }
+    errorLabel->clear();
+    return port;
+}
+
+void ConnectDialog::updateFields(bool useMostRecentConnectionSettings) {
+    QSettings settings;
+
+    if (running) {
+        return;
+    }
+
+    if (useMostRecentConnectionSettings) {
+        ui->ipLineEdit->setText(settings.value("lastHostIp", "").toString());
+        ui->portLineEdit->setText(settings.value("lastHostPort", 
+                "").toString());
+        ui->startServerPortLineEdit->setText(settings.value("lastServerPort", 
+                "").toString());
+        ui->multicastCheckBox->setChecked(settings.value("lastMulticast", 
+                false).toBool());
+    } else {
+        ui->ipLineEdit->setText(settings.value("hostIp", "").toString());
+        ui->portLineEdit->setText(settings.value("hostPort", "").toString());
+        ui->startServerPortLineEdit->setText(settings.value("serverPort", 
+                "").toString());
+        ui->multicastCheckBox->setChecked(settings.value("multicast", 
+                false).toBool());
+    }
 }

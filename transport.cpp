@@ -38,6 +38,8 @@ void Transport::onPlayClicked() {
         case STOPPED:
             AudioManager::instance()->playMusic(fileName);
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+            ui->currentSongLabel->setText(((CommAudio*) parent())->
+                    getUserSongs()->getSelectedSongName());
             playingState = PLAYING;
             break;
 
@@ -51,7 +53,8 @@ void Transport::onPlayClicked() {
         case PAUSED:
             AudioManager::instance()->togglePause();
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-            ui->statusLabel->setText("");
+            QString text = ((CommAudio*) parent())->getMuted() ? "Mute" : "";
+            ui->statusLabel->setText(text);
             playingState = PLAYING;
             break;
     }
@@ -63,6 +66,7 @@ void Transport::onStopClicked() {
         AudioManager::instance()->togglePause();
         ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     }
+    ui->currentSongLabel->setText("");
     playingState = STOPPED;
 }
 
@@ -70,13 +74,13 @@ void Transport::onPreviousClicked() {
     QString fileName = 
             ((CommAudio*) parent())->getUserSongs()->getPrevSong(loop);
     if (fileName.isEmpty()) {
-        onStopClicked();
         return;
     }
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-    ui->currentSongLabel->setText(fileName);
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 
@@ -89,30 +93,44 @@ void Transport::onNextClicked() {
         fileName = ((CommAudio*) parent())->getUserSongs()->getNextSong(loop);
     }
     if (fileName.isEmpty()) {
-        onStopClicked();
+        if (playingState == STOPPED) {
+            ui->currentSongLabel->setText("");
+        }
         return;
     }
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 
 void Transport::onSongDoubleClicked(QString songName) {
     AudioManager::instance()->playMusic(songName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 
 void Transport::onShuffleClicked() {
     shuffle = !shuffle;
+    QString icon = (shuffle) ? ICON_SHUFFLE_ON : ICON_SHUFFLE_OFF;
+    ui->shufflePushButton->setIcon(QIcon(icon));
 }
 
 void Transport::onLoopClicked() {
     loop = !loop;
+    QString icon = (loop) ? ICON_LOOP_ON : ICON_LOOP_OFF;
+    ui->loopPushButton->setIcon(QIcon(icon));
 }
 
 void Transport::onSongFinished() {
     ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     playingState = STOPPED;
+    onNextClicked();
+    if (!loop) {
+        ((CommAudio*) parent())->getUserSongs()->clearSelectedItems();
+    }
 }

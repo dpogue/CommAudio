@@ -13,23 +13,51 @@ class SettingsDialog : public QDialog {
 private:
     /** The user interface for the dialog window. */
     Ui::Settings* ui;
-    
+
+    /** True if the most recent connection settings should be remembered. */
+    bool useLastConnSettings;
+
 public:
     SettingsDialog(QWidget* parent = 0);
     ~SettingsDialog();
-    
+ 
+    void readSettings();
+    void writeSettings();
+
+    bool getUseLastConnSettings() {
+        return useLastConnSettings;
+    }
+
 public slots:
     /**
-     * Attempts to connect to the server. 
+     * Reverts any changes to the settings.
      *
      * @author Dean Morin
      */
-//    void onConnectClicked();
+    virtual void reject();
+
+    /**
+     * Saves any changes to the settings.
+     *
+     * @author Dean Morin
+     */
     void onOkClicked();
 
-    void onCancelClicked();
+    /**
+     * Toggles sticky chat. When activated, the chat button is a toggle button.
+     *
+     * @author Dean Morin
+     */
+    void onStickyChatStateChanged(int);
 
-    void onStickyChatStateChanged(int state);
+    /**
+     * Sets whether or not the most recently used connection details should be
+     * remembered.
+     *
+     * @author Dean Morin
+     * @param checked True if "Remember last used" is selected.
+     */
+    void onRememberConnectionOptionToggled(bool checked);
 };
 
 #endif

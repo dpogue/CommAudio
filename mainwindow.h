@@ -155,6 +155,16 @@ public:
 		return &ui;
 	}
 
+    /**
+     * Finds out if the audio is currently muted. 
+     *
+     * @author Dean Morin
+     * @return True if the audio is currently muted.
+     */
+    bool getMuted() {
+        return muted;
+    }
+
 signals:
     void gotDisconnected();
 

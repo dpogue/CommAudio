@@ -13,18 +13,18 @@
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), conn(NULL), stickyChat(false), 
-      chatting(false), muted(false)
+      chatting(false), muted(false) 
 {	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
-    this->setFixedSize(439, 658);
+    this->setFixedSize(439, 700);
     this->setFocus();
-	
+
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
-    connectDialog = new ConnectDialog(this);
     settingsDialog = new SettingsDialog(this);
+    connectDialog = new ConnectDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -47,6 +47,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     onVolumeMoved(50);
 
     ui.downloadProgressBar->hide();
+    ui.stopPushButton->raise();
     ui.playPushButton->raise();
 
     //TODO: move to settings
@@ -127,10 +128,16 @@ void CommAudio::onMuteClicked() {
     muted = !muted;
     if (muted) {
         AudioManager::setGain(0);
-        ui.statusLabel->setText("Mute");
+        ui.mutePushButton->setIcon(QIcon(ICON_MUTE));
+        if (transport->getPlayingState() != PAUSED) {
+            ui.statusLabel->setText("Mute");
+        }
     } else {
         AudioManager::setGain(ui.volumeSlider->value() / 100.0);
-        ui.statusLabel->setText("");
+        ui.mutePushButton->setIcon(QIcon(ICON_UNMUTE));
+        if (transport->getPlayingState() != PAUSED) {
+            ui.statusLabel->setText("");
+        }
     }
 }
 
@@ -183,6 +190,7 @@ void CommAudio::stopServer() {
 
 void CommAudio::onMulticastStateChanged(bool checked) {
     multicastServer = checked;
+    AudioManager::setMulticast(checked);
 }
 
 void CommAudio::onChatPressed() {
@@ -207,6 +215,7 @@ void CommAudio::onChatReleased() {
 }
 
 void CommAudio::onConnectionPressed() {
+    connectDialog->updateFields(settingsDialog->getUseLastConnSettings());
     connectDialog->exec();
 }
 

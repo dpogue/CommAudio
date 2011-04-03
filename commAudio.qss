@@ -6,11 +6,15 @@ QLabel#connectErrorLabel {
 	color: red;
 }
 
+QLabel#errorLabel {
+    color: red;
+}
+
 QFrame#nowPlayingFrame {
 	border-width: 1px;
 	border-style: solid;
 	border-color: black;
-	border-radius: 10px;
+	border-radius: 3px;
 	background: white;
 }
 
@@ -29,16 +33,28 @@ QPushButton#playPushButton {
 
 QPushButton#previousPushButton {
  	border-radius: 15px;
+	padding-right: 20px;
 }
 
 QPushButton#nextPushButton {
 	border-radius: 15px;
+	padding-left: 20px;
 }
 
-#centralWidget QPushButton:hover {
-	border-color: #00cc00;
+QPushButton#stopPushButton {
+	border-radius: 25px;
+	padding-bottom: 2px;
+	padding-top: 35px;
+}
+
+QPushButton#shufflePushButton {
+	
 }
 
 #centralWidget QPushButton:pressed {
     background-color: #cacbde;
+}
+
+#centralWidget QPushButton:hover {
+	border-color: #00cc00;
 }

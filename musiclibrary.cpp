@@ -21,6 +21,19 @@ QString MusicLibrary::getSelectedSong() {
     return songs[sel.at(0)->text()];
 }
 
+QString MusicLibrary::getSelectedSongName() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        if (this->count() == 0) {
+            return "";
+        }
+        this->item(0)->setSelected(true);
+        sel.append(this->item(0));
+    }
+
+    return sel.at(0)->text();
+}
+
 QString MusicLibrary::getNextSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
@@ -32,14 +45,9 @@ QString MusicLibrary::getNextSong(bool loop) {
         if (loop) {
             row = 0;
         } else {
-            QList<QListWidgetItem*>::iterator it;
-            for (it = sel.begin(); it != sel.end(); ++it) {
-                setItemSelected(*it, false);
-            }
             return "";
         }
     }
-
     this->item(row)->setSelected(true);
     return songs[this->item(row)->text()];
 }
@@ -47,7 +55,7 @@ QString MusicLibrary::getNextSong(bool loop) {
 QString MusicLibrary::getPrevSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
-        return getSelectedSong();
+        return "";
     }
 
     int row = this->row(sel.at(0));
@@ -55,14 +63,9 @@ QString MusicLibrary::getPrevSong(bool loop) {
         if (loop) {
             row = this->count() - 1;
         } else {
-            QList<QListWidgetItem*>::iterator it;
-            for (it = sel.begin(); it != sel.end(); ++it) {
-                setItemSelected(*it, false);
-            }
             return "";
         }
     }
-
     this->item(row)->setSelected(true);
     return songs[this->item(row)->text()];
 }
@@ -85,6 +88,15 @@ QString MusicLibrary::getRandSong(bool loop) {
 
     this->item(nextSong)->setSelected(true);
     return songs[this->item(nextSong)->text()];
+}
+
+void MusicLibrary::clearSelectedItems() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    QList<QListWidgetItem*>::iterator it;
+    
+    for (it = sel.begin(); it != sel.end(); ++it) {
+        setItemSelected(*it, false);
+    }
 }
 
 void MusicLibrary::addFolder(QString path) {

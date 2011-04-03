@@ -9,6 +9,7 @@ bool AudioManager::capturePause_ = true;
 bool AudioManager::captureStop_ = false;
 int AudioManager::playCount_ = 0;
 QString AudioManager::nextplay_; 
+bool AudioManager::multicast_ = false;
 float AudioManager::musicGain_ = 0.5;
 QMutex AudioManager::mutex_;
 QQueue<QByteArray> AudioManager::streamQueue;
