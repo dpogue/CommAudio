@@ -93,21 +93,21 @@ bool AudioManager::checkError()
 
 void AudioManager::getSpecs(char bitmask, ALenum *format, ALuint *freq) {
 
-    if(bitmask ^= 0x00010000) {
+    if(bitmask & 0x10) {
         *freq = 22050;
-    } else if (bitmask ^= 0x00100000) {
+    } else if (bitmask & 0x20) {
         *freq = 44100;
-    } else if (bitmask ^= 0x01000000) {
+    } else if (bitmask & 0x40) {
         *freq = 48000;
     }
 
-    if (bitmask ^= 0x00000101) {
+    if (bitmask & 0x5) {
         *format = AL_FORMAT_MONO8;
-    } else if (bitmask ^= 0x00000110) {
+    } else if (bitmask & 0x6) {
         *format = AL_FORMAT_MONO16;
-    } else if (bitmask ^= 0x00001001) {
+    } else if (bitmask & 0x9) {
         *format = AL_FORMAT_STEREO8;
-    } else if (bitmask ^= 0x00001010) {
+    } else if (bitmask & 0xA) {
         *format = AL_FORMAT_STEREO16;
     }
 
@@ -120,24 +120,24 @@ char AudioManager::getBitmask(ALenum format, ALuint freq) {
     switch(freq)
     {
     case 22050:
-        bitmask |= 0x00010000;
+        bitmask |= 0x10;
         break;
     case 44100:
-        bitmask |= 0x00100000;
+        bitmask |= 0x20;
         break;
     case 48000:
-        bitmask |= 0x01000000;
+        bitmask |= 0x40;
         break;
     }
 
     if(format == AL_FORMAT_MONO8) {
-        bitmask |= 0x00000101;
+        bitmask |= 0x5;
     } else if(format == AL_FORMAT_MONO16) {
-        bitmask |= 0x00000110;
+        bitmask |= 0x6;
     } else if(format == AL_FORMAT_STEREO8) {
-        bitmask |= 0x00001001;
+        bitmask |= 0x9;
     } else if(format == AL_FORMAT_STEREO16) {
-        bitmask |= 0x00001010;
+        bitmask |= 0xA;
     }
 
     return bitmask;
