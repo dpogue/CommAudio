@@ -128,6 +128,9 @@ void MusicLibrary::addSongs(QList<QString> songlist) {
 }
 
 void MusicLibrary::addSong(QString name, QString path) {
+    if (songs.contains(name)) {
+        return;
+    }
     songs.insert(name, path);
     addItem(name);
 }

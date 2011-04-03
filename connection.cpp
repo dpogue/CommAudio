@@ -20,13 +20,9 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 
     strSock = new CommSocket(host, port, UDP);
     connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
-    if (isMulticast) {
-		strSock->toggleMulticast();
-    } else {
-        timer.setInterval(23);
-        connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
-        timer.start();
-    }
+    timer.setInterval(23);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
+    timer.start();
 
     fileSize = 0;
     isFileTransferInProgress = false;

@@ -157,7 +157,7 @@ void AudioManager::streamStream()
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
-    char bitmask, oldbmask;
+    char bitmask = 0, oldbmask = 0;
     ALenum format = AL_FORMAT_MONO8;
     ALuint freq = 22050;
 
