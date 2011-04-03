@@ -2,6 +2,8 @@
 #define CONNECTDIALOG_H
 
 #include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
 class CommSocket;
 
 namespace Ui {
@@ -18,6 +20,27 @@ private:
 public:
     ConnectDialog(QWidget* parent = 0);
     ~ConnectDialog();
+
+    /**
+     * Ensures the ip that was entered is valid.
+     *
+     * @author Dean Morin
+     * @param ipLineEdit The ip address as entered.
+     * @param errorLabel The label that will display any errors.
+     * @return 0 if there was an error, otherwise returns the ip address.
+     */
+    static unsigned long validateIp(QLineEdit* ipLineEdit, QLabel* errorLabel);
+
+    /**
+     * Ensures the port that was entered is valid.
+     *
+     * @author Dean Morin
+     * @param portLineEdit The port as entered.
+     * @param errorLabel The label that will display any errors.
+     * @return 0 if there was an error, otherwise returns the port.
+     */
+    static unsigned int validatePort(QLineEdit* portLineEdit, 
+                                     QLabel* errorLabel);
     
 public slots:
     /**

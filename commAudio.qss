@@ -6,6 +6,10 @@ QLabel#connectErrorLabel {
 	color: red;
 }
 
+QLabel#errorLabel {
+    color: red;
+}
+
 QFrame#nowPlayingFrame {
 	border-width: 1px;
 	border-style: solid;

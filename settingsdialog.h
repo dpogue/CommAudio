@@ -16,7 +16,7 @@ private:
 
     /** True if the most recent connection settings should be remembered. */
     bool useLastConnSettings;
-    
+
 public:
     SettingsDialog(QWidget* parent = 0);
     ~SettingsDialog();
@@ -26,18 +26,18 @@ public:
 
 public slots:
     /**
+     * Reverts any changes to the settings.
+     *
+     * @author Dean Morin
+     */
+    virtual void reject();
+
+    /**
      * Saves any changes to the settings.
      *
      * @author Dean Morin
      */
     void onOkClicked();
-
-    /**
-     * Reverts any changes to the settings.
-     *
-     * @author Dean Morin
-     */
-    void onCancelClicked();
 
     /**
      * Toggles sticky chat. When activated, the chat button is a toggle button.
@@ -51,9 +51,7 @@ public slots:
      * remembered.
      *
      * @author Dean Morin
-     * @param checked This slot is called by both radio buttons when a change
-     * is made. This parameter ensures that the desired result only happens
-     * once.
+     * @param checked True if "Remember last used" is selected.
      */
     void onRememberConnectionOptionToggled(bool checked);
 
