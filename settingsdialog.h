@@ -26,20 +26,36 @@ public:
 
 public slots:
     /**
-     * Attempts to connect to the server. 
+     * Saves any changes to the settings.
      *
      * @author Dean Morin
      */
-//    void onConnectClicked();
     void onOkClicked();
 
+    /**
+     * Reverts any changes to the settings.
+     *
+     * @author Dean Morin
+     */
     void onCancelClicked();
 
-    void onStickyChatStateChanged(int state);
+    /**
+     * Toggles sticky chat. When activated, the chat button is a toggle button.
+     *
+     * @author Dean Morin
+     */
+    void onStickyChatStateChanged(int);
 
+    /**
+     * Sets whether or not the most recently used connection details should be
+     * remembered.
+     *
+     * @author Dean Morin
+     * @param checked This slot is called by both radio buttons when a change
+     * is made. This parameter ensures that the desired result only happens
+     * once.
+     */
     void onRememberConnectionOptionToggled(bool checked);
-
-//    void onUseLastConnectionSetting
 
    // void onSettingChanged(QString setting, QVariant value);
 };
