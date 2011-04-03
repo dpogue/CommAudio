@@ -1,13 +1,15 @@
 #include "connectdialog.h"
+#include <QSettings>
 #include <WinSock2.h>
 #include "commsocket.h"
 #include "defines.h"
 #include "mainwindow.h"
+#include "settingsdialog.h"
 #include "ui_connect.h"
 
 ConnectDialog::ConnectDialog(QWidget *parent)
     : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
-      ui(new Ui::Connect())
+      ui(new Ui::Connect()), running(false)
 {
     ui->setupUi(this);
     
@@ -30,6 +32,7 @@ void ConnectDialog::onConnectClicked() {
     unsigned int port = 0;
     bool validPort = false;
     bool multicast = ui->multicastCheckBox->isChecked();
+    QSettings settings;
     
     if (!(ip = ConnectDialog::validateIp(ui->ipLineEdit, 
                                          ui->connectErrorLabel))) {
@@ -41,8 +44,8 @@ void ConnectDialog::onConnectClicked() {
         return;
     }
     
-    // save these settings persistently
-    
+    settings.setValue("lastHostIp", ui->ipLineEdit->text());
+    settings.setValue("lastHostPort", ui->portLineEdit->text());
 
     ui->connectPushButton->setDisabled(true);
     ui->startServerPushButton->setDisabled(true);
@@ -54,6 +57,7 @@ void ConnectDialog::onConnectClicked() {
 
     ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), 
                                                    port, multicast);
+    running = true;
     done(0);
 }
 
@@ -68,18 +72,21 @@ void ConnectDialog::onDisconnectClicked() {
             this, SLOT(onConnectClicked()));
         
     ((CommAudio*) this->parent())->disconnectFromServer();
+    running = false;
     done(0);
 }
 
 void ConnectDialog::onStartServerClicked() {
     unsigned int port = 0;
+    QSettings settings;
 
     if (!(port = ConnectDialog::validatePort(ui->startServerPortLineEdit, 
                                              ui->connectErrorLabel))) {
         return;
     }
 
-    // save these settings persistently
+    settings.setValue("lastServerPort", ui->startServerPortLineEdit->text());
+    settings.setValue("lastMulticast", ui->multicastCheckBox->isChecked());
 
     disconnect(ui->startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStartServerClicked()));
@@ -90,6 +97,7 @@ void ConnectDialog::onStartServerClicked() {
             this, SLOT(onStopServerClicked()));
 
     ((CommAudio*) this->parent())->startServer(port);
+    running = true;
     done(0);
 }
 
@@ -105,6 +113,7 @@ void ConnectDialog::onStopServerClicked() {
             this, SLOT(onStartServerClicked()));
     
     ((CommAudio*) this->parent())->stopServer();
+    running = false;
     done(0);
 }
 
@@ -141,4 +150,29 @@ unsigned int ConnectDialog::validatePort(QLineEdit* portLineEdit,
     }
     errorLabel->clear();
     return port;
+}
+
+void ConnectDialog::updateFields(bool useMostRecentConnectionSettings) {
+    QSettings settings;
+
+    if (running) {
+        return;
+    }
+
+    if (useMostRecentConnectionSettings) {
+        ui->ipLineEdit->setText(settings.value("lastHostIp", "").toString());
+        ui->portLineEdit->setText(settings.value("lastHostPort", 
+                "").toString());
+        ui->startServerPortLineEdit->setText(settings.value("lastServerPort", 
+                "").toString());
+        ui->multicastCheckBox->setChecked(settings.value("lastMulticast", 
+                false).toBool());
+    } else {
+        ui->ipLineEdit->setText(settings.value("hostIp", "").toString());
+        ui->portLineEdit->setText(settings.value("hostPort", "").toString());
+        ui->startServerPortLineEdit->setText(settings.value("serverPort", 
+                "").toString());
+        ui->multicastCheckBox->setChecked(settings.value("multicast", 
+                false).toBool());
+    }
 }

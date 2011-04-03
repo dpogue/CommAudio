@@ -84,7 +84,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>9500</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="ipLabel">
@@ -113,7 +113,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>192.168.0.105</string>
+     <string/>
     </property>
    </widget>
   </widget>
@@ -165,7 +165,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>9500</string>
+     <string/>
     </property>
    </widget>
    <widget class="QCheckBox" name="multicastCheckBox">

@@ -19,7 +19,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
             this, SLOT(onStickyChatStateChanged(int)));
     connect(ui->defaultSettingsRadioButton1, SIGNAL(toggled(bool)),
             this, SLOT(onRememberConnectionOptionToggled(bool)));
-
+            
     onStickyChatStateChanged(0);
     ui->okPushButton->setDefault(true);
     
@@ -36,12 +36,15 @@ SettingsDialog::~SettingsDialog() {
 void SettingsDialog::readSettings() {
     QSettings settings;
 
-    useLastConnSettings = settings.value("useLastConnSettings").toBool();
-    ui->stickyChatCheckBox->setChecked(settings.value("stickyChat").toBool());
-    ui->hostIpLineEdit->setText(settings.value("hostIp").toString());
-    ui->hostPortLineEdit->setText(settings.value("hostPort").toString());
-    ui->serverPortLineEdit->setText(settings.value("serverPort").toString());
-    ui->multicastCheckBox->setChecked(settings.value("multicast").toBool());
+    useLastConnSettings = settings.value("useLastConnSettings", true).toBool();
+    ui->stickyChatCheckBox->setChecked(settings.value("stickyChat", 
+            false).toBool());
+    ui->hostIpLineEdit->setText(settings.value("hostIp", "").toString());
+    ui->hostPortLineEdit->setText(settings.value("hostPort", "").toString());
+    ui->serverPortLineEdit->setText(settings.value("serverPort", 
+            "").toString());
+    ui->multicastCheckBox->setChecked(settings.value("multicast", 
+            false).toBool());
     
     // setup gui elements according to stored settings
     ui->defaultSettingsRadioButton1->setChecked(useLastConnSettings);
@@ -99,14 +102,3 @@ void SettingsDialog::onRememberConnectionOptionToggled(bool checked) {
     ui->hostGroupBox->setDisabled(checked);
     ui->serverGroupBox->setDisabled(checked);
 }
-   /* 
-void SettingsDialog::onSettingChanged(QString setting, QVariant value) {
-    QSettings settings;
-    bool useDefaultIpAndPort = false;
-
-    if (setting == "defaultIp" && useDefaultIpAndPort) {
-        return;
-    }
-    settings.setValue(setting, value);
-}
-*/

@@ -23,8 +23,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
-    connectDialog = new ConnectDialog(this);
     settingsDialog = new SettingsDialog(this);
+    connectDialog = new ConnectDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -215,6 +215,7 @@ void CommAudio::onChatReleased() {
 }
 
 void CommAudio::onConnectionPressed() {
+    connectDialog->updateFields(settingsDialog->getUseLastConnSettings());
     connectDialog->exec();
 }
 

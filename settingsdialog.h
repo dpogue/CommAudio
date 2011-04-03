@@ -24,6 +24,10 @@ public:
     void readSettings();
     void writeSettings();
 
+    bool getUseLastConnSettings() {
+        return useLastConnSettings;
+    }
+
 public slots:
     /**
      * Reverts any changes to the settings.
@@ -54,8 +58,6 @@ public slots:
      * @param checked True if "Remember last used" is selected.
      */
     void onRememberConnectionOptionToggled(bool checked);
-
-   // void onSettingChanged(QString setting, QVariant value);
 };
 
 #endif

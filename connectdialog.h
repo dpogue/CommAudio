@@ -16,6 +16,9 @@ class ConnectDialog : public QDialog {
 private:
     /** The user interface for the dialog window. */
     Ui::Connect* ui;
+
+    /** True if the program is connected to a host or running a server. */
+    bool running;
     
 public:
     ConnectDialog(QWidget* parent = 0);
@@ -41,7 +44,9 @@ public:
      */
     static unsigned int validatePort(QLineEdit* portLineEdit, 
                                      QLabel* errorLabel);
-    
+
+    void updateFields(bool useMostRecentConnectionSettings);
+
 public slots:
     /**
      * Attempts to connect to the server. 
