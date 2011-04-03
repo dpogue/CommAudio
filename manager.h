@@ -213,9 +213,12 @@ public:
 		mutex_.unlock();
 	}
 
-	static void addToNetworkQueue(char bitmask, QByteArray buffer) {
-		mutex_.lock();
-        netQueue.enqueue(buffer.prepend(bitmask));
+	static void addToNetworkQueue(char bitmask, char *buffer, int size) {
+		QByteArray temp(buffer,size);
+        mutex_.lock();
+        temp.prepend(bitmask);
+        qDebug("buffer %d", temp.size());
+        netQueue.enqueue(temp);
 		mutex_.unlock();
 	}	
 

@@ -341,7 +341,7 @@ void AudioManager::streamFile(QString filename)
             }
             
             if(multicast_ == true) {
-                addToNetworkQueue(bitmask, array);
+                addToNetworkQueue(bitmask, array, size);
             }
            
             alBufferData(buffer[queue], format, array, size, freq);
@@ -403,10 +403,8 @@ void AudioManager::captureMic()
 			if(getCaptureStop() == true) {
 				break;
 			} else if (samplesAvailable > (BUFFERSIZE)) {
-
-				alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
-                
-                addToNetworkQueue(bitmask, buffer);
+                alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
+                addToNetworkQueue(bitmask, buffer, BUFFERSIZE);
 			}
 		}
 	}
