@@ -92,7 +92,7 @@ bool AudioManager::checkError()
 
 char AudioManager::getBitmask(ALenum format, ALuint freq) {
     
-    char bitmask;
+    char bitmask = 0;
     
     switch(freq)
     {
@@ -221,6 +221,7 @@ void AudioManager::streamFile(QString filename)
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
 	fileType fType;
+    char bitmask;
 
     while(getPlayCount() > 0) {
 		alSleep(0.1f);
@@ -254,6 +255,8 @@ void AudioManager::streamFile(QString filename)
 		openWav(&file,&format,&freq);
 		fType = WAV;
 	}
+
+    bitmask = getBitmask(format,freq);
 
     do {
 
@@ -300,6 +303,8 @@ void AudioManager::streamFile(QString filename)
                     break;
                 }
             }
+            //TODO check for multicast 
+            //If true addToNetworkQueue();
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
@@ -335,12 +340,14 @@ void AudioManager::captureMic()
 {
     ALCdevice* captureDevice;
     ALint samplesAvailable;
-    ALchar buffer[BUFFERSIZE];
+    ALchar buffer[BUFFERSIZE+8];
     ALuint unqueueCount, queueCount;
     ALint format, frequency;
+    char bitmask;
 
 	format = AL_FORMAT_MONO8;
 	frequency = 22050;
+    bitmask = getBitmask(format,frequency);
 
     captureDevice = alcCaptureOpenDevice(NULL, frequency, format, frequency);
 
@@ -359,7 +366,8 @@ void AudioManager::captureMic()
 			} else if (samplesAvailable > (BUFFERSIZE)) {
 
 				alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
-				this->addToNetworkQueue(buffer);
+                //TODO shift in the bitmask before adding to queue
+                this->addToNetworkQueue(buffer);
 			}
 		}
 	}
