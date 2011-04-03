@@ -185,9 +185,9 @@ void AudioManager::streamStream()
 				
 				temp = getNextInQueue();
 				if(temp.data() != NULL) {
-                    bitmask = array[0];
-					strncpy(array+1,temp,BUFFERSIZE);
-				}
+					strncpy(array,temp.mid(1),BUFFERSIZE);
+                    bitmask = temp.at(0);
+                }
 				result = sizeof(array);
 				
 
