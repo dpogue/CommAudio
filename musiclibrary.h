@@ -49,7 +49,15 @@ public:
      * @return The filename of the selected song.
      */
     QString getSelectedSong();
-
+    
+    /**
+     * Returns the currently selected song name.
+     *
+     * @author Dean Morin
+     * @return The name of the selected song.
+     */
+    QString getSelectedSongName();
+    
     /**
      * Returns the next song's filename, or an empty string if there is no next song.
      *

@@ -38,6 +38,8 @@ void Transport::onPlayClicked() {
         case STOPPED:
             AudioManager::instance()->playMusic(fileName);
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+            ui->currentSongLabel->setText(((CommAudio*) parent())->
+                    getUserSongs()->getSelectedSongName());
             playingState = PLAYING;
             break;
 
@@ -64,6 +66,7 @@ void Transport::onStopClicked() {
         AudioManager::instance()->togglePause();
         ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     }
+    ui->currentSongLabel->setText("");
     playingState = STOPPED;
 }
 
@@ -76,7 +79,8 @@ void Transport::onPreviousClicked() {
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-    ui->currentSongLabel->setText(fileName);
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 
@@ -89,17 +93,24 @@ void Transport::onNextClicked() {
         fileName = ((CommAudio*) parent())->getUserSongs()->getNextSong(loop);
     }
     if (fileName.isEmpty()) {
+        if (playingState == STOPPED) {
+            ui->currentSongLabel->setText("");
+        }
         return;
     }
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 
 void Transport::onSongDoubleClicked(QString songName) {
     AudioManager::instance()->playMusic(songName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    ui->currentSongLabel->setText(
+            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
     playingState = PLAYING;
 }
 

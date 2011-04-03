@@ -21,6 +21,19 @@ QString MusicLibrary::getSelectedSong() {
     return songs[sel.at(0)->text()];
 }
 
+QString MusicLibrary::getSelectedSongName() {
+    QList<QListWidgetItem*> sel = this->selectedItems();
+    if (sel.size() == 0) {
+        if (this->count() == 0) {
+            return "";
+        }
+        this->item(0)->setSelected(true);
+        sel.append(this->item(0));
+    }
+
+    return sel.at(0)->text();
+}
+
 QString MusicLibrary::getNextSong(bool loop) {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {

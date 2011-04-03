@@ -147,14 +147,14 @@ QPushButton#shufflePushButton {
            <rect>
             <x>10</x>
             <y>10</y>
-            <width>291</width>
+            <width>305</width>
             <height>21</height>
            </rect>
           </property>
           <property name="font">
            <font>
             <family>MS Shell Dlg 2</family>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
