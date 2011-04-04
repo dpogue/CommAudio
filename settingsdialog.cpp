@@ -1,6 +1,6 @@
 #include "settingsdialog.h"
+#include <QFileDialog>
 #include <QSettings>
-#include <QtDebug>
 #include "connectdialog.h"
 #include "mainwindow.h"
 #include "ui_settings.h"
@@ -19,6 +19,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
             this, SLOT(onStickyChatStateChanged(int)));
     connect(ui->defaultSettingsRadioButton1, SIGNAL(toggled(bool)),
             this, SLOT(onRememberConnectionOptionToggled(bool)));
+    connect(ui->addFolderPushButton, SIGNAL(clicked()),
+            this, SLOT(onAddFolderClicked()));
             
     onStickyChatStateChanged(0);
     ui->okPushButton->setDefault(true);
@@ -45,6 +47,13 @@ void SettingsDialog::readSettings() {
             "").toString());
     ui->multicastCheckBox->setChecked(settings.value("multicast", 
             false).toBool());
+    QStringList dirs = settings.value("directories",
+            QStringList("music/")).toStringList();
+
+    ((CommAudio*) parent())->getUserSongs()->setDirectories(dirs);
+    if(!QDir("music").exists()) {
+        QDir().mkdir("music");
+    }
     
     // setup gui elements according to stored settings
     ui->defaultSettingsRadioButton1->setChecked(useLastConnSettings);
@@ -61,6 +70,7 @@ void SettingsDialog::writeSettings() {
     settings.setValue("serverPort", ui->serverPortLineEdit->text());
     settings.setValue("multicast", ui->multicastCheckBox->isChecked());
     settings.setValue("stickyChat", ui->stickyChatCheckBox->isChecked());
+    settings.setValue("directories", ((CommAudio*) parent())->getUserSongs()->getDirectories());
 }
 
 void SettingsDialog::reject() {
@@ -97,8 +107,19 @@ void SettingsDialog::onStickyChatStateChanged(int) {
 }
 
 void SettingsDialog::onRememberConnectionOptionToggled(bool checked) {
-    
     useLastConnSettings = checked;
     ui->hostGroupBox->setDisabled(checked);
     ui->serverGroupBox->setDisabled(checked);
+}
+
+void SettingsDialog::onAddFolderClicked() {
+    
+    QString defPath = QString("music/");
+    QString dir = QFileDialog::getExistingDirectory(this, "Add Directory",
+            "music/", QFileDialog::DontResolveSymlinks);
+
+    if (dir.isNull() || dir.isEmpty()) {
+        return;
+    }
+    ((CommAudio*) parent())->getUserSongs()->addFolder(dir);
 }

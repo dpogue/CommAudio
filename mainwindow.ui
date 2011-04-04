@@ -509,6 +509,20 @@ QPushButton#shufflePushButton {
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>playPushButton</tabstop>
+  <tabstop>stopPushButton</tabstop>
+  <tabstop>previousPushButton</tabstop>
+  <tabstop>nextPushButton</tabstop>
+  <tabstop>volumeSlider</tabstop>
+  <tabstop>mutePushButton</tabstop>
+  <tabstop>shufflePushButton</tabstop>
+  <tabstop>loopPushButton</tabstop>
+  <tabstop>settingsPushButton</tabstop>
+  <tabstop>connectionPushButton</tabstop>
+  <tabstop>chatPushButton</tabstop>
+  <tabstop>fileTabWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="mainwindow.qrc"/>
  </resources>

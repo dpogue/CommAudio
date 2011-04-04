@@ -4,6 +4,7 @@
 #include "commsocket.h"
 #include "defines.h"
 #include "mainwindow.h"
+#include "manager.h"
 #include "settingsdialog.h"
 #include "ui_connect.h"
 
@@ -34,12 +35,12 @@ void ConnectDialog::onConnectClicked() {
     QSettings settings;
     
     if (!(ip = ConnectDialog::validateIp(ui->ipLineEdit, 
-                                         ui->connectErrorLabel))) {
+            ui->connectErrorLabel))) {
         return;
     }
 
     if (!(port = ConnectDialog::validatePort(ui->portLineEdit, 
-                                             ui->connectErrorLabel))) {
+            ui->connectErrorLabel))) {
         return;
     }
     
@@ -56,7 +57,8 @@ void ConnectDialog::onConnectClicked() {
 	connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onDisconnectClicked()));
 
-    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
+    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(),
+            port);
     running = true;
     done(0);
 }
@@ -81,12 +83,14 @@ void ConnectDialog::onStartServerClicked() {
     QSettings settings;
 
     if (!(port = ConnectDialog::validatePort(ui->startServerPortLineEdit, 
-                                             ui->connectErrorLabel))) {
+            ui->connectErrorLabel))) {
         return;
     }
 
     settings.setValue("lastServerPort", ui->startServerPortLineEdit->text());
     settings.setValue("lastMulticast", ui->multicastCheckBox->isChecked());
+    
+    AudioManager::setMulticast(multicastServer);
 
     disconnect(ui->startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStartServerClicked()));
@@ -118,8 +122,7 @@ void ConnectDialog::onStopServerClicked() {
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {
-    bool checked = ui->multicastCheckBox->isChecked();
-    ((CommAudio*) this->parent())->onMulticastStateChanged(checked);
+    multicastServer = ui->multicastCheckBox->isChecked();
 }
 
 unsigned long ConnectDialog::validateIp(QLineEdit* ipLineEdit, 

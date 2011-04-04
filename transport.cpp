@@ -20,6 +20,8 @@ Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
             this, SLOT(onShuffleClicked()));
     connect(ui->loopPushButton, SIGNAL(clicked()), 
             this, SLOT(onLoopClicked()));
+    connect(this, SIGNAL(songChanged()),
+            parent, SLOT(changeDisplayedSong()));
     
     QSettings settings;
 
@@ -49,8 +51,7 @@ void Transport::onPlayClicked() {
         case STOPPED:
             AudioManager::instance()->playMusic(fileName);
             ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-            ui->currentSongLabel->setText(((CommAudio*) parent())->
-                    getUserSongs()->getSelectedSongName());
+            emit songChanged();
             playingState = PLAYING;
             break;
 
@@ -90,8 +91,7 @@ void Transport::onPreviousClicked() {
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-    ui->currentSongLabel->setText(
-            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
+    emit songChanged();
     playingState = PLAYING;
 }
 
@@ -112,16 +112,14 @@ void Transport::onNextClicked() {
 
     AudioManager::instance()->playMusic(fileName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-    ui->currentSongLabel->setText(
-            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
+    emit songChanged();
     playingState = PLAYING;
 }
 
 void Transport::onSongDoubleClicked(QString songName) {
     AudioManager::instance()->playMusic(songName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
-    ui->currentSongLabel->setText(
-            ((CommAudio*) parent())->getUserSongs()->getSelectedSongName());
+    emit songChanged();
     playingState = PLAYING;
 }
 

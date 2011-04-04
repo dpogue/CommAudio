@@ -21,6 +21,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     this->setFixedSize(439, 700);
     this->setFocus();
 
+    userSongs = new MusicLibrary();
     settingsDialog = new SettingsDialog(this);
     connectDialog = new ConnectDialog(this);
     transport = new Transport(&ui, this);
@@ -42,6 +43,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	connect(AudioManager::instance(), SIGNAL(finished()),
             this, SLOT(playFinished()));
     
+    connect(ui.chatPushButton, SIGNAL(pressed()),
+        this, SLOT(onJoiningMulticastSession()));
     QSettings settings;
 
     ui.volumeSlider->setMinimum(0);
@@ -53,15 +56,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     ui.stopPushButton->raise();
     ui.playPushButton->raise();
 
-    //TODO: move to settings
-    if(!QDir("music").exists()) {
-        QDir().mkdir("music");
-    }
-
     QBoxLayout* hl = new QBoxLayout(QBoxLayout::TopToBottom, ui.localTab);
     hl->setMargin(0);
-    userSongs = new MusicLibrary();
-    userSongs->addFolder("music/");
     hl->addWidget(userSongs);
     connect(userSongs, SIGNAL(signalSongDoubleClicked(QString)),
             transport, SLOT(onSongDoubleClicked(QString)));
@@ -127,6 +123,9 @@ void CommAudio::addRemoteSongs(QList<QString> songs) {
 
 void CommAudio::onVolumeMoved(int volume) {
     AudioManager::setGain(volume / 100.0);
+    if (muted) {
+        onMuteClicked();
+    }
 }
 
 void CommAudio::onMuteClicked() {
@@ -170,7 +169,7 @@ void CommAudio::disconnectFromServer() {
 
 void CommAudio::startServer(int port) {
 	
-	conn = new Connection(this, TCP, port,multicastServer);
+	conn = new Connection(this, TCP, port, connectDialog->getMulticastServer());
 	conn->start();
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
@@ -188,11 +187,6 @@ void CommAudio::stopServer() {
             conn, SLOT(requestForFile(QString)));
     remoteSongs->clear();
     ui.fileTabWidget->setTabEnabled(1, false);
-}
-
-void CommAudio::onMulticastStateChanged(bool checked) {
-    multicastServer = checked;
-    AudioManager::setMulticast(checked);
 }
 
 void CommAudio::onChatPressed() {
@@ -226,7 +220,29 @@ void CommAudio::onSettingsPressed() {
 }
 
 void CommAudio::playFinished() {
-	qDebug("playing stopped");
-
     transport->onSongFinished();
+}
+
+void CommAudio::onJoiningMulticastSession() {
+    ui.previousPushButton->setDisabled(true);
+    ui.nextPushButton->setDisabled(true);
+    ui.playPushButton->setDisabled(true);
+    ui.chatPushButton->setDisabled(true);
+}
+
+void CommAudio::onQuittingMulticastSession() {
+    ui.previousPushButton->setEnabled(true);
+    ui.nextPushButton->setEnabled(true);
+    ui.playPushButton->setEnabled(true);
+    ui.chatPushButton->setEnabled(true);
+}
+
+void CommAudio::onStartingMulticastSession() {
+}
+
+void CommAudio::onStoppingMulticastSession() {
+}
+
+void CommAudio::changeDisplayedSong() {
+    ui.currentSongLabel->setText(userSongs->getSelectedSongName());
 }

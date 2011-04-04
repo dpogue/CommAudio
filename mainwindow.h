@@ -27,9 +27,6 @@ private:
 
 	//Connection* client;
     
-    /** True if the program should multicast on clicking "Start Server". */
-    bool multicastServer;
-
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
@@ -208,14 +205,6 @@ public slots:
     void stopServer();
 
     /**
-     * This server will multicast if this is selected.
-     *
-     * @author Dean Morin
-     * @param state The state of multicastCheckBox.
-     */
-    void onMulticastStateChanged(bool checked);
-
-    /**
      * Starts transmitting voice data, or toggles the transmission on/off if
      * "sticky" mode is enabledd.
      *
@@ -250,6 +239,45 @@ public slots:
      * @author Terence Stenvold
      */
     void playFinished();
+
+    /**
+     * Disables elements of the gui that aren't needed when a multicast session
+     * is joined.
+     *
+     * @author Dean Morin
+     */
+    void onJoiningMulticastSession();
+
+    /**
+     * Enables elements of the gui that were disabled when a multicast server
+     * was joined.
+     *
+     * @author Dean Morin
+     */
+    void onQuittingMulticastSession();
+
+    /**
+     * Disables elements of the gui that aren't needed when a multicast server
+     * is started.
+     *
+     * @author Dean Morin
+     */
+    void onStartingMulticastSession();
+
+    /**
+     * Enables elements of the gui that were disabled when the multicast server
+     * is started.
+     *
+     * @author Dean Morin
+     */
+    void onStoppingMulticastSession();
+    
+    /**
+     * Sets the song displayed in the top frame to the current song
+     *
+     * @author Dean Morin
+     */
+    void changeDisplayedSong();
 };
 
 #endif // MAINWINDOW_H

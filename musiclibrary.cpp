@@ -5,7 +5,13 @@ MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
             this, SLOT(onItemDoubleClicked(QListWidgetItem*)));
 }
 
-MusicLibrary::~MusicLibrary() {
+void MusicLibrary::setDirectories(QStringList dir) {
+    directories = dir;
+    QStringList::iterator it;
+
+    for (it = dir.begin(); it != dir.end(); ++it) {
+        addSongs(&QDir(*it));
+    }
 }
 
 QString MusicLibrary::getSelectedSong() {
@@ -104,7 +110,7 @@ void MusicLibrary::addFolder(QString path) {
     if (!directory->makeAbsolute()) {
         qDebug("MusicLibrary::addFolder(); could not make path absolute");
     }
-    directories.push_back(directory);
+    directories.push_back(directory->absolutePath());
     addSongs(directory);
 }
 

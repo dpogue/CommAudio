@@ -3,9 +3,18 @@
 
 #include <QFile>
 
+/**
+ * Contains static methods that return details on how the gui should be styled.
+ */
 class StyleSheet {
 
 public:
+    /**
+     * Gets the style info for the CommAudio project.
+     *
+     * @author Dean Morin
+     * @return The style info formatted as a QString.
+     */
     static QString commAudio();
 };
 
