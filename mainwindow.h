@@ -273,11 +273,19 @@ public slots:
     void onStoppingMulticastSession();
     
     /**
-     * Sets the song displayed in the top frame to the current song
+     * Sets the song displayed in the top frame to the current song.
      *
      * @author Dean Morin
      */
     void changeDisplayedSong();
+    
+    /**
+     * Sets the song displayed in the top frame to the current song.
+     *
+     * @author Dean Morin
+     * @param songName The song to display.
+     */
+    void changeDisplayedSong(QString songName);
 };
 
 #endif // MAINWINDOW_H
