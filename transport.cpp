@@ -1,12 +1,12 @@
 #include "transport.h"
+#include <QMessagebox>
+#include <QSettings>
 #include "defines.h"
 #include "mainwindow.h"
 #include "manager.h"
-#include <qmessagebox.h>
-#include <qsettings.h>
 
 Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
-    : QObject(parent), ui(gui)
+    : QObject(parent), ui(gui), playingState(STOPPED)
 {   
     connect(ui->playPushButton, SIGNAL(clicked()), 
             this, SLOT(onPlayClicked()));
@@ -22,14 +22,11 @@ Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
             this, SLOT(onLoopClicked()));
     
     QSettings settings;
-    qDebug("what gives");
 
     loop = !settings.value("loop", false).toBool();
-    qDebug() << "entering: " << !loop;
     onLoopClicked();
     shuffle = !settings.value("shuffle", false).toBool();
     onShuffleClicked();
-    playingState = STOPPED;
 }
     
 Transport::~Transport() {
@@ -37,7 +34,6 @@ Transport::~Transport() {
 
     settings.setValue("loop", loop);
     settings.setValue("shuffle", shuffle);
-    qDebug() << "exiting: " << loop;
 }
 
 void Transport::onPlayClicked() {

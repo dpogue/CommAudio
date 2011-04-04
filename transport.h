@@ -4,6 +4,10 @@
 #include <qobject.h>
 #include "ui_mainwindow.h"
 
+/**
+ * This class contains the player's transport controls. These include play, 
+ * stop, previous, next, shuffle, and loop.
+ */
 class Transport : public QObject {
     Q_OBJECT
 
@@ -22,7 +26,22 @@ private:
 	bool loop;
 
 public:
+    /**
+     * Sets up the transport controls. The state of loop and shuffle are read
+     * from the settings file.
+     * 
+     * @author Dean Morin
+     * @param gui A pointer to the main window's gui, which contains all of the
+     * transport gui items.
+     * @param parent The parent of this QObject.
+     */
     Transport(Ui::CommAudioClass* gui, QWidget* parent = 0);
+    
+    /**
+     * Saves the current state of loop and shuffle to the settings file.
+     *
+     * @author Dean Morin
+     */
     ~Transport();
 
     /**
