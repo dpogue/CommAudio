@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "manager.h"
 #include <qmessagebox.h>
+#include <qsettings.h>
 
 Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
     : QObject(parent), ui(gui)
@@ -20,9 +21,23 @@ Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
     connect(ui->loopPushButton, SIGNAL(clicked()), 
             this, SLOT(onLoopClicked()));
     
+    QSettings settings;
+    qDebug("what gives");
+
+    loop = !settings.value("loop", false).toBool();
+    qDebug() << "entering: " << !loop;
+    onLoopClicked();
+    shuffle = !settings.value("shuffle", false).toBool();
+    onShuffleClicked();
     playingState = STOPPED;
-    shuffle = false;
-    loop = false;
+}
+    
+Transport::~Transport() {
+    QSettings settings;
+
+    settings.setValue("loop", loop);
+    settings.setValue("shuffle", shuffle);
+    qDebug() << "exiting: " << loop;
 }
 
 void Transport::onPlayClicked() {

@@ -19,11 +19,11 @@ private:
 
 	/** True if it should continue playing songs once the end of the list is 
 	 *  reached. */
-	int loop;
+	bool loop;
 
 public:
     Transport(Ui::CommAudioClass* gui, QWidget* parent = 0);
-    ~Transport() { }
+    ~Transport();
 
     /**
      * Gets the current state of the player (playing, paused, or stopped).
@@ -66,6 +66,12 @@ public slots:
      */
     void onNextClicked();
 
+    /**
+     * Responds to a song title being double-clicked by playing that song.
+     *
+     * @author Dean Morin
+     * @param songName The name of the song that was double-clicked.
+     */
     void onSongDoubleClicked(QString songName);
 
     /**

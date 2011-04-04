@@ -10,6 +10,7 @@
 #include "stylesheet.h"
 #include "transport.h"
 #include <qlayout.h>
+#include <qsettings.h>
 
 CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags), conn(NULL), stickyChat(false), 
@@ -20,11 +21,11 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
     this->setFixedSize(439, 700);
     this->setFocus();
 
+    settingsDialog = new SettingsDialog(this);
+    connectDialog = new ConnectDialog(this);
     transport = new Transport(&ui, this);
     spacebarGrabber = new SpacebarGrabber(&ui);
     this->installEventFilter(spacebarGrabber);
-    settingsDialog = new SettingsDialog(this);
-    connectDialog = new ConnectDialog(this);
 
     connect(ui.volumeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(onVolumeMoved(int)));
@@ -40,12 +41,14 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             this, SLOT(onSettingsPressed()));
 	connect(AudioManager::instance(), SIGNAL(finished()),
             this, SLOT(playFinished()));
+    
+    QSettings settings;
 
     ui.volumeSlider->setMinimum(0);
     ui.volumeSlider->setMaximum(100);
-    ui.volumeSlider->setValue(50);
-    onVolumeMoved(50);
-
+    int volume = settings.value("volume", 80).toInt();
+    ui.volumeSlider->setValue(volume);
+    onVolumeMoved(volume);
     ui.downloadProgressBar->hide();
     ui.stopPushButton->raise();
     ui.playPushButton->raise();
@@ -75,12 +78,14 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 }
 
 CommAudio::~CommAudio() { 
+    QSettings settings;
 
     AudioManager::instance()->shutdown();    
     delete spacebarGrabber;
     delete transport;
     delete connectDialog;
     delete settingsDialog;
+    settings.setValue("volume", ui.volumeSlider->value());
 }
 
 void CommAudio::keyPressEvent(QKeyEvent* keyEvent) {
