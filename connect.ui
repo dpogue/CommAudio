@@ -183,6 +183,14 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>ipLineEdit</tabstop>
+  <tabstop>portLineEdit</tabstop>
+  <tabstop>connectPushButton</tabstop>
+  <tabstop>startServerPortLineEdit</tabstop>
+  <tabstop>multicastCheckBox</tabstop>
+  <tabstop>startServerPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

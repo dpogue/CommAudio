@@ -27,9 +27,6 @@ private:
 
 	//Connection* client;
     
-    /** True if the program should multicast on clicking "Start Server". */
-    bool multicastServer;
-
     /** Transport controls such as play, pause, and stop. */
     Transport* transport;
 
@@ -206,14 +203,6 @@ public slots:
      * @author Darryl Pogue
      */
     void stopServer();
-
-    /**
-     * This server will multicast if this is selected.
-     *
-     * @author Dean Morin
-     * @param state The state of multicastCheckBox.
-     */
-    void onMulticastStateChanged(bool checked);
 
     /**
      * Starts transmitting voice data, or toggles the transmission on/off if

@@ -4,6 +4,7 @@
 #include "commsocket.h"
 #include "defines.h"
 #include "mainwindow.h"
+#include "manager.h"
 #include "settingsdialog.h"
 #include "ui_connect.h"
 
@@ -86,6 +87,8 @@ void ConnectDialog::onStartServerClicked() {
 
     settings.setValue("lastServerPort", ui->startServerPortLineEdit->text());
     settings.setValue("lastMulticast", ui->multicastCheckBox->isChecked());
+    
+    AudioManager::setMulticast(multicastServer);
 
     disconnect(ui->startServerPushButton, SIGNAL(clicked()),
                 this, SLOT(onStartServerClicked()));
@@ -117,8 +120,7 @@ void ConnectDialog::onStopServerClicked() {
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {
-    bool checked = ui->multicastCheckBox->isChecked();
-    ((CommAudio*) this->parent())->onMulticastStateChanged(checked);
+    multicastServer = ui->multicastCheckBox->isChecked();
 }
 
 unsigned long ConnectDialog::validateIp(QLineEdit* ipLineEdit, 

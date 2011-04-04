@@ -24,6 +24,9 @@ private:
     /** True if the program is connected to a host or running a server. */
     bool running;
     
+    /** True if the program should multicast on clicking "Start Server". */
+    bool multicastServer;
+    
 public:
     /**
      * Initializes the dialog window.
@@ -71,6 +74,16 @@ public:
      * connection's settings should be remember (ip, port, etc.)
      */
     void updateFields(bool useMostRecentConnectionSettings);
+    
+    /**
+     * Returns whether or not the server should be a multicast server.
+     *
+     * @author Dean Morin
+     * @return True if the server should multicast.
+     */
+    bool getMulticastServer() {
+        return multicastServer;
+    }
 
 public slots:
     /**

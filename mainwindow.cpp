@@ -190,11 +190,6 @@ void CommAudio::stopServer() {
     ui.fileTabWidget->setTabEnabled(1, false);
 }
 
-void CommAudio::onMulticastStateChanged(bool checked) {
-    multicastServer = checked;
-    AudioManager::setMulticast(checked);
-}
-
 void CommAudio::onChatPressed() {
     if (!stickyChat) {
         chatting = true;
