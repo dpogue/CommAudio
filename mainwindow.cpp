@@ -238,9 +238,19 @@ void CommAudio::onQuittingMulticastSession() {
 }
 
 void CommAudio::onStartingMulticastSession() {
+    ui.previousPushButton->setDisabled(true);
+    ui.nextPushButton->setDisabled(true);
+    ui.playPushButton->setDisabled(true);
+    ui.chatPushButton->setDisabled(true);
+    ui.stopPushButton->setDisabled(true);
 }
 
 void CommAudio::onStoppingMulticastSession() {
+    ui.previousPushButton->setEnabled(true);
+    ui.nextPushButton->setEnabled(true);
+    ui.playPushButton->setEnabled(true);
+    ui.chatPushButton->setEnabled(true);
+    ui.stopPushButton->setEnabled(true);
 }
 
 void CommAudio::changeDisplayedSong() {
