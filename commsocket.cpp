@@ -19,6 +19,9 @@ CommSocket::CommSocket(SOCKET socket) {
 
 CommSocket::~CommSocket() {
     if (sock != 0) {
+        if (multicasting) {
+            toggleMulticast();
+        }
         closesocket(sock);
     }
 }
