@@ -40,14 +40,14 @@ bool CommSocket::toggleMulticast() {
         if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
-        multicasting = !multicasting;
+        multicasting = true;
         return true;
     } else {
         qDebug("Leaving Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
-        multicasting = !multicasting;
+        multicasting = false;
         return false;
     }
 }
