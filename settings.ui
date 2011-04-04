@@ -59,7 +59,7 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="addFolderPushButton">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -253,6 +253,19 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>defaultSettingsRadioButton1</tabstop>
+  <tabstop>defaultSettingsRadioButton2</tabstop>
+  <tabstop>hostIpLineEdit</tabstop>
+  <tabstop>hostPortLineEdit</tabstop>
+  <tabstop>serverPortLineEdit</tabstop>
+  <tabstop>multicastCheckBox</tabstop>
+  <tabstop>addFolderPushButton</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>stickyChatCheckBox</tabstop>
+  <tabstop>okPushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

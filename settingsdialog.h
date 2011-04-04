@@ -95,6 +95,13 @@ public slots:
      * @param checked True if "Remember last used" is selected.
      */
     void onRememberConnectionOptionToggled(bool checked);
+
+    /**
+     * Prompts the user for a folder to add to the library.
+     *
+     * @author Dean Morin
+     */
+    void onAddFolderClicked();
 };
 
 #endif
