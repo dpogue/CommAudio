@@ -278,7 +278,10 @@ QByteArray& CommSocket::getReadBuffer() {
 }
 
 void CommSocket::closeSocket() {
-    
+    if (multicasting) {
+        toggleMulticast();
+    }
+
 	closesocket(sock);
     sock = 0;
 }

@@ -60,6 +60,7 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
 
 void Connection::closeConnection() {
     ctlSock->closeSocket();
+    strSock->closeSocket();
 }
 
 void Connection::makeMulticast() {
@@ -321,6 +322,8 @@ void Connection::onCtlConnect() {
 
 void Connection::onDisconnected() {
     mwOwner->disconnected();
+    ctlSock->closeSocket();
+    strSock->closeSocket();
 }
 
 void Connection::onStrReadReady() {
