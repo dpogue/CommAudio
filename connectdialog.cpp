@@ -50,6 +50,8 @@ void ConnectDialog::onConnectClicked() {
     ui->connectPushButton->setDisabled(true);
     ui->startServerPushButton->setDisabled(true);
 
+	disconnect(ui->connectPushButton, SIGNAL(clicked()),
+            this, SLOT(onConnectClicked()));
     ui->connectPushButton->setDisabled(false);
     ui->connectPushButton->setText("Disconnect");
 	connect(ui->connectPushButton, SIGNAL(clicked()),

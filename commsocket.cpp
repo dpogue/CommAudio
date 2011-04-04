@@ -19,6 +19,9 @@ CommSocket::CommSocket(SOCKET socket) {
 
 CommSocket::~CommSocket() {
     if (sock != 0) {
+        if (multicasting) {
+            toggleMulticast();
+        }
         closesocket(sock);
     }
 }
@@ -37,14 +40,14 @@ bool CommSocket::toggleMulticast() {
         if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
-        multicasting = !multicasting;
+        multicasting = true;
         return true;
     } else {
         qDebug("Leaving Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
-        multicasting = !multicasting;
+        multicasting = false;
         return false;
     }
 }
@@ -275,7 +278,10 @@ QByteArray& CommSocket::getReadBuffer() {
 }
 
 void CommSocket::closeSocket() {
-    
+    if (multicasting) {
+        toggleMulticast();
+    }
+
 	closesocket(sock);
     sock = 0;
 }
