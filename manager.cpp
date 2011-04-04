@@ -8,6 +8,7 @@ bool AudioManager::stop_ = false;
 bool AudioManager::capturePause_ = true;
 bool AudioManager::captureStop_ = false;
 int AudioManager::playCount_ = 0;
+QString AudioManager::nextplay_; 
 bool AudioManager::multicast_ = false;
 float AudioManager::musicGain_ = 0.5;
 QMutex AudioManager::mutex_;
@@ -42,10 +43,12 @@ void AudioManager::startup()
 
 void AudioManager::playMusic(QString filename)
 {
+    
     toggleStop();
     if(getPause() == true) { 
 		togglePause();
 	}
+    setNextPlaying(filename);
     QFuture<void> future =
         QtConcurrent::run(this, &AudioManager::streamFile, filename);
 }
@@ -88,6 +91,60 @@ bool AudioManager::checkError()
     return false;
 }
 
+void AudioManager::getSpecs(char bitmask, ALenum *format, ALuint *freq) {
+
+    if(bitmask & 0x10) {
+        *freq = 22050;
+    } else if (bitmask & 0x20) {
+        *freq = 44100;
+    } else if (bitmask & 0x40) {
+        *freq = 48000;
+    }
+    
+    bitmask &= 0xF;
+
+    if (bitmask == 0x5) {
+        *format = AL_FORMAT_MONO8;
+    } else if (bitmask == 0x6) {
+        *format = AL_FORMAT_MONO16;
+    } else if (bitmask == 0x9) {
+        *format = AL_FORMAT_STEREO8;
+    } else if (bitmask == 0xA) {
+        *format = AL_FORMAT_STEREO16;
+    }
+
+}
+
+char AudioManager::getBitmask(ALenum format, ALuint freq) {
+    
+    char bitmask = 0;
+    
+    switch(freq)
+    {
+    case 22050:
+        bitmask |= 0x10;
+        break;
+    case 44100:
+        bitmask |= 0x20;
+        break;
+    case 48000:
+        bitmask |= 0x40;
+        break;
+    }
+
+    if(format == AL_FORMAT_MONO8) {
+        bitmask |= 0x5;
+    } else if(format == AL_FORMAT_MONO16) {
+        bitmask |= 0x6;
+    } else if(format == AL_FORMAT_STEREO8) {
+        bitmask |= 0x9;
+    } else if(format == AL_FORMAT_STEREO16) {
+        bitmask |= 0xA;
+    }
+
+    return bitmask;
+}
+
 void AudioManager::streamStream()
 {
     char array[BUFFERSIZE];
@@ -102,6 +159,7 @@ void AudioManager::streamStream()
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
+    char bitmask = 0, oldbmask = 0;
     ALenum format = AL_FORMAT_MONO8;
     ALuint freq = 22050;
 
@@ -129,8 +187,9 @@ void AudioManager::streamStream()
 				
 				temp = getNextInQueue();
 				if(temp.data() != NULL) {
-					strncpy(array,temp,BUFFERSIZE);
-				}
+					memcpy(array,temp.mid(1),BUFFERSIZE);
+                    bitmask = temp.at(0);
+                }
 				result = sizeof(array);
 				
 
@@ -145,10 +204,23 @@ void AudioManager::streamStream()
                     break;
                 }
             }
+
+            if(bitmask != oldbmask){
+                do {
+                    clearProcessedBuffers(&source, buffersAvailable, &playing, &play);
+                    alSleep(0.1f);
+                    alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
+                } while(queued > 0);
+            }
+
+            oldbmask = bitmask;
+            getSpecs(bitmask,&format,&freq);
+            qDebug("specs %d %d %d",bitmask,freq, format);
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
             buffersAvailable--;
+
             /**Check the amount of buffers queued to see if
             * we should be playing the track right now.
             * If play is false it means it's playing already
@@ -189,10 +261,11 @@ void AudioManager::streamFile(QString filename)
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
 	fileType fType;
+    char bitmask;
 
     while(getPlayCount() > 0) {
 		alSleep(0.1f);
-		if(checkError()) {
+        if(checkError() || nextplay_.compare(filename) != 0) {
 			return;
 		}
 	}	
@@ -222,6 +295,8 @@ void AudioManager::streamFile(QString filename)
 		openWav(&file,&format,&freq);
 		fType = WAV;
 	}
+
+    bitmask = getBitmask(format,freq);
 
     do {
 
@@ -268,6 +343,11 @@ void AudioManager::streamFile(QString filename)
                     break;
                 }
             }
+            
+            if(multicast_ == true) {
+                addToNetworkQueue(bitmask, array, size);
+            }
+           
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
@@ -303,12 +383,14 @@ void AudioManager::captureMic()
 {
     ALCdevice* captureDevice;
     ALint samplesAvailable;
-    ALchar buffer[BUFFERSIZE];
+    ALchar buffer[BUFFERSIZE+8];
     ALuint unqueueCount, queueCount;
     ALint format, frequency;
+    char bitmask;
 
 	format = AL_FORMAT_MONO8;
 	frequency = 22050;
+    bitmask = getBitmask(format,frequency);
 
     captureDevice = alcCaptureOpenDevice(NULL, frequency, format, frequency);
 
@@ -325,9 +407,8 @@ void AudioManager::captureMic()
 			if(getCaptureStop() == true) {
 				break;
 			} else if (samplesAvailable > (BUFFERSIZE)) {
-
-				alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
-				this->addToNetworkQueue(buffer);
+                alcCaptureSamples(captureDevice, buffer, BUFFERSIZE);
+                addToNetworkQueue(bitmask, buffer, BUFFERSIZE);
 			}
 		}
 	}

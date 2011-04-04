@@ -146,12 +146,9 @@ void CommAudio::onMuteClicked() {
     }
 }
 
-void CommAudio::connectToServer(QString host, int port, bool multicast) {
+void CommAudio::connectToServer(QString host, int port) {
 	
 	conn = new Connection(this, host, TCP, port);
-    if (multicast) {
-        conn->makeMulticast();
-    }
 	conn->start();
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
@@ -173,7 +170,7 @@ void CommAudio::disconnectFromServer() {
 
 void CommAudio::startServer(int port) {
 	
-	conn = new Connection(this, TCP, port);
+	conn = new Connection(this, TCP, port,multicastServer);
 	conn->start();
     connect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));

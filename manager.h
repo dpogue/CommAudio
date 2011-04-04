@@ -15,7 +15,7 @@
 #include "openal_helper.h"
 
 #define QUEUESIZE 8
-#define BUFFERSIZE (1024*4)
+#define BUFFERSIZE (1024*8)
 
 enum fileType{ 
 OGG,
@@ -42,6 +42,7 @@ private:
     static bool stop_;	
 	static bool capturePause_;
 	static bool captureStop_;
+    static QString nextplay_; 
     static bool multicast_;
 
     /**
@@ -101,7 +102,8 @@ private:
      * @author Terence Stenvold
      */
 	void streamStream();
-
+    char getBitmask(ALenum format, ALuint freq);
+    void getSpecs(char bitmask, ALenum *format, ALuint *freq);
 	void cleanUp(ALuint *source, ALuint *buffer);
 	void clearProcessedBuffers
 		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
@@ -211,9 +213,12 @@ public:
 		mutex_.unlock();
 	}
 
-	static void addToNetworkQueue(QByteArray buffer) {
-		mutex_.lock();
-	    netQueue.enqueue(buffer);
+	static void addToNetworkQueue(char bitmask, char *buffer, int size) {
+		QByteArray temp(buffer,size);
+        mutex_.lock();
+        temp.prepend(bitmask);
+        qDebug("buffer %d", temp.size());
+        netQueue.enqueue(temp);
 		mutex_.unlock();
 	}	
 
@@ -244,6 +249,12 @@ public:
 		mutex_.unlock();
 		return temp;
 	}
+
+    static void setNextPlaying(QString next) {
+        mutex_.lock();
+        nextplay_ = next;
+        mutex_.unlock();
+    }
 
 	void startCapture();
 	void captureMic();

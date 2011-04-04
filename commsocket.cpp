@@ -33,12 +33,14 @@ bool CommSocket::toggleMulticast() {
     mreq.imr_interface.s_addr = htonl(INADDR_ANY);
 
     if (!multicasting) {
+        qDebug("Joining Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
         multicasting = !multicasting;
         return true;
     } else {
+        qDebug("Leaving Multicast group");
         if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
             perror("setsockopt");
         }
@@ -165,12 +167,12 @@ bool CommSocket::read() {
 	int bytesToRead = BUFSIZE;
 
     if (prot == UDP) {
-        char buffer[5000];
-        int bytesToRead = 5000;
+        char buffer[8500];
+        int bytesToRead = 8500;
         int senderAddrSize = sizeof(server);
 
         readBuffer.clear();
-        ZeroMemory(buffer, 5000);
+        ZeroMemory(buffer, 8500);
 
         bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
 				&senderAddrSize);

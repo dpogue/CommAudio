@@ -31,7 +31,6 @@ void ConnectDialog::onConnectClicked() {
     unsigned long ip = 0;
     unsigned int port = 0;
     bool validPort = false;
-    bool multicast = ui->multicastCheckBox->isChecked();
     QSettings settings;
     
     if (!(ip = ConnectDialog::validateIp(ui->ipLineEdit, 
@@ -55,8 +54,7 @@ void ConnectDialog::onConnectClicked() {
 	connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onDisconnectClicked()));
 
-    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), 
-                                                   port, multicast);
+    ((CommAudio*) this->parent())->connectToServer(ui->ipLineEdit->text(), port);
     running = true;
     done(0);
 }

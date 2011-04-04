@@ -16,7 +16,7 @@ public:
 	//for client
 	Connection(CommAudio* owner, QString host,int protocol,int port);
 	//for server
-	Connection(CommAudio* owner, int protocol,int port);
+	Connection(CommAudio* owner, int protocol,int port,bool multicast);
 
     void makeMulticast();
 
@@ -72,6 +72,8 @@ private:
 	//bool saveFile();
 
 	bool isFileTransferInProgress;
+
+	bool isMulticast;
 	int fileSize;
 	HANDLE saveFileHandle;
 
@@ -79,6 +81,8 @@ private:
 	QProgressBar* progressBar;	
 
     QTimer timer;
+
+	QList<CommSocket*>multicastClients;
 
 protected:
 	virtual void run();
