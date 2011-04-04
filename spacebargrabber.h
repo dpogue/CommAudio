@@ -2,11 +2,15 @@
 #define SPACEBARGRABBER_H
 
 #include <QObject>
-#include <QPushButton>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QPushButton>
 #include "ui_mainwindow.h"
 
+/**
+ * Changes the default behaviour of the spacebar, in order to meet our twisted
+ * and nefarious purposes.
+ */
 class SpacebarGrabber : public QObject {
     Q_OBJECT
 
@@ -19,7 +23,7 @@ public:
      * Constructor.
      *
      * @author Dean Morin
-     * @param ui The main window's gui
+     * @param ui The main window's gui.
      */
     SpacebarGrabber(Ui::CommAudioClass* ui);
 

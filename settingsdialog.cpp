@@ -1,6 +1,5 @@
 #include "settingsdialog.h"
 #include <QSettings>
-#include <QtDebug>
 #include "connectdialog.h"
 #include "mainwindow.h"
 #include "ui_settings.h"
