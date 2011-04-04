@@ -175,7 +175,14 @@ void Connection::onCtlReadReady() {
     {
         /* Requested file does not exist */
         QMessageBox(QMessageBox::Critical, QString("Error"), QString("Could not transfer the requested file"));
-    } else if (!isFileTransferInProgress) {
+    }
+	else if(msgType == (char)0x06 && !isFileTransferInProgress) {
+		int len = s.readInt();
+        QString newSong(s.read(len));
+
+		//update song title here
+	} 
+	else if (!isFileTransferInProgress) {
         qDebug("Got something to read");
     }
 
@@ -277,6 +284,15 @@ void Connection::requestForFile(QString filename) {
     ctlSock->setWriteBuffer(buf.data());
 }
 
+void Connection::notifyMulticastClients(char msgType,char* msg) {
+	Stream s;
+	s.writeByte(msgType);
+	s.write(msg);
+	for(QList<CommSocket*>::const_iterator it = multicastClients.begin(); it != multicastClients.end(); it++) {
+		(*it)->setWriteBuffer(s.data());
+	}
+
+}
 void Connection::onCtlWrite() {
     qDebug("Got something to write");
 }

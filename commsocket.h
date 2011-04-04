@@ -9,6 +9,14 @@ class CommSocket : public QWidget {
 	
 	Q_OBJECT
 private:
+	/**
+     * Creates a new SOCKET.
+     *
+     * @author Kelvin Lui
+     * @param host The host ip.
+	 * @param mode either .
+	 * @param port The host ip.
+     */
 	SOCKET createSocket(QString host,int mode,int port);
 	bool read();
 	bool write();

@@ -22,6 +22,8 @@ public:
 
 	void closeConnection();
 
+	void notifyMulticastClients(char msgType,char* msg);
+
 private:
 	bool handShake();
 
