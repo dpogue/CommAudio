@@ -253,6 +253,10 @@ void CommAudio::onStoppingMulticastSession() {
     ui.stopPushButton->setEnabled(true);
 }
 
-void CommAudio::changeDisplayedSong() {
+void CommAudio::changeDisplayedSong() { 
     ui.currentSongLabel->setText(userSongs->getSelectedSongName());
+}
+
+void CommAudio::changeDisplayedSong(QString songName) { 
+    ui.currentSongLabel->setText(songName);
 }
