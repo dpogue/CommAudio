@@ -53,6 +53,14 @@ public:
     int getPlayingState() {
         return playingState;
     }
+
+signals:
+    /**
+     * Emitted whenever a button is clicked that changes the song.
+     *
+     * @author Dean Morin
+     */
+    void songChanged();
    
 public slots:
     /**

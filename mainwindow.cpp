@@ -43,6 +43,8 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	connect(AudioManager::instance(), SIGNAL(finished()),
             this, SLOT(playFinished()));
     
+    connect(ui.chatPushButton, SIGNAL(pressed()),
+        this, SLOT(onJoiningMulticastSession()));
     QSettings settings;
 
     ui.volumeSlider->setMinimum(0);
@@ -219,4 +221,28 @@ void CommAudio::onSettingsPressed() {
 
 void CommAudio::playFinished() {
     transport->onSongFinished();
+}
+
+void CommAudio::onJoiningMulticastSession() {
+    ui.previousPushButton->setDisabled(true);
+    ui.nextPushButton->setDisabled(true);
+    ui.playPushButton->setDisabled(true);
+    ui.chatPushButton->setDisabled(true);
+}
+
+void CommAudio::onQuittingMulticastSession() {
+    ui.previousPushButton->setEnabled(true);
+    ui.nextPushButton->setEnabled(true);
+    ui.playPushButton->setEnabled(true);
+    ui.chatPushButton->setEnabled(true);
+}
+
+void CommAudio::onStartingMulticastSession() {
+}
+
+void CommAudio::onStoppingMulticastSession() {
+}
+
+void CommAudio::changeDisplayedSong() {
+    ui.currentSongLabel->setText(userSongs->getSelectedSongName());
 }
