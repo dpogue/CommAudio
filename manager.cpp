@@ -91,24 +91,26 @@ bool AudioManager::checkError()
     return false;
 }
 
-void AudioManager::getSpecs(char bitmask, ALenum *format, ALuint *freq) {
+void AudioManager::getSpecs(char bitmask, ALenum &format, ALuint &freq) {
 
     if(bitmask & 0x10) {
-        *freq = 22050;
+        freq = 22050;
     } else if (bitmask & 0x20) {
-        *freq = 44100;
+        freq = 44100;
     } else if (bitmask & 0x40) {
-        *freq = 48000;
+        freq = 48000;
     }
+    
+    bitmask &= 0xF;
 
-    if (bitmask & 0x5) {
-        *format = AL_FORMAT_MONO8;
-    } else if (bitmask & 0x6) {
-        *format = AL_FORMAT_MONO16;
-    } else if (bitmask & 0x9) {
-        *format = AL_FORMAT_STEREO8;
-    } else if (bitmask & 0xA) {
-        *format = AL_FORMAT_STEREO16;
+    if (bitmask == 0x5) {
+        format = AL_FORMAT_MONO8;
+    } else if (bitmask == 0x6) {
+        format = AL_FORMAT_MONO16;
+    } else if (bitmask == 0x9) {
+        format = AL_FORMAT_STEREO8;
+    } else if (bitmask == 0xA) {
+        format = AL_FORMAT_STEREO16;
     }
 
 }
@@ -202,16 +204,18 @@ void AudioManager::streamStream()
                     break;
                 }
             }
-            //TODO check get format freq from bitmask
-            //Wait to add to buffer if different
+
             if(bitmask != oldbmask){
                 do {
+                    clearProcessedBuffers(&source, buffersAvailable, &playing, &play);
                     alSleep(0.1f);
                     alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
-                } while(queued > 1);
+                } while(queued > 0);
             }
+
             oldbmask = bitmask;
-            getSpecs(bitmask,&format,&freq);
+            getSpecs(bitmask,format,freq);
+            qDebug("specs %d %d %d",bitmask,freq, format);
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);
