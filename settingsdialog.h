@@ -7,6 +7,9 @@ namespace Ui {
     class Settings;
 }
 
+/**
+ * A dialog window that allows the user to specify their program preferences.
+ */
 class SettingsDialog : public QDialog {
     Q_OBJECT
 
@@ -18,12 +21,46 @@ private:
     bool useLastConnSettings;
 
 public:
+    /**
+     * Initializes the dialog window. The global settings for the persistent
+     * settings file are specified here.
+     *
+     * @author Dean Morin
+     * @param parent The QWidget that is the parent of this QWidget.
+     */
     SettingsDialog(QWidget* parent = 0);
+
+    /**
+     * Deletes dynamically created objects.
+     *
+     * @author Dean Morin
+     */
     ~SettingsDialog();
- 
+    
+    /**
+     * Saves all of the settings specified in the dialog to a persistent file.
+     * The exact type of file depends on the OS.
+     *
+     * @author Dean Morin
+     */
     void readSettings();
+
+    /**
+     * Retrieves the user's settings from a persistent file. The exact type of
+     * file depends on the OS.
+     *
+     * @author Dean Morin
+     */
     void writeSettings();
 
+    /** 
+     * Returns true if the most recently used connection settings should be
+     * remembered.
+     *
+     * @author Dean Morin
+     * @return True if the most recently used connection settings should be
+     * remembered.
+     */
     bool getUseLastConnSettings() {
         return useLastConnSettings;
     }

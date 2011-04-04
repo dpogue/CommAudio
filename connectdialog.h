@@ -10,6 +10,10 @@ namespace Ui {
     class Connect;
 }
 
+/**
+ * A dialog window which allows the user to connect to a host, or to start a
+ * server.
+ */
 class ConnectDialog : public QDialog {
     Q_OBJECT
 
@@ -21,7 +25,19 @@ private:
     bool running;
     
 public:
+    /**
+     * Initializes the dialog window.
+     *
+     * @author Dean Morin
+     * @param parent The QWidget that is the parent of this QWidget.
+     */
     ConnectDialog(QWidget* parent = 0);
+
+    /** 
+     * Deletes dynamically created objects.
+     *
+     * @author Dean Morin
+     */
     ~ConnectDialog();
 
     /**
@@ -45,6 +61,15 @@ public:
     static unsigned int validatePort(QLineEdit* portLineEdit, 
                                      QLabel* errorLabel);
 
+    /**
+     * Fills in the connection details with either the last (succesful)
+     * connection particulars, or the defaults specified in the settings
+     * menu, depending on the value of the argument passed in.
+     *
+     * @author Dean Morin
+     * @param useMostRecentConnectionSettings True if the most recent 
+     * connection's settings should be remember (ip, port, etc.)
+     */
     void updateFields(bool useMostRecentConnectionSettings);
 
 public slots:
