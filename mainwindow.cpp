@@ -187,14 +187,16 @@ void CommAudio::startServer(int port) {
 void CommAudio::stopServer() {
 	conn->closeConnection();
     disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(stopServer()));
-
-    connectDialog->onStopServerClicked();
-
     disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
+
+    connectDialog->onStopServerClicked();
     remoteSongs->clear();
     ui.fileTabWidget->setTabEnabled(1, false);
     ui.fileTabWidget->setCurrentIndex(0);
+
+    delete conn;
+    conn = NULL;
 }
 
 void CommAudio::onChatPressed() {
@@ -265,6 +267,7 @@ void CommAudio::onStoppingMulticastSession() {
     ui.chatPushButton->setEnabled(true);
     ui.stopPushButton->setEnabled(true);
     ui.localTab->setEnabled(true);
+    ui.currentSongLabel->setText("");
 }
 
 void CommAudio::changeDisplayedSong() { 
@@ -277,4 +280,11 @@ void CommAudio::changeDisplayedSong() {
 
 void CommAudio::changeDisplayedSong(QString songName) { 
     ui.currentSongLabel->setText(songName);
+}
+
+void CommAudio::clearDisplayedSong() {
+    ui.currentSongLabel->setText("");
+    if (conn != NULL) {
+        conn->sendSongName("");
+    }
 }

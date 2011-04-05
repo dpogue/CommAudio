@@ -120,10 +120,11 @@ void ConnectDialog::onStopServerClicked() {
     connect(ui->startServerPushButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
     
-    ((CommAudio*) this->parent())->stopServer();
-    running = false;
+    if (running) {
+        running = false;
+        ((CommAudio*) this->parent())->stopServer();
+    }
     multicastServer = ui->multicastCheckBox->isChecked();
-
     done(0);
 }
 

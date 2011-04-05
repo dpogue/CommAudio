@@ -61,6 +61,13 @@ signals:
      * @author Dean Morin
      */
     void songChanged();
+
+    /**
+     * Emitted whenever the stop button is clicked.
+     *
+     * @author Darryl Pogue
+     */
+    void songStopped();
    
 public slots:
     /**
