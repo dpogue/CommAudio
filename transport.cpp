@@ -78,6 +78,10 @@ void Transport::onStopClicked() {
         AudioManager::instance()->togglePause();
         ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     }
+    if (playingState == PAUSED) {
+        QString text = ((CommAudio*) parent())->getMuted() ? "Mute" : "";
+        ui->statusLabel->setText(text);
+    }
     ui->currentSongLabel->setText("");
     playingState = STOPPED;
 }
