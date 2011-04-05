@@ -46,6 +46,7 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
     isFileTransferInProgress = false;
     sentFileList = false;
 	isMulticast = multicast;
+	this->port = port;
     progressBar = mwOwner->getUi()->downloadProgressBar;
 
     if (isMulticast) {
@@ -239,7 +240,7 @@ bool Connection::sendFile(QString filename) {
 void Connection::sendAudioBuffer() {
     QByteArray* packet = AudioManager::getNextNetworkQueue();
 
-    if (packet == NULL) {
+    if (packet == NULL && strSock != NULL) {
         return;
     }
 
@@ -306,7 +307,7 @@ void Connection::onCtlAccept() {
 		QString host;
 		unsigned short cport;
 		ctlSock->getHostAndPort(&host, &cport);
-		strSock = new CommSocket(host, cport, UDP);
+		strSock = new CommSocket(host, this->port, UDP);
 		
 		timer.setInterval(23);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
