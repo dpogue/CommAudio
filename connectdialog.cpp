@@ -73,8 +73,10 @@ void ConnectDialog::onDisconnectClicked() {
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
         
-    ((CommAudio*) this->parent())->disconnectFromServer();
-    running = false;
+    if (running) {
+        running = false;
+        ((CommAudio*) this->parent())->disconnectFromServer();
+    }
     done(0);
 }
 

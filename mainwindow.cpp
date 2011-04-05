@@ -159,6 +159,8 @@ void CommAudio::disconnectFromServer() {
 	conn->closeConnection();
     disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(disconnectFromServer()));
 
+    connectDialog->onDisconnectClicked();
+
     disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
     remoteSongs->clear();
@@ -180,6 +182,8 @@ void CommAudio::startServer(int port) {
 void CommAudio::stopServer() {
 	conn->closeConnection();
     disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(stopServer()));
+
+    connectDialog->onStopServerClicked();
 
     disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
