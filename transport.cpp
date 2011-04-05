@@ -73,7 +73,7 @@ void Transport::onPlayClicked() {
 }
 
 void Transport::onStopClicked() {
-    
+
     if (playingState == PLAYING) {
         AudioManager::instance()->togglePause();
         ui->playPushButton->setIcon(QIcon(ICON_PLAY));

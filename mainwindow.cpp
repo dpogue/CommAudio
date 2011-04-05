@@ -235,6 +235,7 @@ void CommAudio::onJoiningMulticastSession() {
     ui.nextPushButton->setDisabled(true);
     ui.playPushButton->setDisabled(true);
     ui.chatPushButton->setDisabled(true);
+    ui.stopPushButton->setDisabled(true);
 }
 
 void CommAudio::onQuittingMulticastSession() {
@@ -242,6 +243,7 @@ void CommAudio::onQuittingMulticastSession() {
     ui.nextPushButton->setEnabled(true);
     ui.playPushButton->setEnabled(true);
     ui.chatPushButton->setEnabled(true);
+    ui.stopPushButton->setEnabled(true);
 }
 
 void CommAudio::onStartingMulticastSession() {
