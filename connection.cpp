@@ -49,6 +49,7 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
     progressBar = mwOwner->getUi()->downloadProgressBar;
 
     if (isMulticast) {
+        emit joinedMulticast();
         strSock = new CommSocket("232.21.42.1", port, UDP);
         connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 
@@ -61,6 +62,9 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
 void Connection::closeConnection() {
     ctlSock->closeSocket();
     strSock->closeSocket();
+    if (isMulticast) {
+        emit leftMulticast();
+    }
 }
 
 void Connection::run() {
@@ -105,6 +109,7 @@ void Connection::onCtlReadReady() {
 			isMulticast = s.readByte();
             if (isMulticast) {
                 strSock->toggleMulticast();
+                emit joinedMulticast();
             }
 		}
         buf.remove(0, s.position());
@@ -324,8 +329,6 @@ void Connection::onCtlConnect() {
 
 void Connection::onDisconnected() {
     mwOwner->disconnected();
-    ctlSock->closeSocket();
-    strSock->closeSocket();
 }
 
 void Connection::onStrReadReady() {

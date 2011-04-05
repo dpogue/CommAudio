@@ -14,37 +14,41 @@ class Connection : public QThread {
 
 public:
 	/**
-    * Creates a new Connection.
-    *
-    * @author Kelvin Lui
-	* @param owner a pointer to the owner of this object
-    * @param host The host ip.
-	* @param protocol the protocol to use.
-	* @param port the port number to use.
-    */
+     * Creates a new Connection.
+     *
+     * @author Kelvin Lui
+	 * @param owner a pointer to the owner of this object
+     * @param host The host ip.
+	 * @param protocol the protocol to use.
+	 * @param port the port number to use.
+     */
 	Connection(CommAudio* owner, QString host,int protocol,int port);
 
 	/**
-    * Creates a new Connection
-    *
-    * @author Kelvin Lui
-    * @param owner a pointer to the owner of this object
-	* @param protocol the protocol to use.
-	* @param port the port number to use.
-	* @param multicast true is multicast is to be set
-    */
+     * Creates a new Connection
+     *
+     * @author Kelvin Lui
+     * @param owner a pointer to the owner of this object
+	 * @param protocol the protocol to use.
+	 * @param port the port number to use.
+	 * @param multicast true is multicast is to be set
+     */
 	Connection(CommAudio* owner, int protocol,int port,bool multicast);
 
-	
+    /**
+     * Closes the sockets associated with this connection.
+     *
+     * @author Darryl Pogue
+     */
 	void closeConnection();
 
 	/**
-    * sends a message to all connected multicast clients.
-    *
-    * @author Kelvin Lui
-    * @param msgType defines the type of message. To be prepended at the beginning of the message
-	* @param msg the message to be sent
-    */
+     * sends a message to all connected multicast clients.
+     *
+     * @author Kelvin Lui
+     * @param msgType defines the type of message. To be prepended at the beginning of the message
+	 * @param msg the message to be sent
+     */
 	void notifyMulticastClients(char msgType,char* msg);
 
 private:
@@ -89,12 +93,12 @@ private:
     void sendFileList();
 
 	/**
-    * sends the specified file to the client
-    *
-    * @author Kelvin Lui
-    * @param filename the file to be sent
-	* @return true if file is sucessfully sent
-    */
+     * sends the specified file to the client
+     *
+     * @author Kelvin Lui
+     * @param filename the file to be sent
+	 * @return true if file is sucessfully sent
+     */
 	bool sendFile(QString filename);
 
 
@@ -120,11 +124,15 @@ private:
 
 protected:
 	/**
-    * entry point for QThread
-    *
-    * @author Kelvin Lui
-    */
+     * entry point for QThread
+     *
+     * @author Kelvin Lui
+     */
 	virtual void run();
+
+signals:
+    void joinedMulticast();
+    void leftMulticast();
 
 public slots:
 	/**
@@ -162,6 +170,11 @@ public slots:
     */
 	void onStrReadReady();
 
+    /**
+     * Fetches an audio buffer from the manager and sends it across the network.
+     *
+     * @author Darryl Pogue
+     */
     void sendAudioBuffer();
 
 	/**
