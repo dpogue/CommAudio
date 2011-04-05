@@ -195,12 +195,7 @@ void Connection::onCtlReadReady() {
             progressBar->setValue(progressBar->maximum());
             progressBar->hide();
 
-            Stream list;
-            list.writeByte(0x02);
-            list.writeInt(1);
-            list.writeInt(fi.fileName().size());
-            list.write(fi.fileName().toUtf8());
-            sock->setWriteBuffer(list.data());
+            sendFileList();
         }
     }
 }
@@ -311,7 +306,7 @@ void Connection::onCtlAccept() {
 		QString host;
 		unsigned short cport;
 		ctlSock->getHostAndPort(&host, &cport);
-		strSock = new CommSocket(host, 9500, UDP);
+		strSock = new CommSocket(host, cport, UDP);
 		
 		timer.setInterval(23);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));

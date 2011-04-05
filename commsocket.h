@@ -150,8 +150,20 @@ public:
     */
 	void closeSocket();
 
+    /**
+     * Toggles this socket to join or leave a multicast group.
+     *
+     * @author Darryl Pogue
+     */
     bool toggleMulticast();
 
+    /**
+     * Fills a string and int with the hostname and port for the socket.
+     *
+     * @author Darryl Pogue
+     * @param host The string to contain the hostname.
+     * @param port The integer to contain the port.
+     */
     void getHostAndPort(QString* host, unsigned short* port);
 
 protected:
@@ -166,11 +178,46 @@ protected:
     virtual bool winEvent(MSG* message, long* result);
 
 signals:
+    /**
+     * Emitted when the socket has connected.
+     *
+     * @author Darryl Pogue
+     */
     void socketConnected();
+
+    /**
+     * Emitted when the remote socket is disconnected.
+     *
+     * @author Darryl Pogue
+     */
     void socketDisconnected();
+
+    /**
+     * Emitted when a socket is accepted.
+     *
+     * @author Darryl Pogue
+     */
     void socketAccepted();
+
+    /**
+     * Emitted when there is data to be read on the socket.
+     *
+     * @author Darryl Pogue
+     */
     void socketRead();
+
+    /**
+     * Emitted when the socket is able to write data.
+     *
+     * @author Darryl Pogue
+     */
     void socketWrite();
+
+    /**
+     * Emitted when the socket is closed gracefully.
+     *
+     * @author Darryl Pogue
+     */
     void socketClose();
 };
 #endif

@@ -131,7 +131,18 @@ protected:
 	virtual void run();
 
 signals:
+    /**
+     * Emitted when the connection has joined a multicast group.
+     *
+     * @author Darryl Pogue
+     */
     void joinedMulticast();
+
+    /**
+     * Emitted when the connection has left a multicast group.
+     *
+     * @author Darryl Pogue
+     */
     void leftMulticast();
 
 public slots:
@@ -191,6 +202,12 @@ public slots:
     */
 	void requestForFile(QString filename);
 
+    /**
+     * Sends the currently playing song name to all multicast clients.
+     *
+     * @author Darryl Pogue
+     * @param name The name of the currently playing song.
+     */
     void sendSongName(QString name);
 };
 
