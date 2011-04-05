@@ -281,3 +281,10 @@ void CommAudio::changeDisplayedSong() {
 void CommAudio::changeDisplayedSong(QString songName) { 
     ui.currentSongLabel->setText(songName);
 }
+
+void CommAudio::clearDisplayedSong() {
+    ui.currentSongLabel->setText("");
+    if (conn != NULL) {
+        conn->sendSongName("");
+    }
+}
