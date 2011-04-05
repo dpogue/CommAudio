@@ -1,4 +1,5 @@
 #include "musiclibrary.h"
+#include <QMessageBox>
 
 MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
     connect(this, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
@@ -8,12 +9,14 @@ MusicLibrary::MusicLibrary(QWidget* parent) : QListWidget(parent) {
 void MusicLibrary::setDirectories(QStringList dir) {
     directories = dir;
     QStringList::iterator it;
+    
+    // remove all songs, before adding the current list
+    this->clear();
 
     for (it = dir.begin(); it != dir.end(); ++it) {
         addSongs(&QDir(*it));
     }
 }
-
 QString MusicLibrary::getSelectedSong() {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {
@@ -109,6 +112,11 @@ void MusicLibrary::addFolder(QString path) {
     QDir* directory = new QDir(path);
     if (!directory->makeAbsolute()) {
         qDebug("MusicLibrary::addFolder(); could not make path absolute");
+    }
+    if (directories.contains(directory->absolutePath())) {
+        QMessageBox(QMessageBox::Warning, "Duplicate Folder",
+                "This folder has already been added to the library.").exec();
+        return;
     }
     directories.push_back(directory->absolutePath());
     addSongs(directory);
