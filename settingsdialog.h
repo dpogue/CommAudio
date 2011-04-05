@@ -102,6 +102,13 @@ public slots:
      * @author Dean Morin
      */
     void onAddFolderClicked();
+    
+    /**
+     * Prompts the user for a folder to remove from the library.
+     *
+     * @author Dean Morin
+     */
+    void onRemoveFolderClicked();
 };
 
 #endif

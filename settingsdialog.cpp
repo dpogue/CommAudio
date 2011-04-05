@@ -114,7 +114,6 @@ void SettingsDialog::onRememberConnectionOptionToggled(bool checked) {
 
 void SettingsDialog::onAddFolderClicked() {
     
-    QString defPath = QString("music/");
     QString dir = QFileDialog::getExistingDirectory(this, "Add Directory",
             "music/", QFileDialog::DontResolveSymlinks);
 
@@ -122,4 +121,11 @@ void SettingsDialog::onAddFolderClicked() {
         return;
     }
     ((CommAudio*) parent())->getUserSongs()->addFolder(dir);
+}
+
+void SettingsDialog::onRemoveFolderClicked() {
+    
+    QStringList dirs = 
+            ((CommAudio*) parent())->getUserSongs()->getDirectories();
+    // check for music dir      
 }

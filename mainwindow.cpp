@@ -43,8 +43,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 	connect(AudioManager::instance(), SIGNAL(finished()),
             this, SLOT(playFinished()));
     
-    connect(ui.chatPushButton, SIGNAL(pressed()),
-        this, SLOT(onJoiningMulticastSession()));
     QSettings settings;
 
     ui.volumeSlider->setMinimum(0);

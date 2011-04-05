@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>269</width>
-    <height>419</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
   <widget class="QPushButton" name="okPushButton">
    <property name="geometry">
     <rect>
-     <x>84</x>
-     <y>380</y>
+     <x>96</x>
+     <y>364</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -33,7 +33,7 @@
   <widget class="QCheckBox" name="stickyChatCheckBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>28</x>
      <y>320</y>
      <width>81</width>
      <height>17</height>
@@ -49,8 +49,8 @@
   <widget class="QPushButton" name="cancelPushButton">
    <property name="geometry">
     <rect>
-     <x>174</x>
-     <y>380</y>
+     <x>180</x>
+     <y>364</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -62,10 +62,10 @@
   <widget class="QPushButton" name="addFolderPushButton">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>26</x>
      <y>282</y>
-     <width>75</width>
-     <height>23</height>
+     <width>101</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
@@ -225,10 +225,10 @@
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>116</x>
+     <x>138</x>
      <y>282</y>
      <width>101</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
