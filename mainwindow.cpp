@@ -61,7 +61,6 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
             transport, SLOT(onSongDoubleClicked(QString)));
 
     ui.fileTabWidget->setTabEnabled(1, false);
-    ui.fileTabWidget->setTabEnabled(2, false);
     QBoxLayout* hr = new QBoxLayout(QBoxLayout::TopToBottom, ui.peerTab);
     hr->setMargin(0);
     remoteSongs = new MusicLibrary();

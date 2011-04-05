@@ -352,11 +352,6 @@ QPushButton#shufflePushButton {
          </property>
         </widget>
        </widget>
-       <widget class="QWidget" name="playlistTab">
-        <attribute name="title">
-         <string>Request Playlist</string>
-        </attribute>
-       </widget>
       </widget>
      </item>
     </layout>
