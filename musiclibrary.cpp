@@ -127,7 +127,7 @@ void MusicLibrary::addFolder(QString path) {
 
 void MusicLibrary::addSongs(QDir* directory) {
     QStringList filters;
-    filters << "*.wav" << "*.ogg" << "*.oga";
+    filters << "*.wav" << "*.ogg" << "*.oga" << "*.aiff";
     QStringList newSongs = directory->entryList(filters, 
             QDir::Readable | QDir::Files, QDir::Name);
     

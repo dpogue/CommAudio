@@ -19,7 +19,8 @@
 
 enum fileType{ 
 OGG,
-WAV
+WAV,
+AIFF
 };
 
 
@@ -108,7 +109,8 @@ private:
 	void clearProcessedBuffers
 		(ALuint *source, int &buffersAvailable, ALint *playing, ALint* play);
 	void openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format);
-	void openWav(FILE **file, ALenum *format, ALuint *frequency);
+    void openWav(FILE **file, ALenum *format, ALuint *frequency);
+    void openAiff(FILE **file, ALenum *format, ALuint *freq);
 
 public:
 

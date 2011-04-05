@@ -255,8 +255,8 @@ void AudioManager::streamFile(QString filename)
     ALint queue = 0;
     ALint play = AL_TRUE;
     ALint playing = AL_TRUE;
-    ALenum format = AL_FORMAT_MONO8;
-    ALuint freq = 22050;
+    ALenum format = AL_FORMAT_STEREO16;
+    ALuint freq = 44100;
     OggVorbis_File oggFile;
     vorbis_info* vorbisInfo;
 	fileType fType;
@@ -293,7 +293,10 @@ void AudioManager::streamFile(QString filename)
 	} else if (filename.contains(".wav")) {
 		openWav(&file,&format,&freq);
 		fType = WAV;
-	}
+    } else if (filename.contains(".aiff") || filename.contains(".aif")) {
+        openAiff(&file,&format,&freq);
+        fType = AIFF;
+    }
 
     bitmask = getBitmask(format,freq);
 
@@ -304,6 +307,7 @@ void AudioManager::streamFile(QString filename)
 
 		if(getPause()== true) {
 			alSourcePause(source);
+
 			paused = true;
 		} else {
 			clearProcessedBuffers(&source, buffersAvailable, &playing, &play);
@@ -327,7 +331,7 @@ void AudioManager::streamFile(QString filename)
                 if(fType == OGG) {
 					result = ov_read (&oggFile, array + size, 
 						BUFFERSIZE - size, 0, 2, 1, &bitStream);
-				} else if (fType == WAV) {
+				} else if (fType == WAV || fType == AIFF) {
 					result = fread(array + size, 1, BUFFERSIZE - size, file);
 				} 
 
@@ -488,6 +492,53 @@ void AudioManager::openOgg(FILE *file, OggVorbis_File *oggFile, ALenum *format)
 
 }
 
+void AudioManager::openAiff(FILE **file, ALenum *format, ALuint *freq) {
+    
+    char *buf = (char *)malloc(sizeof(BUFFERSIZE));
+    int channels, bits;
+    int i = 6;
+    
+    //ignore FORM filesize AIFF
+    fread(buf,1,12,*file);
+    fread(buf,1,8,*file);
+    fread(buf,1,2,*file);
+    channels = buf[1];
+    
+    fread(buf,1,4,*file);
+    fread(buf,1,2,*file);
+    bits = buf[1];
+    bits |= buf[0];
+    
+    fread(buf,1,2,*file);
+    fread(buf,1,8,*file);
+    memcpy(freq,buf,8);
+    *freq = 44100;
+
+    do {
+        fread(buf,1,1,*file);
+        i+=1;
+    } while(buf[0] != 'S');
+    
+    fread(buf,1,6,*file);
+    qDebug("i %d",i);
+
+    if(bits == 8)
+    {
+        if(channels == 1)
+            *format = AL_FORMAT_MONO8;
+        else if(channels == 2)
+            *format = AL_FORMAT_STEREO8;
+    }
+    else if(bits == 16)
+    {
+        if(channels == 1)
+            *format = AL_FORMAT_MONO16;
+        else if(channels == 2)
+            *format = AL_FORMAT_STEREO16;
+    }
+
+}
+
 void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 {
       char* buf = (char *)malloc(sizeof(BUFFERSIZE));
@@ -495,18 +546,7 @@ void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 	  fread(buf,1,12,*file);
  
 	  fread(buf,1,8,*file);
-	  if(buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ') {
-		  qCritical("No FMT header");
-		  alExit();
-		  return;
-	  }
-
 	  fread(buf, 1, 2, *file);
-	  if(buf[1] != 0 || buf[0] != 1) {
-		  qCritical("Not PCM");
-		  alExit();
-		  return;
-	  }
 
 	  fread(buf, 1, 2, *file);
 	  channels  = buf[1]<<8;
@@ -536,10 +576,7 @@ void AudioManager::openWav(FILE **file, ALenum *format, ALuint *frequency)
 			  *format = AL_FORMAT_STEREO16;
 	  }
 
+
 	  fread(buf, 1, 8, *file);
-	  if(buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a') {
-		  qCritical("Not 'data'");
-		  alExit();
-	  }
 
 }
