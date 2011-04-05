@@ -195,12 +195,7 @@ void Connection::onCtlReadReady() {
             progressBar->setValue(progressBar->maximum());
             progressBar->hide();
 
-            Stream list;
-            list.writeByte(0x02);
-            list.writeInt(1);
-            list.writeInt(fi.fileName().size());
-            list.write(fi.fileName().toUtf8());
-            sock->setWriteBuffer(list.data());
+            sendFileList();
         }
     }
 }
