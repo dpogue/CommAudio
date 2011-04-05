@@ -49,6 +49,7 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
     progressBar = mwOwner->getUi()->downloadProgressBar;
 
     if (isMulticast) {
+        emit joinedMulticast();
         strSock = new CommSocket("232.21.42.1", port, UDP);
         connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 
@@ -61,6 +62,9 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
 void Connection::closeConnection() {
     ctlSock->closeSocket();
     strSock->closeSocket();
+    if (isMulticast) {
+        emit leftMulticast();
+    }
 }
 
 void Connection::run() {
@@ -105,6 +109,7 @@ void Connection::onCtlReadReady() {
 			isMulticast = s.readByte();
             if (isMulticast) {
                 strSock->toggleMulticast();
+                emit joinedMulticast();
             }
 		}
         buf.remove(0, s.position());
@@ -270,10 +275,11 @@ void Connection::requestForFile(QString filename) {
     ctlSock->setWriteBuffer(buf.data());
 }
 
-void Connection::notifyMulticastClients(char msgType,char* msg) {
+void Connection::notifyMulticastClients(char msgType, QByteArray msg) {
 	Stream s;
 	s.writeByte(msgType);
 	s.write(msg);
+
 	for(QList<CommSocket*>::const_iterator it = multicastClients.begin(); it != multicastClients.end(); it++) {
 		(*it)->setWriteBuffer(s.data());
 	}
@@ -323,9 +329,12 @@ void Connection::onCtlConnect() {
 }
 
 void Connection::onDisconnected() {
-    mwOwner->disconnected();
-    ctlSock->closeSocket();
-    strSock->closeSocket();
+    if (!isMulticast || mode == CLIENT) {
+        mwOwner->disconnected();
+    } else {
+        CommSocket* s = (CommSocket*)QObject::sender();
+        multicastClients.removeOne(s);
+    }
 }
 
 void Connection::onStrReadReady() {
@@ -333,4 +342,15 @@ void Connection::onStrReadReady() {
     QByteArray& buf = strSock->getReadBuffer();
 
     AudioManager::addToQueue(buf);
+}
+
+void Connection::sendSongName(QString name) {
+    if (mode != SERVER || !isMulticast) {
+        return;
+    }
+
+    Stream s;
+    s.writeInt(name.size());
+    s.write(name.toAscii().data());
+    this->notifyMulticastClients(0x06, s.data());
 }

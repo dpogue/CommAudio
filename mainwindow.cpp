@@ -150,6 +150,8 @@ void CommAudio::connectToServer(QString host, int port) {
             conn, SLOT(requestForFile(QString)));
 
     connect(this, SIGNAL(gotDisconnected()), this, SLOT(disconnectFromServer()));
+    connect(conn, SIGNAL(joinedMulticast()), this, SLOT(onJoiningMulticastSession()));
+    connect(conn, SIGNAL(leftMulticast()), this, SLOT(onQuittingMulticastSession()));
 
     ui.fileTabWidget->setTabEnabled(1, true);
 }
@@ -164,6 +166,8 @@ void CommAudio::disconnectFromServer() {
             conn, SLOT(requestForFile(QString)));
     remoteSongs->clear();
 	ui.fileTabWidget->setTabEnabled(1, false);
+    ui.fileTabWidget->setCurrentIndex(0);
+    delete conn;
 }
 
 void CommAudio::startServer(int port) {
@@ -188,6 +192,7 @@ void CommAudio::stopServer() {
             conn, SLOT(requestForFile(QString)));
     remoteSongs->clear();
     ui.fileTabWidget->setTabEnabled(1, false);
+    ui.fileTabWidget->setCurrentIndex(0);
 }
 
 void CommAudio::onChatPressed() {
@@ -256,7 +261,9 @@ void CommAudio::onStoppingMulticastSession() {
 }
 
 void CommAudio::changeDisplayedSong() { 
-    ui.currentSongLabel->setText(userSongs->getSelectedSongName());
+    QString sn = userSongs->getSelectedSongName();
+    ui.currentSongLabel->setText(sn);
+    conn->sendSongName(sn);
 }
 
 void CommAudio::changeDisplayedSong(QString songName) { 
