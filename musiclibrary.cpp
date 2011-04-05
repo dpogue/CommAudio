@@ -140,6 +140,8 @@ void MusicLibrary::addSongs(QDir* directory) {
 }
 
 void MusicLibrary::addSongs(QList<QString> songlist) {
+    songs.clear();
+    this->clear();
     for (int i = 0; i < songlist.size(); i++) {
         songs.insert(songlist[i], songlist[i]);
         addItem(songlist[i]);

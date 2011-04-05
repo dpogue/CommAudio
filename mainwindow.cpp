@@ -187,14 +187,16 @@ void CommAudio::startServer(int port) {
 void CommAudio::stopServer() {
 	conn->closeConnection();
     disconnect(this, SIGNAL(gotDisconnected()), this, SLOT(stopServer()));
-
-    connectDialog->onStopServerClicked();
-
     disconnect(remoteSongs, SIGNAL(signalSongDoubleClicked(QString)),
             conn, SLOT(requestForFile(QString)));
+
+    connectDialog->onStopServerClicked();
     remoteSongs->clear();
     ui.fileTabWidget->setTabEnabled(1, false);
     ui.fileTabWidget->setCurrentIndex(0);
+
+    delete conn;
+    conn = NULL;
 }
 
 void CommAudio::onChatPressed() {
@@ -237,6 +239,7 @@ void CommAudio::onJoiningMulticastSession() {
     ui.nextPushButton->setDisabled(true);
     ui.playPushButton->setDisabled(true);
     ui.chatPushButton->setDisabled(true);
+    ui.stopPushButton->setDisabled(true);
 }
 
 void CommAudio::onQuittingMulticastSession() {
@@ -244,6 +247,7 @@ void CommAudio::onQuittingMulticastSession() {
     ui.nextPushButton->setEnabled(true);
     ui.playPushButton->setEnabled(true);
     ui.chatPushButton->setEnabled(true);
+    ui.stopPushButton->setEnabled(true);
 }
 
 void CommAudio::onStartingMulticastSession() {
@@ -252,6 +256,8 @@ void CommAudio::onStartingMulticastSession() {
     ui.playPushButton->setDisabled(true);
     ui.chatPushButton->setDisabled(true);
     ui.stopPushButton->setDisabled(true);
+    ui.localTab->setDisabled(true);
+    ui.peerTab->setDisabled(true);
 }
 
 void CommAudio::onStoppingMulticastSession() {
@@ -260,6 +266,8 @@ void CommAudio::onStoppingMulticastSession() {
     ui.playPushButton->setEnabled(true);
     ui.chatPushButton->setEnabled(true);
     ui.stopPushButton->setEnabled(true);
+    ui.localTab->setEnabled(true);
+    ui.currentSongLabel->setText("");
 }
 
 void CommAudio::changeDisplayedSong() { 
@@ -272,4 +280,11 @@ void CommAudio::changeDisplayedSong() {
 
 void CommAudio::changeDisplayedSong(QString songName) { 
     ui.currentSongLabel->setText(songName);
+}
+
+void CommAudio::clearDisplayedSong() {
+    ui.currentSongLabel->setText("");
+    if (conn != NULL) {
+        conn->sendSongName("");
+    }
 }

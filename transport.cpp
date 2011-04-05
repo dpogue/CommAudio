@@ -22,6 +22,8 @@ Transport::Transport(Ui::CommAudioClass* gui, QWidget* parent)
             this, SLOT(onLoopClicked()));
     connect(this, SIGNAL(songChanged()),
             parent, SLOT(changeDisplayedSong()));
+    connect(this, SIGNAL(songStopped()),
+            parent, SLOT(clearDisplayedSong()));
     
     QSettings settings;
 
@@ -73,13 +75,17 @@ void Transport::onPlayClicked() {
 }
 
 void Transport::onStopClicked() {
-    
+
     if (playingState == PLAYING) {
         AudioManager::instance()->togglePause();
         ui->playPushButton->setIcon(QIcon(ICON_PLAY));
     }
-    ui->currentSongLabel->setText("");
+    if (playingState == PAUSED) {
+        QString text = ((CommAudio*) parent())->getMuted() ? "Mute" : "";
+        ui->statusLabel->setText(text);
+    }
     playingState = STOPPED;
+    emit songStopped();
 }
 
 void Transport::onPreviousClicked() {
