@@ -49,7 +49,7 @@ public:
      * @param msgType defines the type of message. To be prepended at the beginning of the message
 	 * @param msg the message to be sent
      */
-	void notifyMulticastClients(char msgType,char* msg);
+	void notifyMulticastClients(char msgType, QByteArray msg);
 
 private:
 	/** A pointer to the owner of this Connection object*/
@@ -190,6 +190,8 @@ public slots:
     * @author Kelvin Lui
     */
 	void requestForFile(QString filename);
+
+    void sendSongName(QString name);
 };
 
 #endif

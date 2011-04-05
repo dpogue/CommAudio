@@ -262,7 +262,9 @@ void CommAudio::onStoppingMulticastSession() {
 }
 
 void CommAudio::changeDisplayedSong() { 
-    ui.currentSongLabel->setText(userSongs->getSelectedSongName());
+    QString sn = userSongs->getSelectedSongName();
+    ui.currentSongLabel->setText(sn);
+    conn->sendSongName(sn);
 }
 
 void CommAudio::changeDisplayedSong(QString songName) { 
