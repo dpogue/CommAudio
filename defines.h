@@ -12,6 +12,7 @@
 #define FILESAVING 1
 
 #define MULTICAST 0xE8152A01
+#define STREAMINGBUFSIZE (1024*16)
 
 
 // images

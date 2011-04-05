@@ -170,12 +170,12 @@ bool CommSocket::read() {
 	int bytesToRead = BUFSIZE;
 
     if (prot == UDP) {
-        char buffer[8500];
-        int bytesToRead = 8500;
+        char buffer[STREAMINGBUFSIZE];
+        int bytesToRead = STREAMINGBUFSIZE;
         int senderAddrSize = sizeof(server);
 
         readBuffer.clear();
-        ZeroMemory(buffer, 8500);
+        ZeroMemory(buffer, STREAMINGBUFSIZE);
 
         bytesRead = recvfrom(sock,buffer,bytesToRead,0,(SOCKADDR *)&server, 
 				&senderAddrSize);
