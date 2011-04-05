@@ -215,7 +215,6 @@ void AudioManager::streamStream()
 
             oldbmask = bitmask;
             getSpecs(bitmask,&format,&freq);
-            qDebug("specs %d %d %d",bitmask,freq, format);
             alBufferData(buffer[queue], format, array, size, freq);
             alSourceQueueBuffers(source, 1, &buffer[queue]);
             queue = (++queue == QUEUESIZE ? 0 : queue);

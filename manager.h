@@ -217,8 +217,8 @@ public:
 		QByteArray temp(buffer,size);
         mutex_.lock();
         temp.prepend(bitmask);
-        qDebug("buffer %d", temp.size());
-        netQueue.enqueue(temp);
+        temp = qCompress(temp,9);
+        netQueue.enqueue(temp); 
 		mutex_.unlock();
 	}	
 
@@ -237,7 +237,7 @@ public:
 			temp = streamQueue.dequeue();
 		}
 		mutex_.unlock();
-		return temp;
+		return qUncompress(temp);
 	}
 
 	static QByteArray* getNextNetworkQueue() {
