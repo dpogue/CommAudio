@@ -7,6 +7,9 @@
 #include <qmap.h>
 #include <qstring.h>
 
+/**
+ * Both a graphical and logical representation of a music library.
+ */
 class MusicLibrary : public QListWidget {
     Q_OBJECT
 

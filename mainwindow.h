@@ -12,11 +12,28 @@ class SettingsDialog;
 class SpacebarGrabber;
 class Transport;
 
+/**
+ * The main window of the program. Contains all of the gui component logic
+ * except for the transport controls.
+ */
 class CommAudio : public QMainWindow {
 	Q_OBJECT
 
 public:
-	CommAudio(QWidget *parent = 0, Qt::WFlags flags = 0);
+	/**
+     * Constructor.
+     *
+     * @author Dean Morin, Darryl Pogue
+     * @param parent The QWidget that is the parent of this window.
+     * @param flags Options for creating the window.
+     */
+    CommAudio(QWidget* parent = 0, Qt::WFlags flags = 0);
+
+    /**
+     * Destructor.
+     *
+     * @author Dean Morin
+     */
 	~CommAudio();
 
 private:
