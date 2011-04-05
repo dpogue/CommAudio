@@ -306,7 +306,7 @@ void Connection::onCtlAccept() {
 		QString host;
 		unsigned short cport;
 		ctlSock->getHostAndPort(&host, &cport);
-		strSock = new CommSocket(host, 9500, UDP);
+		strSock = new CommSocket(host, cport, UDP);
 		
 		timer.setInterval(23);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));

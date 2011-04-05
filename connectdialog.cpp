@@ -72,11 +72,13 @@ void ConnectDialog::onDisconnectClicked() {
     ui->connectPushButton->setText("Connect");
     connect(ui->connectPushButton, SIGNAL(clicked()),
             this, SLOT(onConnectClicked()));
-        
+    
     if (running) {
         running = false;
         ((CommAudio*) this->parent())->disconnectFromServer();
     }
+    multicastServer = ui->multicastCheckBox->isChecked();
+        
     done(0);
 }
 
@@ -122,11 +124,14 @@ void ConnectDialog::onStopServerClicked() {
         running = false;
         ((CommAudio*) this->parent())->stopServer();
     }
+    multicastServer = ui->multicastCheckBox->isChecked();
     done(0);
 }
 
 void ConnectDialog::onMulticastStateChanged(int state) {
-    multicastServer = ui->multicastCheckBox->isChecked();
+    if (!running) {
+        multicastServer = ui->multicastCheckBox->isChecked();
+    }
 }
 
 unsigned long ConnectDialog::validateIp(QLineEdit* ipLineEdit, 
