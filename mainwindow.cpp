@@ -235,6 +235,7 @@ void CommAudio::playFinished() {
 }
 
 void CommAudio::onJoiningMulticastSession() {
+    transport->onStopClicked();
     ui.previousPushButton->setDisabled(true);
     ui.nextPushButton->setDisabled(true);
     ui.playPushButton->setDisabled(true);
