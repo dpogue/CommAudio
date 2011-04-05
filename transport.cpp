@@ -125,6 +125,8 @@ void Transport::onNextClicked() {
 void Transport::onSongDoubleClicked(QString songName) {
     AudioManager::instance()->playMusic(songName);
     ui->playPushButton->setIcon(QIcon(ICON_PAUSE));
+    QString text = ((CommAudio*) parent())->getMuted() ? "Mute" : "";
+    ui->statusLabel->setText(text);
     emit songChanged();
     playingState = PLAYING;
 }
