@@ -11,6 +11,8 @@ void MusicLibrary::setDirectories(QStringList dir) {
     QStringList::iterator it;
     
     // remove all songs, before adding the current list
+    songs.clear();
+    playedSongs.clear();
     this->clear();
 
     for (it = dir.begin(); it != dir.end(); ++it) {
@@ -133,6 +135,7 @@ void MusicLibrary::addSongs(QDir* directory) {
         songs.insert(fileName, directory->absoluteFilePath(fileName));
         addItem(fileName);
     }
+    this->sortItems();
 }
 
 void MusicLibrary::addSongs(QList<QString> songlist) {

@@ -7,7 +7,8 @@
 
 SettingsDialog::SettingsDialog(QWidget *parent)
     : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint), 
-      ui(new Ui::Settings()), useLastConnSettings(true)
+      ui(new Ui::Settings()), useLastConnSettings(true),
+      dirList(new QListWidget())
 {
     ui->setupUi(this);
     
@@ -21,9 +22,14 @@ SettingsDialog::SettingsDialog(QWidget *parent)
             this, SLOT(onRememberConnectionOptionToggled(bool)));
     connect(ui->addFolderPushButton, SIGNAL(clicked()),
             this, SLOT(onAddFolderClicked()));
+    connect(ui->removeFolderPushButton, SIGNAL(clicked()),
+            this, SLOT(onRemoveFolderClicked()));
             
     onStickyChatStateChanged(0);
     ui->okPushButton->setDefault(true);
+    
+    fileLayout = new QBoxLayout(QBoxLayout::TopToBottom, ui->folderScrollArea);
+    fileLayout->setMargin(0);
     
     QCoreApplication::setOrganizationName("DBDFL");
     QCoreApplication::setApplicationName("WAM");
@@ -33,6 +39,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
 SettingsDialog::~SettingsDialog() {
     delete ui;
+    delete fileLayout;
+    delete dirList;
 }
 
 void SettingsDialog::readSettings() {
@@ -47,13 +55,17 @@ void SettingsDialog::readSettings() {
             "").toString());
     ui->multicastCheckBox->setChecked(settings.value("multicast", 
             false).toBool());
-    QStringList dirs = settings.value("directories",
+    QStringList directories = settings.value("directories",
             QStringList("music/")).toStringList();
 
-    ((CommAudio*) parent())->getUserSongs()->setDirectories(dirs);
+    ((CommAudio*) parent())->getUserSongs()->setDirectories(directories);
     if(!QDir("music").exists()) {
         QDir().mkdir("music");
     }
+
+    dirList->clear();
+    dirList->addItems(directories);
+    fileLayout->addWidget(dirList);
     
     // setup gui elements according to stored settings
     ui->defaultSettingsRadioButton1->setChecked(useLastConnSettings);
@@ -121,6 +133,8 @@ void SettingsDialog::onAddFolderClicked() {
         return;
     }
     ((CommAudio*) parent())->getUserSongs()->addFolder(dir);
+    dirList->addItem(new QListWidgetItem(dir));
+    dirList->sortItems();
 }
 
 void SettingsDialog::onRemoveFolderClicked() {
@@ -128,7 +142,11 @@ void SettingsDialog::onRemoveFolderClicked() {
     QStringList dirs = 
             ((CommAudio*) parent())->getUserSongs()->getDirectories();
 
-    //dialog
-    dirs.removeOne("removeDir");
+    QList<QListWidgetItem*> sel = dirList->selectedItems();
+    if (sel.size() == 0) {
+        return;
+    }
+    dirs.removeOne(sel.at(0)->text());
+    delete dirList->takeItem(dirList->row(sel.at(0)));
     ((CommAudio*) parent())->getUserSongs()->setDirectories(dirs);
 }

@@ -2,6 +2,8 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QBoxLayout>
+#include <QListWidget>
 
 namespace Ui {
     class Settings;
@@ -19,6 +21,12 @@ private:
 
     /** True if the most recent connection settings should be remembered. */
     bool useLastConnSettings;
+
+    /** The box layout used to show the music folders. */
+    QBoxLayout* fileLayout;
+    
+    /** All of the music folders that are in use. */
+    QListWidget* dirList;
 
 public:
     /**

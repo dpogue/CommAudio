@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>269</width>
-    <height>400</height>
+    <width>560</width>
+    <height>335</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
   <widget class="QPushButton" name="okPushButton">
    <property name="geometry">
     <rect>
-     <x>96</x>
-     <y>364</y>
+     <x>378</x>
+     <y>292</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -30,27 +30,11 @@
     <string>OK</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="stickyChatCheckBox">
-   <property name="geometry">
-    <rect>
-     <x>28</x>
-     <y>320</y>
-     <width>81</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Check to make the chat button a toggle button</string>
-   </property>
-   <property name="text">
-    <string>Sticky Chat</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="cancelPushButton">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>364</y>
+     <x>462</x>
+     <y>292</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -59,26 +43,13 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="addFolderPushButton">
-   <property name="geometry">
-    <rect>
-     <x>26</x>
-     <y>282</y>
-     <width>101</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add Folder</string>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>16</y>
      <width>229</width>
-     <height>251</height>
+     <height>257</height>
     </rect>
    </property>
    <property name="title">
@@ -222,24 +193,11 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>138</x>
-     <y>282</y>
-     <width>101</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Remove Folder</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="errorLabel">
    <property name="geometry">
     <rect>
-     <x>6</x>
-     <y>354</y>
+     <x>108</x>
+     <y>294</y>
      <width>257</width>
      <height>16</height>
     </rect>
@@ -251,6 +209,97 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>268</x>
+     <y>16</y>
+     <width>271</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Library Folders</string>
+   </property>
+   <widget class="QPushButton" name="addFolderPushButton">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>154</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Folder</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="removeFolderPushButton">
+    <property name="geometry">
+     <rect>
+      <x>142</x>
+      <y>154</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove Folder</string>
+    </property>
+   </widget>
+   <widget class="QScrollArea" name="folderScrollArea">
+    <property name="geometry">
+     <rect>
+      <x>19</x>
+      <y>27</y>
+      <width>233</width>
+      <height>115</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>231</width>
+       <height>113</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>268</x>
+     <y>220</y>
+     <width>271</width>
+     <height>53</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Chat Settings</string>
+   </property>
+   <widget class="QCheckBox" name="stickyChatCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>24</y>
+      <width>81</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Check to make the chat button a toggle button</string>
+    </property>
+    <property name="text">
+     <string>Sticky Chat</string>
+    </property>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -261,7 +310,7 @@
   <tabstop>serverPortLineEdit</tabstop>
   <tabstop>multicastCheckBox</tabstop>
   <tabstop>addFolderPushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>removeFolderPushButton</tabstop>
   <tabstop>stickyChatCheckBox</tabstop>
   <tabstop>okPushButton</tabstop>
   <tabstop>cancelPushButton</tabstop>

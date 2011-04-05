@@ -18,7 +18,7 @@ CommAudio::CommAudio(QWidget *parent, Qt::WFlags flags)
 {	
 	ui.setupUi(this);
     this->setStyleSheet(StyleSheet::commAudio());
-    this->setFixedSize(439, 700);
+    this->setFixedSize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
     this->setFocus();
 
     userSongs = new MusicLibrary();
@@ -198,6 +198,7 @@ void CommAudio::onChatPressed() {
     chatting = !chatting;
     QString icon = (chatting) ? ICON_CHATTING : ICON_CHAT;
     ui.chatPushButton->setIcon(QIcon(icon));
+    AudioManager::instance()->toggleCapturePause();
 }
 
 void CommAudio::onChatReleased() {

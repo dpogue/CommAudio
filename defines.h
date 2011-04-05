@@ -13,6 +13,9 @@
 
 #define MULTICAST 0xE8152A01
 
+// window dimensions
+#define MAIN_WINDOW_WIDTH   439
+#define MAIN_WINDOW_HEIGHT  675
 
 // images
 #define ICON_PLAY           "img/play.png"
