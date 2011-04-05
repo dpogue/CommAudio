@@ -118,12 +118,32 @@ public:
         return userSongs->getSongList();
     }
 
+    /**
+     * Returns the path for the given song name.
+     *
+     * @author Darryl Pogue
+     * @param song The song name.
+     * @return The path to the file.
+     */
     QString getSongFilePath(QString song) {
         return userSongs->getFilePath(song);
     }
 
+    /**
+     * Adds a list of songs to the remote songs tab.
+     *
+     * @author Darryl Pogue
+     * @param songs The list of remote songs.
+     */
     void addRemoteSongs(QList<QString> songs);
 
+    /**
+     * Adds a song to the music library.
+     *
+     * @author Darryl Pogue
+     * @param song The name of the song.
+     * @param path The file path to the song.
+     */
     void addSong(QString song, QString path) {
         userSongs->addSong(song, path);
     }
@@ -180,6 +200,11 @@ public:
     }
 
 signals:
+    /**
+     * Emitted when the connection is broken.
+     *
+     * @author Darryl Pogue
+     */
     void gotDisconnected();
 
 public slots:
@@ -205,6 +230,11 @@ public slots:
      */
     void connectToServer(QString host, int port);
 
+    /**
+     * Disconnects from a server and resets the application state.
+     *
+     * @author Darryl Pogue
+     */
 	void disconnectFromServer();
 
     /**
@@ -303,6 +333,13 @@ public slots:
      * @param songName The song to display.
      */
     void changeDisplayedSong(QString songName);
+
+    /**
+     * Clears the song displayed in the top frame.
+     *
+     * @author Darryl Pogue
+     */
+    void clearDisplayedSong();
 };
 
 #endif // MAINWINDOW_H
