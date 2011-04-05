@@ -17,6 +17,7 @@ void MusicLibrary::setDirectories(QStringList dir) {
         addSongs(&QDir(*it));
     }
 }
+
 QString MusicLibrary::getSelectedSong() {
     QList<QListWidgetItem*> sel = this->selectedItems();
     if (sel.size() == 0) {

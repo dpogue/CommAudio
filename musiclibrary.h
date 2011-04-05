@@ -133,7 +133,7 @@ public:
      * @param path The path to the folder being added.
      */
     void addFolder(QString path);
-
+    
     /**
      * Add the songs in a folder to the library.
      *

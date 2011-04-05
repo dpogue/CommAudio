@@ -127,5 +127,8 @@ void SettingsDialog::onRemoveFolderClicked() {
     
     QStringList dirs = 
             ((CommAudio*) parent())->getUserSongs()->getDirectories();
-    // check for music dir      
+
+    //dialog
+    dirs.removeOne("removeDir");
+    ((CommAudio*) parent())->getUserSongs()->setDirectories(dirs);
 }
