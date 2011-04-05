@@ -63,11 +63,6 @@ void Connection::closeConnection() {
     strSock->closeSocket();
 }
 
-void Connection::makeMulticast() {
-	isMulticast = !isMulticast;
-    strSock->toggleMulticast();
-}
-
 void Connection::run() {
     
     if(mode == SERVER) {
@@ -81,15 +76,6 @@ void Connection::run() {
     this->exec();
 }
 
-bool Connection::handShake() {
-    WSABUF sendData;
-
-    if(mode == CLIENT) {
-    }
-    else if(mode == SERVER) {
-    }
-    return true;
-}
 void Connection::onCtlReadReady() {
     CommSocket* sock = (CommSocket*)QObject::sender();
     QByteArray& buf = sock->getReadBuffer();
@@ -179,7 +165,7 @@ void Connection::onCtlReadReady() {
 	else if(msgType == (char)0x06 && !isFileTransferInProgress) {
 		int len = s.readInt();
         QString newSong(s.read(len));
-
+		mwOwner->changeDisplayedSong(newSong);
 		//update song title here
 	} 
 	else if (!isFileTransferInProgress) {
