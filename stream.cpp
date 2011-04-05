@@ -59,8 +59,11 @@ double Stream::readDouble()
 
 QByteArray Stream::read(const int length)
 {
-    if (eof()) {
+    if (eof() && length) {
         throw new EOFException();
+    }
+    if (length == 0) {
+        return QByteArray("");
     }
 
     QByteArray ret = data_.mid(position_, length);
