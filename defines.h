@@ -13,6 +13,8 @@
 
 #define MULTICAST 0xE8152A01
 
+#define TIMER 30
+
 // window dimensions
 #define MAIN_WINDOW_WIDTH   439
 #define MAIN_WINDOW_HEIGHT  675

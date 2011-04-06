@@ -20,7 +20,7 @@ Connection::Connection(CommAudio* owner, QString host, int prot, int port)
 
     strSock = new CommSocket(host, port, UDP);
     connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
-    timer.setInterval(50);
+    timer.setInterval(TIMER);
     connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
     timer.start();
 
@@ -54,7 +54,7 @@ Connection::Connection(CommAudio* owner, int prot, int port, bool multicast = fa
         strSock = new CommSocket("232.21.42.1", port, UDP);
         connect(strSock,SIGNAL(socketRead()),this,SLOT(onStrReadReady()));	
 
-        timer.setInterval(50);
+        timer.setInterval(TIMER);
         connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
         timer.start();
     }
@@ -309,7 +309,7 @@ void Connection::onCtlAccept() {
 		ctlSock->getHostAndPort(&host, &cport);
 		strSock = new CommSocket(host, this->port, UDP);
 		
-		timer.setInterval(50);
+		timer.setInterval(TIMER);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(sendAudioBuffer()));
 		timer.start();
 	}
