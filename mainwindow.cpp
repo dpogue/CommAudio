@@ -241,6 +241,8 @@ void CommAudio::onJoiningMulticastSession() {
     ui.playPushButton->setDisabled(true);
     ui.chatPushButton->setDisabled(true);
     ui.stopPushButton->setDisabled(true);
+    ui.localTab->setDisabled(true);
+    ui.peerTab->setDisabled(true);
 }
 
 void CommAudio::onQuittingMulticastSession() {
@@ -249,6 +251,8 @@ void CommAudio::onQuittingMulticastSession() {
     ui.playPushButton->setEnabled(true);
     ui.chatPushButton->setEnabled(true);
     ui.stopPushButton->setEnabled(true);
+    ui.localTab->setEnabled(true);
+    ui.currentSongLabel->setText("");
 }
 
 void CommAudio::onStartingMulticastSession() {
@@ -257,8 +261,6 @@ void CommAudio::onStartingMulticastSession() {
     ui.playPushButton->setDisabled(true);
     ui.chatPushButton->setDisabled(true);
     ui.stopPushButton->setDisabled(true);
-    ui.localTab->setDisabled(true);
-    ui.peerTab->setDisabled(true);
 }
 
 void CommAudio::onStoppingMulticastSession() {
@@ -267,8 +269,6 @@ void CommAudio::onStoppingMulticastSession() {
     ui.playPushButton->setEnabled(true);
     ui.chatPushButton->setEnabled(true);
     ui.stopPushButton->setEnabled(true);
-    ui.localTab->setEnabled(true);
-    ui.currentSongLabel->setText("");
 }
 
 void CommAudio::changeDisplayedSong() { 
