@@ -133,6 +133,8 @@ void MusicLibrary::addSongs(QDir* directory) {
     
     while (!newSongs.isEmpty()) {
         QString fileName = newSongs.takeFirst();
+        int fileTypePos = fileName.lastIndexOf('.');
+        fileName.remove(fileTypePos, 4);
         songs.insert(fileName, directory->absoluteFilePath(fileName));
         addItem(fileName);
     }
